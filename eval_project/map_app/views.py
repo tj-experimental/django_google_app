@@ -7,24 +7,21 @@ from .tables import AddressTable
 def home(request):
     """Render the home page with a default address if no addresses exists."""
     table = AddressTable(Address.objects.only('address').order_by('id').all())
+    street_address = 'King Street West'
     if request.method == 'POST':
         form = AddressForm(request.POST)
-        if form.is_valid():
+        if request.POST['address_reset'] == "yes":
+            form.reset()
+            cd = {'address': street_address}
+        elif form.is_valid():
             cd = form.cleaned_data
-            if not cd['address_reset']:
-                form.save()
-            else:
-                form.reset()
+            form.save()
             form.instance.refresh_from_db()
-            table = AddressTable(Address.objects.only('address').order_by('id').all())
-            return render_to_response('map.html',
-                                      {'address': cd['address'],
-                                       'table': table},
-                                      using='base.html')
+        table = AddressTable(Address.objects.only('address').order_by('id').all())
+        return render(request, 'index.html', {'address': cd['address'],
+        									 'table': table})
     if Address.objects.exists():
         street_address = Address.objects.only('address').last()
-    else:
-        street_address = 'King Street West'
     return render(request, 'index.html',
                   {'address': street_address,
                    'table': table})

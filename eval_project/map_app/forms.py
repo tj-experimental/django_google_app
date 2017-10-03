@@ -7,7 +7,7 @@ class AddressForm(forms.ModelForm):
     class Meta:
         model = Address
         fields = ['address']
-        localized_fields = ['address_reset']
+        exclude = ['address_reset']
         widgets = {
             'address': AddressWithMapWidget({'class': 'vTextField'})
         }
