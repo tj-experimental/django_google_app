@@ -1,16 +1,14 @@
 {% extends "layout.html" %}
-{% load easy_maps_tags cache %}
+{% load staticfiles %}
 
 {%block title %}
    	Map Application
 {% endblock %}
 
+{% block nav_links %}
+    <li><a href="{% url 'address' %}"> Address Table </a></li>
+{% endblock %}
+
 {% block content %}
-    {% easy_map address using 'base.html' %}
-	<form method="POST" action="/">
-		<label for="id__address">Address: </label>
-		<input type="text" name="address" id="id__address"/>
-        {% csrf_token %}
-	</form>
-	<a href="/address"> Addresses </a>
+    {% include "map.html" %}
 {% endblock %}

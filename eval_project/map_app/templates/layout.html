@@ -1,12 +1,19 @@
-
 <!DOCTYPE html>
 <html>
 	<meta name="viewport" content="initial-scale=1.0, user-scalable=no">
 	<meta charset="utf-8">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 	<head>
 		<title>{% block title %}{% endblock %}</title>
 	</head>
 	<body>
+        {% block nav %}
+            <nav class="nav navbar-inverse">
+            <ul class="nav navbar-nav">
+               {% block nav_links %}{% endblock %}
+            </ul>
+            </nav>
+        {% endblock %}
 		{% block content %}
 		{% endblock %}
 	</body>

@@ -1,0 +1,5 @@
+{% load easy_maps_tags cache %}
+{% load render_table from django_tables2 %}
+
+{% easy_map address using 'base.html' %}
+{% render_table table %}

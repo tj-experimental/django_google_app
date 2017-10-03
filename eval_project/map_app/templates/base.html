@@ -1,21 +1,29 @@
 {% extends "easy_maps/map.html" %}
 
+{% block style %}
+    <style>
+       #map-canvas-{{ map.pk }}{
+           border: 2px solid #a5e6ca;
+       }
+    </style>
+{% endblock %}
 
 {% block html %}
-<div id="map-canvas-{{ map.pk }}"
-  {% if map.computed_address %}
+    <div id="map-canvas-{{ map.pk }}"
+    {% if map.computed_address %}
     style="width: 100% !important; height: {{ height|default:"500" }}px;"
-  {% endif %}
-  class="easy-map-googlemap">
-  {% block noscript %}{{ block.super }}{% endblock %}
-  {% if not map.computed_address %}<!-- geocoding error -->{% endif %}
-</div>
+    {% endif %}
+    class="easy-map-googlemap">
+    {% block noscript %}{{ block.super }}{% endblock %}
+    {% if not map.computed_address %}<!-- geocoding error -->{% endif %}
+    </div>
 {% endblock %}
 
 {% block api_js %}
-  <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?
-  key={{ api_key }}&libraries=places&callback=initialize_map_{{ map.pk }}" async defer></script>
-  <script type="text/javascript" src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+   <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?
+    key={{ api_key }}&libraries=places&callback=initialize_map_{{ map.pk }}" async defer></script>
+    <script type="text/javascript" src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+    <script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 {% endblock %}
 
 {% block map_loading_js %}
@@ -62,8 +70,13 @@
     			    on_land = !data.water;
     			    if (on_land){
     				    modifyMarker(results, latLng);
-    				    $('#id__address').val(results[0].formatted_address)
-    				    $('form').submit();
+    				    $.ajax({
+    				    	url: "/",
+    				    	method: "POST",
+    				    	data: {address: results[0].formatted_address}
+    				    }).done(function(data){
+    				       console.log(data)
+    				    });
     				}else{
     					window.alert('Locations in woods/mountain/ocean are not valid.');
     			    }
