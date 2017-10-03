@@ -7,6 +7,7 @@ class AddressForm(forms.ModelForm):
     class Meta:
         model = Address
         fields = ['address']
+        localized_fields = ['address_reset']
         widgets = {
             'address': AddressWithMapWidget({'class': 'vTextField'})
         }
@@ -20,3 +21,7 @@ class AddressForm(forms.ModelForm):
                 )
             )
         return super(AddressForm, self).save(*args)
+
+    @staticmethod
+    def reset():
+        return Address.objects.all().delete()

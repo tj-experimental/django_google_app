@@ -1,29 +1,27 @@
-import logging
-
 from django.shortcuts import render, render_to_response
 from .forms import AddressForm
 from .models import Address
 from .tables import AddressTable
 
-log = logging.getLogger(__name__)
-
 
 def home(request):
-    """Render the home page with a default address."""
+    """Render the home page with a default address if no addresses exists."""
     table = AddressTable(Address.objects.only('address').order_by('id').all())
     if request.method == 'POST':
         form = AddressForm(request.POST)
         if form.is_valid():
             cd = form.cleaned_data
-            log.info("Added address {address}".format(**cd))
-            form.save()
+            if not cd['address_reset']:
+                form.save()
+            else:
+                form.reset()
             form.instance.refresh_from_db()
             table = AddressTable(Address.objects.only('address').order_by('id').all())
             return render_to_response('map.html',
                                       {'address': cd['address'],
                                        'table': table},
                                       using='base.html')
-    if Address.objects.count() > 0:
+    if Address.objects.exists():
         street_address = Address.objects.only('address').last()
     else:
         street_address = 'King Street West'

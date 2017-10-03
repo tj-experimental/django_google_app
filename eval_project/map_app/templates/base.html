@@ -70,13 +70,8 @@
     			    on_land = !data.water;
     			    if (on_land){
     				    modifyMarker(results, latLng);
-    				    $.ajax({
-    				    	url: "/",
-    				    	method: "POST",
-    				    	data: {address: results[0].formatted_address}
-    				    }).done(function(data){
-    				       console.log(data)
-    				    });
+                        $('#id__address').val(results[0].formatted_address);
+    				    $('form').submit();
     				}else{
     					window.alert('Locations in woods/mountain/ocean are not valid.');
     			    }
@@ -89,5 +84,8 @@
 		})
     };
     google.maps.event.addDomListener(map, 'click', placeMarkerAndPanTo);
-    marker.addListener('click', placeMarkerAndPanTo); 
+    marker.addListener('click', placeMarkerAndPanTo);
+    $('[name="address_reset"]').click(function(){
+        $('form').submit();
+    });
 {% endblock %}
