@@ -8,11 +8,11 @@ def home(request):
     """Render the home page with a default address if no addresses exists."""
     table = AddressTable(Address.objects.only('address').order_by('id').all())
     street_address = 'King Street West'
+    cd = {'address': street_address}
     if request.method == 'POST':
         form = AddressForm(request.POST)
-        if request.POST['address_reset'] == "yes":
+        if request.POST.get('address_reset') == "yes":
             form.reset()
-            cd = {'address': street_address}
         elif form.is_valid():
             cd = form.cleaned_data
             form.save()
@@ -26,6 +26,7 @@ def home(request):
                   {'address': street_address,
                    'table': table})
 
+# TODO: use ajax to load the new table instead of reloading page.
 
 def address(request):
     """Render a table of valid searched/clicked addresses."""
