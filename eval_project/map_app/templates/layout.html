@@ -9,9 +9,13 @@
 	<body>
         {% block nav %}
             <nav class="nav navbar-inverse">
-            <ul class="nav navbar-nav">
-               {% block nav_links %}{% endblock %}
-            </ul>
+                <ul class="nav navbar-nav">
+                   {% block nav_links %}{% endblock %}
+                    <li class="nav-item">
+                        <a href="{% url 'reset-address' %}" class="nav-link confirmation-required">
+                            <span class="glyphicon glyphicon-trash"></span> Reset Addresses</a>
+                    </li>
+                </ul>
             </nav>
         {% endblock %}
 		{% block content %}

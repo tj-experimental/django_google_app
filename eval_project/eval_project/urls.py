@@ -19,7 +19,8 @@ from django.contrib import admin
 from map_app import views
 
 urlpatterns = [
-	url(r'^$', views.home, name='home'),
-    url(r'^address$', views.address, name='address')
+    url(r'^$', views.home, name='home'),
+    url(r'^address$', views.address, name='address'),
+    url(r'^reset-address$', views.reset_address, name='reset-address'),
     # url(r'^admin/', admin.site.urls),
 ]

@@ -11,7 +11,7 @@
 {% block html %}
     <div id="map-canvas-{{ map.pk }}"
     {% if map.computed_address %}
-    style="width: 100% !important; height: {{ height|default:"500" }}px;"
+    style="width: 100% !important; height: {{ height|default:"400" }}px;"
     {% endif %}
     class="easy-map-googlemap">
     {% block noscript %}{{ block.super }}{% endblock %}
@@ -24,64 +24,93 @@
     key={{ api_key }}&libraries=places&callback=initialize_map_{{ map.pk }}" async defer></script>
     <script type="text/javascript" src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
     <script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js" integrity="sha256-uEFhyfv3UgzRTnAZ+SEgvYepKKB0FW6RqZLrqfyUNug=" crossorigin="anonymous"></script>
+    <script type="text/javascript">
+        var csrfSafeMethod = function(method){
+            return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+        };
+        $.ajaxSetup({
+            beforeSend: function (xhr, settings) {
+                // TODO: verify the origin also
+                if(!csrfSafeMethod(settings.method)){
+                    xhr.setRequestHeader('X-CSRFToken', $.cookie('csrftoken'))
+                }
+            }
+        });
+        $('.confirmation-required').on('click', function(e) {
+            if(confirm("Are you sure ?")){
+                return true
+            }
+            e.preventDefault();
+            e.stopPropagation();
+        })
+    </script>
 {% endblock %}
 
 {% block map_loading_js %}
 {% endblock %}
 
 {% block extra_js %}
- 	var service = new google.maps.places.PlacesService(map);
- 	var infowindow = new google.maps.InfoWindow();
- 	var geocoder = new google.maps.Geocoder();
-	var marker = new google.maps.Marker({
-		        position: latlng,
-		        map: map,
-		        title: "{{ map.address }}"
-		    });
- 	var getInfoContent = function(name, formatted_address){
- 	    var nameStr = '', addressStr = '';
- 	    if (typeof name !== 'undefined'){
- 	    	nameStr = "<strong>" + name + "</strong><br>"
- 	    }
- 	    if (typeof formatted_address !== 'undefined'){
- 	    	addressStr = "Address:" + formatted_address 
- 		}
- 		return "<div>" + nameStr + addressStr + "</div>"
+    var service = new google.maps.places.PlacesService(map);
+    var infowindow = new google.maps.InfoWindow();
+    var geocoder = new google.maps.Geocoder();
+    var marker = new google.maps.Marker({
+                position: latlng,
+                map: map,
+                draggable: true,
+                title: "{{ map.address }}"
+            });
+    var getInfoContent = function(name, formatted_address){
+        var nameStr = '', addressStr = '';
+        if (typeof name !== 'undefined'){
+            nameStr = "<strong>" + name + "</strong><br>"
+        }
+        if (typeof formatted_address !== 'undefined'){
+            addressStr = "Address:" + formatted_address 
+        }
+        return "<div>" + nameStr + addressStr + "</div>"
     };
 
     var modifyMarker = function(results, latLng){
-    	map.setZoom({{ zoom }});
-	    map.panTo(latLng);
-		marker.setPosition(latLng);
-	    infowindow.setContent(getInfoContent(results[0].name, results[0].formatted_address))
-	    infowindow.open(map, marker)
-	}
+        map.setZoom(20);
+        map.panTo(latLng);
+        marker.setPosition(latLng);
+        infowindow.setContent(getInfoContent(results[0].name, results[0].formatted_address))
+        infowindow.open(map, marker)
+    }
     infowindow.setContent(getInfoContent('', "{{ map.address }}" ));
     infowindow.open(map, marker)
-	var placeMarkerAndPanTo = function(e){
-		var latLng = e.latLng;
-		var latLngStr = [latLng.lat(), latLng.lng()].join(',');
-		var on_land = true;
-		geocoder.geocode({location: latLng}, 
-			function(results, status){
-			if(status === 'OK'){
-			    $.getJSON('https://api.onwater.io/api/v1/results/' + latLngStr)
-			    .done(function(data){
-    			    on_land = !data.water;
-    			    if (on_land){
-    				    modifyMarker(results, latLng);
-                        $('#id__address').val(results[0].formatted_address);
-    				    $('form').submit();
-    				}else{
-    					window.alert('Locations in woods/mountain/ocean are not valid.');
-    			    }
-				}).fail(function(err){
-					console.error("Error occurred retrieving location on land status:", err)
-				});
-			}else{
-				window.alert(`Geocode was not successful for the following reason: ${status}`)
-			}
-		})
+    var placeMarkerAndPanTo = function(e){
+        var latLng = e.latLng;
+        var latLngStr = [latLng.lat(), latLng.lng()].join(',');
+        var on_land = true;
+        geocoder.geocode({location: latLng}, 
+            function(results, status){
+            if(status === 'OK'){
+                $.getJSON('https://api.onwater.io/api/v1/results/' + latLngStr)
+                .done(function(data){
+                    on_land = !data.water;
+                    if (on_land){
+                        modifyMarker(results, latLng);
+                        $.ajax({
+                             url: document.location.href,
+                             method: 'POST',
+                             data: {address: results[0].formatted_address}
+                        }).done(function(data){
+                            $('#addresses_table').html(data)
+                        }).fail(function(err){
+                            console.error("Error saving address: " + results[0].formatted_address, err)
+                        });
+                    }else{
+                        window.alert('Locations in woods/mountain/ocean are not valid.');
+                    }
+                }).fail(function(err){
+                    console.error("Error occurred retrieving location on land status:", err)
+                });
+            }else{
+                window.alert(`Geocode was not successful for the following reason: ${status}`)
+            }
+        })
     };
     google.maps.event.addDomListener(map, 'click', placeMarkerAndPanTo);
     marker.addListener('click', placeMarkerAndPanTo);

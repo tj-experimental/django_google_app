@@ -6,20 +6,9 @@
 {% endblock %}
 
 {% block nav_links %}
-    <li xmlns="http://www.w3.org/1999/html"><a href="{% url 'address' %}"> Address Table </a></li>
+    <li class="nav-item"> <a href="{% url 'address' %}" class="nav-link"> Address Table </a></li>
 {% endblock %}
 
 {% block content %}
     {% include "map.html" %}
-    <div class="form-group">
-        <form method="POST" action="/">
-            <input type="hidden" name="address" id="id__address" value="{{ address }}">
-            <label>Reset:
-                <input type="radio" name="address_reset" value="no">No</input>
-                <input type="radio" name="address_reset" value="yes">Yes</input>
-            </label>
-            <input type="submit" value="Submit">
-            {% csrf_token %}
-        </form>
-    </div>
 {% endblock %}
