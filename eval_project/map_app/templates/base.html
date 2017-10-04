@@ -72,7 +72,7 @@
     };
 
     var modifyMarker = function(results, latLng){
-        map.setZoom(20);
+        // map.setZoom(20);
         map.panTo(latLng);
         marker.setPosition(latLng);
         infowindow.setContent(getInfoContent(results[0].name, results[0].formatted_address))
@@ -114,5 +114,5 @@
         })
     };
     google.maps.event.addDomListener(map, 'click', placeMarkerAndPanTo);
-    marker.addListener('click', placeMarkerAndPanTo);
+    marker.addListener('dragend', placeMarkerAndPanTo);
 {% endblock %}
