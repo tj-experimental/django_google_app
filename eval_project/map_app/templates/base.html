@@ -99,7 +99,8 @@
                         }).done(function(data){
                             $('#addresses_table').html(data)
                         }).fail(function(err){
-                            console.error("Error saving address: " + results[0].formatted_address, err)
+                            alert("Error saving address: " + results[0].formatted_address);
+                            console.error(err);
                         });
                     }else{
                         window.alert('Locations in woods/mountain/ocean are not valid.');
