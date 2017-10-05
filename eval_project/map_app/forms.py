@@ -21,4 +21,3 @@ class AddressForm(forms.ModelForm):
                     )
                 )
         return super(AddressForm, self).save(*args)
-
