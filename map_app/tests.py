@@ -59,10 +59,13 @@ class HomePageTest(TestCase):
 
 		self.assertEqual(response.content.decode(), expected_html)
 
+class AddressTest(TestCase):
 	def test_address_url_resolves_to_address_view(self):
 		found = resolve('/address')
 		self.assertEqual(found.func, address)
 
+		
+class AddressResetTest(TestCase):
 	def test_reset_address_url_resolves_to_reset_address_view(self):
 		found = resolve('/reset-address')
 		self.assertEqual(found.func, reset_address)
