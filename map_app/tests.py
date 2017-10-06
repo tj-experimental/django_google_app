@@ -33,7 +33,7 @@ class HomePageTest(TestCase):
 	def tearDown(self):
 		if self.delete_address:
 			self.address_object.delete()
-		super(HomePageTest, self).tearDown()
+			super(HomePageTest, self).tearDown()
 
 	def test_root_url_resolves_to_home_page(self):
 		found = resolve('/')
@@ -47,20 +47,25 @@ class HomePageTest(TestCase):
 		request = self.request
 		request.method = 'POST'
 		request.POST['address'] = self.address
-		table = AddressTable(Address.objects.only('address').order_by('-id').all())
+		table = AddressTable(Address.objects.only('address')
+				     .order_by('-id').all())
 		form =  AddressForm(request.POST)
 		expected_html = render_to_string('table.html', 
-										 context={'table': table, 'form': form},
-										 request=self.request)
+						 context={'table': table, 
+							  'form': form},
+						 request=self.request)
 
 		response = home(request)
 
 		self.assertEqual(response.content.decode(), expected_html)
 
+class AddressTest(TestCase):
 	def test_address_url_resolves_to_address_view(self):
 		found = resolve('/address')
 		self.assertEqual(found.func, address)
 
+		
+class AddressResetTest(TestCase):
 	def test_reset_address_url_resolves_to_reset_address_view(self):
 		found = resolve('/reset-address')
 		self.assertEqual(found.func, reset_address)
