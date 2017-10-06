@@ -33,7 +33,7 @@ class HomePageTest(TestCase):
 	def tearDown(self):
 		if self.delete_address:
 			self.address_object.delete()
-		super(HomePageTest, self).tearDown()
+			super(HomePageTest, self).tearDown()
 
 	def test_root_url_resolves_to_home_page(self):
 		found = resolve('/')
