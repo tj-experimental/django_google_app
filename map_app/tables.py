@@ -12,9 +12,9 @@ class BassAddressTable(tables.Table):
 	map_link = LinkColumn(text='', orderable=False)
 
 	def render_map_link(self, record):
-		extra_classes = 'btn-success'
+		extra_classes = 'btn-info disabled'
 		if record.address and record.latitude and record.longitude:
-			extra_classes = 'btn-info disabled'
+			extra_classes = 'btn-success'
 		url = settings.VIEW_GOOGLE_MAP_LINK.format(latitude=record.latitude,
 			longitude=record.longitude, address=record.address, zoom=6)
 		return mark_safe('<a href="{url}" target="__blank" '
@@ -37,6 +37,8 @@ class SearchedAddressesTable(BassAddressTable):
 		model = Address
 		attrs = {'class': 'address_table table table-hover' + 
 						'table-condensed table-striped'}
+		fields = ('id', 'address', 'computed_address', 'longitude',
+		 'latitude', 'map_link',)
 
 
 
