@@ -47,11 +47,13 @@ class HomePageTest(TestCase):
 		request = self.request
 		request.method = 'POST'
 		request.POST['address'] = self.address
-		table = AddressTable(Address.objects.only('address').order_by('-id').all())
+		table = AddressTable(Address.objects.only('address')
+				     .order_by('-id').all())
 		form =  AddressForm(request.POST)
 		expected_html = render_to_string('table.html', 
-										 context={'table': table, 'form': form},
-										 request=self.request)
+						 context={'table': table, 
+							  'form': form},
+						 request=self.request)
 
 		response = home(request)
 
