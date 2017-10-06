@@ -1,10 +1,11 @@
 from django.shortcuts import render, redirect
+from django.conf import settings
+
 from .forms import AddressForm
 from .models import Address
-from .tables import AddressTable
+from .tables import AddressTable, SearchedAddressesTable
 
 # TODO: Handle displaying errors.
-
 
 def home(request):
     """Render the home page with a default address if no addresses exists."""
@@ -13,6 +14,7 @@ def home(request):
     if request.method == 'POST':
         form = AddressForm(request.POST)
         if form.is_valid():
+            # TODO Add record to Fusion table.
             form.save()
             if form.instance is not None:
                 form.instance.refresh_from_db()
@@ -30,11 +32,13 @@ def home(request):
 
 def address(request):
     """Render a table of valid searched/clicked addresses."""
-    table = AddressTable(Address.objects.order_by('-id').all())
-    return render(request, 'address.html', {'table': table})
-
+    table = SearchedAddressesTable(Address.objects.order_by('-id').all())
+    return render(request, 'address.html', 
+                  {'table': table, 
+                   'fusion_api_key': settings.GOOGLE_FUSION_TABLE_API_KEY})
 
 def reset_address(request):
     """Remove previously searched addresses."""
+    # TODO: Delete all from google fusion table.
     Address.objects.all().delete()
     return redirect('home')

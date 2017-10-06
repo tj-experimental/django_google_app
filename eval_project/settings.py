@@ -123,3 +123,8 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 EASY_MAPS_GOOGLE_MAPS_API_KEY = 'AIzaSyC92Qq2ShWnNNSrXmJXT2yY0n3DoJ0sQpA'
+
+GOOGLE_FUSION_TABLE_API_KEY = 'AIzaSyBT33sM97rTSxEtxHAYnSNhG3k99ULtKMQ'
+
+VIEW_GOOGLE_MAP_LINK = ('https://www.google.com/maps/search/?api=1&map_action=map'
+    '&query={address}&query={latitude},{longitude}&zoom=7')

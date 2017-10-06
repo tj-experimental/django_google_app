@@ -52,6 +52,37 @@
 
 {% block extra_js %}
     var service = new google.maps.places.PlacesService(map);
+    var layer = new google.maps.FusionTablesLayer({
+        query: {
+            select: "'latitude', 'longitude'",
+            from: '1ckNKTPf6djI8teuiQuxExAQwMXSqytwvAWdh7yAQ'
+        },
+        map: map,
+        styles: [{
+            markerOptions: {
+                fillColor: '#f31800',
+                fillOpacity: 1.0
+            }
+        }, {
+          where: "'latitude' IS NOT NULL",
+          markerOptions: {
+             fillColor: "#30d454",
+             fillOpacity: 1.0
+          }
+        }]
+    })
+
+
+    google.maps.event.addListener(layer, 'click', function(e){
+        e.infoWindowHtml = "<div class='googft-info-window'>" +
+            "<h3>Searched Address </h3><br><b>Address: </b>" 
+            + e.row['address'].value + 
+            "<br><b>Computed address: </b>" 
+            + e.row['computed_address'].value +
+            "<br><b>Latitude: </b>" + e.row['latitude'].value +
+            "<br><b>Location: </b>" + e.row['location'].value + 
+            "</div>"
+    });
     var infowindow = new google.maps.InfoWindow();
     var geocoder = new google.maps.Geocoder();
     var marker = new google.maps.Marker({
