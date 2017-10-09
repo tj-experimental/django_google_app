@@ -2,10 +2,11 @@
 
 ## Run
 
-### Requires `virualenv` and `virtualenvwrapper`
+### Requires `virtualenv` and `virtualenvwrapper`
 
 -   `mkvirtualenv test`
 -   `pip3 install -r requirements.txt`
+-   `npm install`
 -   `python3 manage.py migrate`
 -   `python3 manage.py runserver`
 
@@ -14,7 +15,8 @@
 
 - http://localhost:8000
 
-### For Development
-
-#### Run
+### Local Development
+-  git clone https://github.com/jackton1/django_google_app.git
+- `cd django_google_app`
+- `pip install -r requirements.txt`
 - `npm install --only=dev`
