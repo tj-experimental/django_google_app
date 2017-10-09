@@ -1,5 +1,8 @@
 db.sqlite3
 __pycache__
-*.pyc"
+.pyc
 .git
-.idea
+.idea/
+client_id.json
+node_modules/
+service_account.json

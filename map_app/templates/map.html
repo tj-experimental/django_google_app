@@ -3,6 +3,4 @@
 {% cache 600 my_test_map address %}
 	{% easy_map address using 'base.html' %}
 {% endcache %}
-<div id="addresses_table">
-	{% include "table.html" %}
-</div>
+{% include "table.html" %}

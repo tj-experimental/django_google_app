@@ -1,0 +1,3 @@
+{% for message in messages %}
+    <div class="alert alert-{{ message.level_tag }}" id="page-alert">{{ message }}</div>
+{% endfor %}

@@ -15,12 +15,17 @@ Including another URLconf
     3. Add a URL to urlpatterns:  url(r'^blog/', include(blog_urls))
 """
 from django.conf.urls import url
+from django.conf.urls.static import static
+from django.conf import settings
 from django.contrib import admin
+
 from map_app import views
 
 urlpatterns = [
     url(r'^$', views.home, name='home'),
     url(r'^address$', views.address, name='address'),
     url(r'^reset-address$', views.reset_address, name='reset-address'),
+    url(r'^oauth2callback$', views.oauth_view, name='oauth-view'),
     # url(r'^admin/', admin.site.urls),
-]
+] + static(settings.STATIC_URL,
+           document_root=settings.STATIC_ROOT)

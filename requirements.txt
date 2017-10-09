@@ -5,3 +5,13 @@ django-classy-tags==0.8.0
 django-easy-maps==0.9.3
 geopy==1.11.0
 django-tables2
+google-api-python-client
+future
+rcssmin --install-option="--without-c-extensions"
+rjsmin --install-option="--without-c-extensions"
+django-compressor
+django-compressor-toolkit
+
+# Bug using django-pipeline compiling es6 files.
+# jsmin
+# django-pipeline

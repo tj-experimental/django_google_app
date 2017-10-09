@@ -1,12 +1,5 @@
 {% extends "easy_maps/map.html" %}
-
-{% block style %}
-    <style>
-       #map-canvas-{{ map.pk }}{
-           border: 2px solid #a5e6ca;
-       }
-    </style>
-{% endblock %}
+{% load staticfiles %}
 
 {% block html %}
     <div id="map-canvas-{{ map.pk }}"
@@ -24,7 +17,8 @@
     key={{ api_key }}&libraries=places&callback=initialize_map_{{ map.pk }}" async defer></script>
     <script type="text/javascript" src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
     <script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js" integrity="sha256-uEFhyfv3UgzRTnAZ+SEgvYepKKB0FW6RqZLrqfyUNug=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js" integrity="sha256-uEFhyfv3UgzRTnAZ+SEgvYepKKB0FW6RqZLrqfyUNug=" crossorigin="anonymous" async defer></script>
+    <script type="application/javascript" src="{% static "map_app/js/alert.js" %}" async defer></script>
     <script type="text/javascript">
         var csrfSafeMethod = function(method){
             return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
@@ -45,44 +39,15 @@
             e.stopPropagation();
         })
     </script>
+    <script type="application/javascript" src="{% static "map_app/js/fusion_table.js" %}" ></script>
+    <script type="application/javascript" src="{% static "map_app/js/progress.js" %}" ></script>
 {% endblock %}
 
 {% block map_loading_js %}
 {% endblock %}
 
 {% block extra_js %}
-    var service = new google.maps.places.PlacesService(map);
-    var layer = new google.maps.FusionTablesLayer({
-        query: {
-            select: "'latitude', 'longitude'",
-            from: '1ckNKTPf6djI8teuiQuxExAQwMXSqytwvAWdh7yAQ'
-        },
-        map: map,
-        styles: [{
-            markerOptions: {
-                fillColor: '#f31800',
-                fillOpacity: 1.0
-            }
-        }, {
-          where: "'latitude' IS NOT NULL",
-          markerOptions: {
-             fillColor: "#30d454",
-             fillOpacity: 1.0
-          }
-        }]
-    })
-
-
-    google.maps.event.addListener(layer, 'click', function(e){
-        e.infoWindowHtml = "<div class='googft-info-window'>" +
-            "<h3>Searched Address </h3><br><b>Address: </b>" 
-            + e.row['address'].value + 
-            "<br><b>Computed address: </b>" 
-            + e.row['computed_address'].value +
-            "<br><b>Latitude: </b>" + e.row['latitude'].value +
-            "<br><b>Longitude: </b>" + e.row['longitude'].value + 
-            "</div>"
-    });
+    $("#map-canvas-{{ map.pk }}").data("map", map);
     var infowindow = new google.maps.InfoWindow();
     var geocoder = new google.maps.Geocoder();
     var marker = new google.maps.Marker({
@@ -103,9 +68,9 @@
     };
 
     var modifyMarker = function(results, latLng){
-        // map.setZoom(20);
         map.panTo(latLng);
         marker.setPosition(latLng);
+        console.dir(results);
         infowindow.setContent(getInfoContent(results[0].name, results[0].formatted_address))
         infowindow.open(map, marker)
     }
@@ -115,6 +80,7 @@
         var latLng = e.latLng;
         var latLngStr = [latLng.lat(), latLng.lng()].join(',');
         var on_land = true;
+        startProgress();
         geocoder.geocode({location: latLng}, 
             function(results, status){
             if(status === 'OK'){
@@ -127,16 +93,24 @@
                              url: document.location.href,
                              method: 'POST',
                              data: {address: results[0].formatted_address}
-                        }).done(function(data){
-                            $('#addresses_table').html(data)
-                        }).fail(function(err){
-                            alert("Error saving address: " + results[0].formatted_address);
-                            console.error(err);
+                        }).done(function(data, textStatus, jqXHR){
+                            stopProgress();
+                            $('#addresses_table').empty().append(data)
+                            renderAlerts([{message:
+                                           "Successfully added address: " + results[0].formatted_address,
+                                            level_tag: 'success'}]);
+                            console.log(textStatus);
+                        }).fail(function(jqXHR, textStatus, err){
+                            renderAlerts([{message:
+                                           "Error adding address: " + results[0].formatted_address,
+                                            level_tag: 'error'}]);
+                            errorProgress();
                         });
                     }else{
                         window.alert('Locations in woods/mountain/ocean are not valid.');
                     }
                 }).fail(function(err){
+                    errorProgress();
                     console.error("Error occurred retrieving location on land status:", err)
                 });
             }else{
@@ -146,4 +120,5 @@
     };
     google.maps.event.addDomListener(map, 'click', placeMarkerAndPanTo);
     marker.addListener('dragend', placeMarkerAndPanTo);
+    initFusionTable(map);
 {% endblock %}

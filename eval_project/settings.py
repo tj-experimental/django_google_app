@@ -23,14 +23,18 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = '+#z9@$brqm+z*@4me@wrl9ud)rjcqz7s-m+q#gm$pgpd#g%s^s'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['localhost']
 
 
 # Application definition
 
-PROJECT_APPS = ['easy_maps', 'map_app', 'django_tables2']
+PROJECT_APPS = ['easy_maps',
+                'map_app',
+                'django_tables2',
+                # 'pipeline',
+                ]
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -126,5 +130,75 @@ EASY_MAPS_GOOGLE_MAPS_API_KEY = 'AIzaSyC92Qq2ShWnNNSrXmJXT2yY0n3DoJ0sQpA'
 
 GOOGLE_FUSION_TABLE_API_KEY = 'AIzaSyBT33sM97rTSxEtxHAYnSNhG3k99ULtKMQ'
 
-VIEW_GOOGLE_MAP_LINK = ('https://www.google.com/maps/search/?api=1&map_action=map'
-    '&query={address}&query={latitude},{longitude}&zoom=7')
+VIEW_GOOGLE_MAP_LINK = 'https://www.google.com/maps/search/?api=1&map_action=map'
+
+GOOGLE_OAUTH2_CLIENT_SECRETS_JSON = 'client_id.json'
+
+FUSION_TABLE_SCOPE = 'https://www.googleapis.com/auth/fusiontables'
+
+# This can be taken from the request object.
+OAUTH2_CLIENT_REDIRECT_URL = 'http://localhost:8000'
+
+FUSION_TABLE_ID = '1ckNKTPf6djI8teuiQuxExAQwMXSqytwvAWdh7yAQ'
+
+# TODO: Bug with django-pipeline https://github.com/jazzband/django-pipeline/issues/608
+# PIPELINE = {
+#     'PIPELINE_ENABLED': True,
+#     'JAVASCRIPT': {
+#         'fusion_table': {
+#             'source_filenames': (
+#                 'js\\fusion_table.es6',
+#             ),
+#             'output_filename': 'fusion_table.js',
+#         }
+#     },
+#     'JS_COMPRESSOR': 'pipeline.compressors.jsmin.JSMinCompressor',
+# }
+#
+# PIPELINE_COMPILERS = ('eval_project.compilers.ES6Compiler',)
+
+# PIPELINE_BABEL_BINARY = 'env ' + os.path.join('node_modules', '.bin', 'babel.cmd')
+
+# PIPELINE_STORAGE = 'pipeline.storage.PipelineCachedStorage'
+
+STATICFILES_FINDER = (
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+    # 'pipeline.finders.CachedFileFinder',
+    # 'pipeline.finders.PipelineFinder',
+
+)
+
+# STATIC_ROOT = os.path.join(BASE_DIR, 'dist')
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '[%(asctime)s %(thread)d %(name)s %(pathname)s] %(levelname)s : %(message)s',
+            'datefmt': '%a, %d %b %Y  %H:%M:%S'
+        },
+        'simple': {
+            'format': '[%(asctime)s %(module)s] %(levelname)s : %(message)s',
+            'datefmt': '%a, %d %b %Y  %H:%M:%S'
+        },
+    },
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+            'formatter': ('simple' if not DEBUG else 'verbose')
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['console'],
+            'level': os.getenv('DJANGO_LOG_LEVEL', 'INFO'),
+            'propagate': True
+        },
+        'map_app': {
+            'handlers': ['console'],
+            'level': ('DEBUG' if DEBUG else 'INFO')
+        }
+    },
+}

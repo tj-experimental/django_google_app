@@ -1,12 +1,21 @@
-from django.shortcuts import render, redirect
+from __future__ import absolute_import, unicode_literals
+
+import logging
+
 from django.conf import settings
+from django.contrib import messages
+from django.shortcuts import render, redirect, render_to_response
+from django.views.decorators.csrf import ensure_csrf_cookie
 
 from .forms import AddressForm
 from .models import Address
 from .tables import AddressTable, SearchedAddressesTable
+from .utils.message_tag import messages_dict_list, update_error_tag
 
-# TODO: Handle displaying errors.
+log = logging.getLogger(__name__)
 
+
+@ensure_csrf_cookie
 def home(request):
     """Render the home page with a default address if no addresses exists."""
     table = AddressTable(Address.objects.only('address').order_by('-id').all())
@@ -15,30 +24,45 @@ def home(request):
         form = AddressForm(request.POST)
         if form.is_valid():
             # TODO Add record to Fusion table.
-            form.save()
-            if form.instance is not None:
-                form.instance.refresh_from_db()
-        return render(request, 'table.html',
-                      {'table': table, 'form': form})
-    if Address.objects.exists():
-        default_address = Address.objects.last()
-        if default_address.computed_address:
-            street_address = default_address.address
+            form.save(request=request)
         else:
-            default_address.delete()
-    return render(request, 'index.html', {'address': street_address,
-                                          'table': table})
+            log.debug("Error address form invalid.")
+        return render(request, 'table.html',
+                      {'table': table,
+                       'form': form,
+                       'storage': messages_dict_list(request)})
+    if Address.objects.exists():
+        log.info("Found existing address.")
+        last_address = Address.objects.filter(geocode_error=False).last()
+        street_address = last_address.address
+    response = render(request, 'index.html',
+                      {'address': street_address,
+                       'table': table})
+    if 'fusion_table_id' not in request.COOKIES:
+        return _set_fusion_table_cookie(response)
+    return response
 
 
 def address(request):
     """Render a table of valid searched/clicked addresses."""
     table = SearchedAddressesTable(Address.objects.order_by('-id').all())
-    return render(request, 'address.html', 
-                  {'table': table, 
+    return render(request, 'address.html',
+                  {'table': table,
                    'fusion_api_key': settings.GOOGLE_FUSION_TABLE_API_KEY})
+
 
 def reset_address(request):
     """Remove previously searched addresses."""
     # TODO: Delete all from google fusion table.
     Address.objects.all().delete()
+    log.info("Deleted all saved addresses.")
     return redirect('home')
+
+
+def oauth_view(request):
+    pass
+
+
+def _set_fusion_table_cookie(response):
+    response.set_cookie('fusion_table_id', settings.FUSION_TABLE_ID)
+    return response

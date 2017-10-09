@@ -1,19 +1,29 @@
+{% load staticfiles %}
 <!DOCTYPE html>
 <html>
 	<meta name="viewport" content="initial-scale=1.0, user-scalable=no">
 	<meta charset="utf-8">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-	<head>
+	<link rel="stylesheet" href="{% static "map_app/css/style.css" %}">
+    <head>
 		<title>{% block title %}{% endblock %}</title>
 	</head>
 	<body>
-        {% block nav %}
-            <nav class="nav navbar-inverse">
-                <ul class="nav navbar-nav">
-                   {% block nav_links %}{% endblock %}
-                </ul>
-            </nav>
-        {% endblock %}
+        <div class="nav-alert">
+            {% block nav %}
+                <nav class="nav navbar-inverse" id="top-nav">
+                    <ul class="nav navbar-nav">
+                       {% block nav_links %}{% endblock %}
+                    </ul>
+                </nav>
+            {% endblock %}
+            {% block progress %}
+                {% include "progress.html" %}
+            {% endblock %}
+            {% block alert %}
+                {% include "alert.html" %}
+            {% endblock %}
+        </div>
 		{% block content %}
 		{% endblock %}
 	</body>

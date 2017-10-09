@@ -1,12 +1,15 @@
+from __future__ import absolute_import, unicode_literals
+
+from django.contrib.auth.models import User
 from django.db import models
+from django.utils.encoding import python_2_unicode_compatible
 from django.utils.translation import ugettext_lazy
 from easy_maps.models import Address
 
 
-class Place(models.Model):
+@python_2_unicode_compatible
+class UserTokens(models.Model):
+    user = models.OneToOneField(User, unique=True)
+    access_token = models.TextField(null=False)
+    refresh_token = models.TextField(null=False)
 
-    place_id = models.CharField(ugettext_lazy(
-        'place_id'), max_length=255, unique=True)
-
-    def __str__(self):
-        return self.place_id
