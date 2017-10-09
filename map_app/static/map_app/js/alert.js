@@ -7,8 +7,8 @@ var displayAlert = function displayAlert(message) {
         tag = 'danger';
     }
     var alertDiv = '<div class="alert alert-' + tag + '" id="page-alert" style="display: none;">' + message + '</div>';
-    $(alertDiv).appendTo($('.nav-alert')).slideUp(200);
-    addAlertHandler(undefined);
+    $(alertDiv).appendTo($('.nav-alert')).slideDown(200);
+    addAlertHandler();
 };
 
 var renderAlerts = function renderAlerts(messages) {

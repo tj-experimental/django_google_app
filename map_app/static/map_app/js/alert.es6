@@ -3,8 +3,8 @@ const displayAlert = (message, tag = "info") => {
         tag = 'danger'
     }
     let alertDiv = `<div class="alert alert-${tag}" id="page-alert" style="display: none;">${message}</div>`;
-    $(alertDiv).appendTo($('.nav-alert')).slideUp(200);
-    addAlertHandler(this);
+    $(alertDiv).appendTo($('.nav-alert')).slideDown(200);
+    addAlertHandler();
 };
 
 const renderAlerts = (messages) => {

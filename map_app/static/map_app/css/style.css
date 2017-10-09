@@ -120,7 +120,7 @@
     background: #ff2011;
 }
 
-#progress.success dd, #progress.success dt {
+#progress.error dd, #progress.error dt {
     -moz-box-shadow: #ff2011 1px 0 6px 1px;
     -ms-box-shadow: #ff2011 1px 0 6px 1px;
     -webkit-box-shadow: #ff2011 1px 0 6px 1px;

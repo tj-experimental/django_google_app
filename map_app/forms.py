@@ -59,7 +59,7 @@ class AddressForm(forms.ModelForm):
             return instance
 
     def _valid_address(self, instance):
-        if instance.geocode_error:
+        if instance.geocode_error or not instance.computed_address:
             message_ = 'Geocode Error'
             log.debug("%s : %s" % (smart_str(str(message_)),
                                    self.cleaned_data['address']))

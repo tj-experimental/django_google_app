@@ -94,23 +94,25 @@
                              method: 'POST',
                              data: {address: results[0].formatted_address}
                         }).done(function(data, textStatus, jqXHR){
+                            successProgress();
                             stopProgress();
                             $('#addresses_table').empty().append(data)
-                            renderAlerts([{message:
+                            window.renderAlerts([{message:
                                            "Successfully added address: " + results[0].formatted_address,
                                             level_tag: 'success'}]);
                             console.log(textStatus);
                         }).fail(function(jqXHR, textStatus, err){
-                            renderAlerts([{message:
+                            window.renderAlerts([{message:
                                            "Error adding address: " + results[0].formatted_address,
                                             level_tag: 'error'}]);
-                            errorProgress();
+                            window.errorProgress();
                         });
                     }else{
+                        window.errorProgress();
                         window.alert('Locations in woods/mountain/ocean are not valid.');
                     }
                 }).fail(function(err){
-                    errorProgress();
+                    window.errorProgress();
                     console.error("Error occurred retrieving location on land status:", err)
                 });
             }else{

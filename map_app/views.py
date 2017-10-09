@@ -33,7 +33,9 @@ def home(request):
                        'storage': messages_dict_list(request)})
     if Address.objects.exists():
         log.info("Found existing address.")
-        last_address = Address.objects.filter(geocode_error=False).last()
+        last_address = Address.objects.filter(
+            geocode_error=0).exclude(
+            computed_address__isnull=True).last()
         street_address = last_address.address
     response = render(request, 'index.html',
                       {'address': street_address,
