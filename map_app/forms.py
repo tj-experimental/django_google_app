@@ -7,11 +7,7 @@ from django.contrib import messages
 from django.utils.encoding import smart_str
 from easy_maps.models import Address
 
-from .utils import message_tag
-
 log = logging.getLogger(__name__)
-
-MESSAGE_TAGS = message_tag.update_error_tag()
 
 
 class AddressForm(forms.ModelForm):

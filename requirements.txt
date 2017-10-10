@@ -2,16 +2,21 @@ django-easy-maps==0.9.3
 Django==1.9
 django-appconf==1.0.2
 django-classy-tags==0.8.0
-django-easy-maps==0.9.3
+django-pipeline==1.6.9
+django-static-precompiler==1.6
+django-tables2==1.11.0
+future==0.16.0
+futures==3.1.1
 geopy==1.11.0
-django-tables2
-google-api-python-client
-future
-rcssmin --install-option="--without-c-extensions"
-rjsmin --install-option="--without-c-extensions"
-django-compressor
-django-compressor-toolkit
-
-# Bug using django-pipeline compiling es6 files.
-# jsmin
-# django-pipeline
+google-api-python-client==1.6.4
+httplib2==0.10.3
+jsmin==2.2.2
+oauth2client==4.1.2
+pyasn1==0.3.7
+pyasn1-modules==0.1.4
+pytz==2017.2
+rcssmin==1.0.6
+rjsmin==1.0.12
+rsa==3.4.2
+six==1.11.0
+uritemplate==3.0.0

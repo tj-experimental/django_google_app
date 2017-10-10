@@ -1,6 +1,7 @@
 import json
 
 from oauth2client import client
+from oauth2client.contrib import appengine
 from oauth2client.service_account import ServiceAccountCredentials
 
 from django.conf import settings
@@ -17,3 +18,7 @@ class FlowClient(object):
             redirect_uri=redirect_url)
 
 
+
+decorator = appengine.OAuth2DecoratorFromClientSecrets(
+
+)

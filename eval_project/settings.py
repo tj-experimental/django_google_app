@@ -33,7 +33,9 @@ ALLOWED_HOSTS = ['localhost']
 PROJECT_APPS = ['easy_maps',
                 'map_app',
                 'django_tables2',
-                # 'pipeline',
+                # 'compressor',
+                # 'compressor_toolkit',
+                'static_precompiler',
                 ]
 
 INSTALLED_APPS = [
@@ -126,6 +128,14 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+STATIC_ROOT = os.path.join('public', 'static')
+
+# Allow collectstatic find the precompiled files.
+STATIC_PRECOMPILER_FINDER_LIST_FILES = False
+
+# Folder to store the compiled files using the STATIC_ROOT
+STATIC_PRECOMPILER_OUTPUT_DIR = 'compiled'
+
 EASY_MAPS_GOOGLE_MAPS_API_KEY = 'AIzaSyC92Qq2ShWnNNSrXmJXT2yY0n3DoJ0sQpA'
 
 GOOGLE_FUSION_TABLE_API_KEY = 'AIzaSyBT33sM97rTSxEtxHAYnSNhG3k99ULtKMQ'
@@ -141,35 +151,28 @@ OAUTH2_CLIENT_REDIRECT_URL = 'http://localhost:8000'
 
 FUSION_TABLE_ID = '1ckNKTPf6djI8teuiQuxExAQwMXSqytwvAWdh7yAQ'
 
-# TODO: Bug with django-pipeline https://github.com/jazzband/django-pipeline/issues/608
-# PIPELINE = {
-#     'PIPELINE_ENABLED': True,
-#     'JAVASCRIPT': {
-#         'fusion_table': {
-#             'source_filenames': (
-#                 'js\\fusion_table.es6',
-#             ),
-#             'output_filename': 'fusion_table.js',
-#         }
-#     },
-#     'JS_COMPRESSOR': 'pipeline.compressors.jsmin.JSMinCompressor',
-# }
-#
-# PIPELINE_COMPILERS = ('eval_project.compilers.ES6Compiler',)
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'map_app', 'static'),
+]
 
-# PIPELINE_BABEL_BINARY = 'env ' + os.path.join('node_modules', '.bin', 'babel.cmd')
-
-# PIPELINE_STORAGE = 'pipeline.storage.PipelineCachedStorage'
-
-STATICFILES_FINDER = (
+STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-    # 'pipeline.finders.CachedFileFinder',
-    # 'pipeline.finders.PipelineFinder',
-
+    'static_precompiler.finders.StaticPrecompilerFinder',
 )
 
-# STATIC_ROOT = os.path.join(BASE_DIR, 'dist')
+STATIC_EXCLUDE_APPS = (
+    'django.contrib.admin',
+    'django_tables2',
+)
+
+STATIC_PRECOMPILER_COMPILERS = (
+    ('static_precompiler.compilers.Babel', {
+        "executable": os.path.join('node_modules', '.bin', 'babel'),
+        "sourcemap_enabled": True,
+        "presets": "es2015",
+    }),
+)
 
 LOGGING = {
     'version': 1,

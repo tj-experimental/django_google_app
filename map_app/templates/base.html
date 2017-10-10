@@ -1,4 +1,5 @@
 {% extends "easy_maps/map.html" %}
+{% load compile_static %}
 {% load staticfiles %}
 
 {% block html %}
@@ -18,7 +19,7 @@
     <script type="text/javascript" src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
     <script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js" integrity="sha256-uEFhyfv3UgzRTnAZ+SEgvYepKKB0FW6RqZLrqfyUNug=" crossorigin="anonymous" async defer></script>
-    <script type="application/javascript" src="{% static "map_app/js/alert.js" %}" async defer></script>
+    <script type="application/javascript" src="{% static "map_app/js/alert.es6"|compile %}" async defer></script>
     <script type="text/javascript">
         var csrfSafeMethod = function(method){
             return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
@@ -39,8 +40,8 @@
             e.stopPropagation();
         })
     </script>
-    <script type="application/javascript" src="{% static "map_app/js/fusion_table.js" %}" ></script>
-    <script type="application/javascript" src="{% static "map_app/js/progress.js" %}" ></script>
+    <script type="application/javascript" src="{% static "map_app/js/fusion_table.es6"|compile %}" ></script>
+    <script type="application/javascript" src="{% static "map_app/js/progress.es6"|compile %}" ></script>
 {% endblock %}
 
 {% block map_loading_js %}

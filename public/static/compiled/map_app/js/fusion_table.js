@@ -32,3 +32,5 @@ var initFusionTable = function initFusionTable(map) {
         e.infoWindowHtml = '\n        <h3>Searched Address </h3> \n        </br><b>Address: </b>' + address + '\n        </br><b>Computed address: </b> ' + computedAddress + '\n        </br><b>Latitude: </b> ' + latitude + ' \n        </br><b>Longitude: </b> ' + longitude;
     });
 };
+
+//# sourceMappingURL=fusion_table.js.map

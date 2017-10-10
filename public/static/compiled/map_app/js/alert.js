@@ -55,3 +55,5 @@ $('#addresses_table').on('saved-address', addAlertHandler);
 $(document).ready(function () {
     return addAlertHandler();
 });
+
+//# sourceMappingURL=alert.js.map

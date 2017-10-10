@@ -33,3 +33,5 @@ var startProgress = function startProgress() {
         // }
     });
 };
+
+//# sourceMappingURL=progress.js.map
