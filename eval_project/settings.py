@@ -167,11 +167,10 @@ STATIC_EXCLUDE_APPS = (
 )
 
 STATIC_PRECOMPILER_COMPILERS = (
-    ('static_precompiler.compilers.Babel', {
-        "executable": os.path.join('node_modules', '.bin', 'babel'),
-        "sourcemap_enabled": True,
-        "presets": "es2015",
-    }),
+    ('static_precompiler.compilers.Babel',
+        {"executable": os.path.join('node_modules', '.bin', 'babel'),
+         "sourcemap_enabled": True}
+    ),
 )
 
 LOGGING = {
