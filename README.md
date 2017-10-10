@@ -1,15 +1,27 @@
 # DJANGO APP using google maps api. 
 
-## Run
 
-### Requires `virtualenv` and `virtualenvwrapper`
+### Project requires `virtualenv` and `virtualenvwrapper`
+- Run
+```
+pip install virtualenv virtualenvwrapper
+```
 
+### Installation
 ```bash
 mkvirtualenv test
 pip3 install -r requirements.txt
 npm install
+```
+
+### Run migrations
+```sh
 python3 manage.py migrate map_app
 python3 manage.py migrate static_precompiler
+```
+
+### Start django web server
+```
 python3 manage.py runserver
 ```
 
@@ -27,3 +39,19 @@ npm install --only=dev`
 python3 manage.py migrate map_app
 python3 manage.py migrate static_precompiler
 ```
+
+
+#### Generate Documentation
+```
+   cd docs
+   make html
+```
+
+#### View Documentation
+```sh
+   cd docs
+   sphinx-serve -b build
+```
+
+##### Visit
+>  http://localhost:8081

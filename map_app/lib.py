@@ -17,8 +17,6 @@ class FlowClient(object):
             filename=client_secret_json, scope=scope,
             redirect_uri=redirect_url)
 
-
-
 decorator = appengine.OAuth2DecoratorFromClientSecrets(
 
 )

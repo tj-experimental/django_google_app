@@ -71,7 +71,6 @@
     var modifyMarker = function(results, latLng){
         map.panTo(latLng);
         marker.setPosition(latLng);
-        console.dir(results);
         infowindow.setContent(getInfoContent(results[0].name, results[0].formatted_address))
         infowindow.open(map, marker)
     }
@@ -95,18 +94,21 @@
                              method: 'POST',
                              data: {address: results[0].formatted_address}
                         }).done(function(data, textStatus, jqXHR){
-                            successProgress();
-                            stopProgress();
+                            window.successProgress();
                             $('#addresses_table').empty().append(data)
+                            window.stopProgress();
                             window.renderAlerts([{message:
                                            "Successfully added address: " + results[0].formatted_address,
                                             level_tag: 'success'}]);
                             console.log(textStatus);
                         }).fail(function(jqXHR, textStatus, err){
-                            window.renderAlerts([{message:
-                                           "Error adding address: " + results[0].formatted_address,
-                                            level_tag: 'error'}]);
                             window.errorProgress();
+                            window.stopProgress();
+                            var message = "Error adding address: " + results[0].formatted_address;
+                            var errorMessage = JSON.parse(jqXHR.responseText);
+                            window.renderAlerts([{message: message + '\n' + errorMessage.address,
+                                                  level_tag: 'error'}]);
+                            console.error(errorMessage.address);
                         });
                     }else{
                         window.errorProgress();

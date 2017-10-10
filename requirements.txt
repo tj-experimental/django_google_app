@@ -20,3 +20,5 @@ rjsmin==1.0.12
 rsa==3.4.2
 six==1.11.0
 uritemplate==3.0.0
+sphinx==1.6.4 
+sphinx-serve==1.0.1

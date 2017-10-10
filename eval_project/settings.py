@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/1.9/ref/settings/
 """
 
 import os
+from django.contrib.messages import constants as messages
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -36,6 +37,9 @@ PROJECT_APPS = ['easy_maps',
                 # 'compressor',
                 # 'compressor_toolkit',
                 'static_precompiler',
+                'oauth2client',
+                'googleapiclient',
+                'geopy',
                 ]
 
 INSTALLED_APPS = [
@@ -108,6 +112,8 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+# Update the messages error tag for bootstrap
+MESSAGES_TAGS = {messages.ERROR: 'danger'}
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.9/topics/i18n/
@@ -173,34 +179,38 @@ STATIC_PRECOMPILER_COMPILERS = (
     ),
 )
 
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'formatters': {
-        'verbose': {
-            'format': '[%(asctime)s %(thread)d %(name)s %(pathname)s] %(levelname)s : %(message)s',
-            'datefmt': '%a, %d %b %Y  %H:%M:%S'
-        },
-        'simple': {
-            'format': '[%(asctime)s %(module)s] %(levelname)s : %(message)s',
-            'datefmt': '%a, %d %b %Y  %H:%M:%S'
-        },
-    },
-    'handlers': {
-        'console': {
-            'class': 'logging.StreamHandler',
-            'formatter': ('simple' if not DEBUG else 'verbose')
-        },
-    },
-    'loggers': {
-        'django': {
-            'handlers': ['console'],
-            'level': os.getenv('DJANGO_LOG_LEVEL', 'INFO'),
-            'propagate': True
-        },
-        'map_app': {
-            'handlers': ['console'],
-            'level': ('DEBUG' if DEBUG else 'INFO')
-        }
-    },
-}
+# LOGGING = {
+#     'version': 1,
+#     'disable_existing_loggers': False,
+#     'formatters': {
+#         'verbose': {
+#             'format': '[%(asctime)s %(thread)d %(name)s %(pathname)s] %(levelname)s : %(message)s',
+#             'datefmt': '%a, %d/%b/%Y %H:%M:%S'
+#         },
+#         'simple': {
+#             'format': '[%(asctime)s %(module)s] %(levelname)s : %(message)s',
+#             'datefmt': '%a, %d/%b/%Y  %H:%M:%S'
+#         },
+#     },
+#     'handlers': {
+#         'console': {
+#             'class': 'logging.StreamHandler',
+#             'formatter': ('simple' if not DEBUG else 'verbose')
+#         },
+#     },
+#     'loggers': {
+#         'django': {
+#             'handlers': ['console'],
+#             'level': os.getenv('DJANGO_LOG_LEVEL', 'INFO'),
+#             'propagate': True
+#         },
+#         'map_app': {
+#             'handlers': ['console'],
+#             'level': ('DEBUG' if DEBUG else 'INFO')
+#         },
+#         'easy_maps': {
+#             'handlers': ['console'],
+#             'level': ('DEBUG' if DEBUG else 'INFO')
+#         }
+#     },
+# }

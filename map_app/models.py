@@ -8,6 +8,7 @@ from easy_maps.models import Address
 
 @python_2_unicode_compatible
 class UserTokens(models.Model):
+    """User token model use for google Oauth authentication."""
     user = models.OneToOneField(User, unique=True)
     access_token = models.TextField(null=False)
     refresh_token = models.TextField(null=False)

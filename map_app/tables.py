@@ -22,7 +22,7 @@ class BassAddressTable(tables.Table):
                   .format(latitude=record.latitude,
                           longitude=record.longitude,
                           address=record.address))
-        url = settings.VIEW_GOOGLE_MAP_LINK + quote_plus(query_)
+        url = settings.VIEW_GOOGLE_MAP_LINK + query_
         return (mark_safe('<a href="{url}" target="__blank" '
                           'class="btn {extra_classes}">'
                           'Open Map</a>'

@@ -5,7 +5,7 @@ from django.test import TestCase
 from django.http import HttpRequest, HttpResponse
 from django.template.loader import render_to_string
 
-from .views import home, address, reset_address
+from .views import home, address_view, reset_address
 from .models import Address
 from .tables import AddressTable
 from .forms import AddressForm
@@ -76,7 +76,7 @@ class AddressTestCase(BaseTestCase):
 
     def test_address_url_resolves_to_address_view(self):
         found = resolve('/address')
-        self.assertEqual(found.func, address)
+        self.assertEqual(found.func, address_view)
 
 
 class AddressResetTestCase(BaseTestCase):

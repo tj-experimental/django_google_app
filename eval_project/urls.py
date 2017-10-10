@@ -23,7 +23,7 @@ from map_app import views
 
 urlpatterns = [
     url(r'^$', views.home, name='home'),
-    url(r'^address$', views.address, name='address'),
+    url(r'^address$', views.address_view, name='address'),
     url(r'^reset-address$', views.reset_address, name='reset-address'),
     url(r'^oauth2callback$', views.oauth_view, name='oauth-view'),
     # url(r'^admin/', admin.site.urls),

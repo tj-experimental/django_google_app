@@ -19,7 +19,7 @@ class AddressForm(forms.ModelForm):
 
     def _post_clean(self):
         super(AddressForm, self)._post_clean()
-        if self.cleaned_data['address']:
+        if self.cleaned_data.get('address'):
             q = Address.objects.filter(
                 address__icontains=self.cleaned_data['address']
             ).exists()
@@ -40,9 +40,9 @@ class AddressForm(forms.ModelForm):
         else:
             if instance and not self._valid_address(instance):
                 messages.error(request,
-                               'Error occurred saving %s: %s',
-                               instance.__class__.__name__,
-                               self.errors.get('address'))
+                               'Error occurred saving %s: %s' %
+                               (instance.__class__.__name__,
+                                self.errors.get('address')))
                 instance.delete()
                 return
             if request and instance:
@@ -50,7 +50,7 @@ class AddressForm(forms.ModelForm):
                         instance.__class__.__name__,
                         instance.address
                     )
-                messages.info(request, message_)
+                messages.success(request, message_)
                 log.info(message_)
             return instance
 

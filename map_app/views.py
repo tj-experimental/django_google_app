@@ -1,15 +1,18 @@
 from __future__ import absolute_import, unicode_literals
 
+import json
 import logging
 
 from django.conf import settings
+from django.http import HttpResponseBadRequest
 from django.shortcuts import render, redirect
 from django.views.decorators.csrf import ensure_csrf_cookie
+from django.views.decorators.http import require_GET
 
+from .utils import messages_to_dict, verify_table_id_cookie_set
 from .forms import AddressForm
 from .models import Address
 from .tables import AddressTable, SearchedAddressesTable
-from .utils.message_tag import messages_dict_list
 
 log = logging.getLogger(__name__)
 
@@ -27,26 +30,28 @@ def home(request):
             # TODO Add record to Fusion table.
             form.save(request=request)
         else:
-            log.debug("Error address form invalid.")
+            log.debug("Error address form invalid.", extra=form.errors)
+            return HttpResponseBadRequest(json.dumps(form.errors))
         return render(request, 'table.html',
                       {'table': table,
                        'form': form,
-                       'storage': messages_dict_list(request)})
-    if Address.objects.exists():
+                       'storage': messages_to_dict(request, to_str=True)})
+    address = (Address.objects
+               .filter(geocode_error=0)
+               .exclude(computed_address__isnull=True))
+    if address.count() > 0:
         log.info("Found existing address.")
-        last_address = Address.objects.filter(
-            geocode_error=0).exclude(
-            computed_address__isnull=True).last()
+        last_address = address.last()
         street_address = last_address.address
     response = render(request, 'index.html',
                       {'address': street_address,
                        'table': table})
-    if 'fusion_table_id' not in request.COOKIES:
-        return _set_fusion_table_cookie(response)
+    verify_table_id_cookie_set(request, response)
     return response
 
 
-def address(request):
+@require_GET
+def address_view(request):
     """
     Render a table of valid searched/clicked addresses.
     """
@@ -56,6 +61,7 @@ def address(request):
                    'fusion_api_key': settings.GOOGLE_FUSION_TABLE_API_KEY})
 
 
+@require_GET
 def reset_address(request):
     """
     Resets all previously added addresses.
@@ -66,19 +72,11 @@ def reset_address(request):
     return redirect('home')
 
 
+@require_GET
 def oauth_view(request):
     """
     Callback view to handle google OAuth request.
+    :param request:
     """
     pass
 
-
-def _set_fusion_table_cookie(response):
-    """
-    Set the ``fusion_table_id`` cookie using the ``settings.FUSION_TABLE_ID``.
-    :param response: An instance of response object.
-    :type response: :class:`django.http.HttpResponse`
-    :rtype: :class:`django.http.HttpResponse`
-    """
-    response.set_cookie('fusion_table_id', settings.FUSION_TABLE_ID)
-    return response
