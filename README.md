@@ -4,7 +4,7 @@
 
 ### Requires `virtualenv` and `virtualenvwrapper`
 
-```sh
+```bash
 mkvirtualenv test
 pip3 install -r requirements.txt
 npm install
@@ -19,7 +19,7 @@ python3 manage.py runserver
 > http://localhost:8000
 
 ### Local Development
-```
+```bash
 git clone https://github.com/jackton1/django_google_app.git
 cd django_google_app`
 pip install -r requirements.txt`
