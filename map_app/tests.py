@@ -33,15 +33,7 @@ class BaseTestCase(TestCase):
     def _create_test_address(self, address_str):
         address_object = Address.objects.create(address=address_str)
         return address_object
-
-    @staticmethod
-    def _address_exists(address_str):
-        return Address.objects.filter(address__icontains=address_str).count() > 0
-
-    @staticmethod
-    def _get_first_address(address_str):
-        return Address.objects.filter(address__icontains=address_str).first()
-
+    
 
 class HomePageTestCase(BaseTestCase):
     create_address = True
