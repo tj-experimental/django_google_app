@@ -7,6 +7,8 @@ from django.contrib import messages
 from django.utils.encoding import smart_str
 from easy_maps.models import Address
 
+from .lib import FusionTableMixin
+
 log = logging.getLogger(__name__)
 
 
@@ -45,11 +47,34 @@ class AddressForm(forms.ModelForm):
                                 self.errors.get('address')))
                 instance.delete()
                 return
+            log.info("Adding address to fusion table.")
+
+            service, table_id = FusionTableMixin.get_service_and_table_id()
+            fusion_table_address_exists = FusionTableMixin.address_exists(
+                    instance, service, table_id)
+            added_to_fusion_table = False
+            if fusion_table_address_exists:
+                log.debug("Address already exist in fusion table.")
+            else:
+                log.info("Adding address to fusion table : %s"
+                         % instance.address)
+                added_to_fusion_table = True
+                FusionTableMixin.save(instance, service, table_id)
+
             if request and instance:
-                message_ = "Successfully added a new %s: %s" % (
+                part = "Successfully added a new "
+                message_ = "%s %s: %s" % (
+                        part,
                         instance.__class__.__name__,
                         instance.address
                     )
+                if added_to_fusion_table:
+                    f_part = part + "%s to fusion table: %s"
+                    f_message_ = f_part % (
+                        instance.__class__.__name__,
+                        instance.address
+                    )
+                    log.info(f_message_)
                 messages.success(request, message_)
                 log.info(message_)
             return instance

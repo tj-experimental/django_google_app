@@ -25,7 +25,7 @@ urlpatterns = [
     url(r'^$', views.home, name='home'),
     url(r'^address$', views.address_view, name='address'),
     url(r'^reset-address$', views.reset_address, name='reset-address'),
-    url(r'^oauth2callback$', views.oauth_view, name='oauth-view'),
+    url(r'^fusion-tables$', views.FusionTableHandler.as_view(), name='fusion-tables'),
     # url(r'^admin/', admin.site.urls),
 ] + static(settings.STATIC_URL,
            document_root=settings.STATIC_ROOT)

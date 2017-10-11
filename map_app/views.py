@@ -2,17 +2,20 @@ from __future__ import absolute_import, unicode_literals
 
 import json
 import logging
+from itertools import chain
 
 from django.conf import settings
 from django.http import HttpResponseBadRequest
 from django.shortcuts import render, redirect
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.views.decorators.http import require_GET
+from django.views.generic import TemplateView
 
+from .lib import FusionTableMixin
 from .utils import messages_to_dict, verify_table_id_cookie_set
 from .forms import AddressForm
 from .models import Address
-from .tables import AddressTable, SearchedAddressesTable
+from .tables import AddressTable, SearchedAddressesTable, FusionTable
 
 log = logging.getLogger(__name__)
 
@@ -66,17 +69,22 @@ def reset_address(request):
     """
     Resets all previously added addresses.
     """
-    # TODO: Delete all from google fusion table.
+    log.info("Deleting all saved addresses.")
     Address.objects.all().delete()
-    log.info("Deleted all saved addresses.")
+    log.info("Deleting all addresses in fusion table.")
+    service, table_id = FusionTableMixin.get_service_and_table_id()
+    FusionTableMixin.delete_all_addresses(service, table_id)
     return redirect('home')
 
 
-@require_GET
-def oauth_view(request):
-    """
-    Callback view to handle google OAuth request.
-    :param request:
-    """
-    pass
+class FusionTableHandler(TemplateView, FusionTableMixin):
 
+    template_name = 'fusion_table.html'
+
+    def get_context_data(self):
+        service, table_id = self.get_service_and_table_id()
+        results = self.select_all_rows(service, table_id)
+        import pdb
+        pdb.set_trace()
+        table = FusionTable(self._process_result(results))
+        return {'fusion_table': table}

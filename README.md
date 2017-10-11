@@ -1,6 +1,8 @@
 # DJANGO APP using google maps api. 
 
 
+Generate a `service_account.json` file from [Service Account Page](https://console.cloud.google.com/iam-admin/serviceaccounts)
+
 ### Project requires `virtualenv` and `virtualenvwrapper`
 - Run
 ```

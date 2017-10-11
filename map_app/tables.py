@@ -46,3 +46,11 @@ class SearchedAddressesTable(BassAddressTable):
                           'table-condensed table-striped'}
         fields = ('id', 'address', 'computed_address', 'longitude',
                   'latitude', 'map_link',)
+
+
+class FusionTable(tables.Table):
+    class Meta:
+        attrs = {'class': 'address_table table table-hover' +
+                          'table-condensed table-striped'}
+
+

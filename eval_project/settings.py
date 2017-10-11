@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/1.9/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.9/ref/settings/
 """
-
+import json
 import os
 from django.contrib.messages import constants as messages
 
@@ -142,18 +142,23 @@ STATIC_PRECOMPILER_FINDER_LIST_FILES = False
 # Folder to store the compiled files using the STATIC_ROOT
 STATIC_PRECOMPILER_OUTPUT_DIR = 'compiled'
 
-EASY_MAPS_GOOGLE_MAPS_API_KEY = 'AIzaSyC92Qq2ShWnNNSrXmJXT2yY0n3DoJ0sQpA'
+GOOGLE_API_KEYS_JSON_FILE = os.path.join(BASE_DIR, 'google_api_keys.json')
 
-GOOGLE_FUSION_TABLE_API_KEY = 'AIzaSyBT33sM97rTSxEtxHAYnSNhG3k99ULtKMQ'
+EASY_MAPS_GOOGLE_MAPS_API_KEY = json.load(open(GOOGLE_API_KEYS_JSON_FILE),
+                                          object_hook=lambda f: f['maps-api-key'])
+
+GOOGLE_FUSION_TABLE_API_KEY = json.load(open(GOOGLE_API_KEYS_JSON_FILE),
+                                        object_hook=lambda f: f['fusion-table-api-key'])
 
 VIEW_GOOGLE_MAP_LINK = 'https://www.google.com/maps/search/?api=1&map_action=map'
 
-GOOGLE_OAUTH2_CLIENT_SECRETS_JSON = 'client_id.json'
+GOOGLE_OAUTH2_CLIENT_SECRETS_JSON = os.path.join(BASE_DIR, 'client_id.json')
+
+GOOGLE_SERVICE_ACCOUNT_KEY_FILE = os.path.join(BASE_DIR, 'service_account.json')
 
 FUSION_TABLE_SCOPE = 'https://www.googleapis.com/auth/fusiontables'
 
-# This can be taken from the request object.
-OAUTH2_CLIENT_REDIRECT_URL = 'http://localhost:8000'
+OAUTH2_CLIENT_REDIRECT_PATH = '/oauth2callback'
 
 FUSION_TABLE_ID = '1ckNKTPf6djI8teuiQuxExAQwMXSqytwvAWdh7yAQ'
 
@@ -179,38 +184,38 @@ STATIC_PRECOMPILER_COMPILERS = (
     ),
 )
 
-# LOGGING = {
-#     'version': 1,
-#     'disable_existing_loggers': False,
-#     'formatters': {
-#         'verbose': {
-#             'format': '[%(asctime)s %(thread)d %(name)s %(pathname)s] %(levelname)s : %(message)s',
-#             'datefmt': '%a, %d/%b/%Y %H:%M:%S'
-#         },
-#         'simple': {
-#             'format': '[%(asctime)s %(module)s] %(levelname)s : %(message)s',
-#             'datefmt': '%a, %d/%b/%Y  %H:%M:%S'
-#         },
-#     },
-#     'handlers': {
-#         'console': {
-#             'class': 'logging.StreamHandler',
-#             'formatter': ('simple' if not DEBUG else 'verbose')
-#         },
-#     },
-#     'loggers': {
-#         'django': {
-#             'handlers': ['console'],
-#             'level': os.getenv('DJANGO_LOG_LEVEL', 'INFO'),
-#             'propagate': True
-#         },
-#         'map_app': {
-#             'handlers': ['console'],
-#             'level': ('DEBUG' if DEBUG else 'INFO')
-#         },
-#         'easy_maps': {
-#             'handlers': ['console'],
-#             'level': ('DEBUG' if DEBUG else 'INFO')
-#         }
-#     },
-# }
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '[%(asctime)s %(thread)d %(name)s %(pathname)s] %(levelname)s : %(message)s',
+            'datefmt': '%a, %d/%b/%Y %H:%M:%S'
+        },
+        'simple': {
+            'format': '[%(asctime)s %(module)s] %(levelname)s : %(message)s',
+            'datefmt': '%a, %d/%b/%Y  %H:%M:%S'
+        },
+    },
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+            'formatter': ('simple' if not DEBUG else 'verbose')
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['console'],
+            'level': os.getenv('DJANGO_LOG_LEVEL', 'INFO'),
+            'propagate': True
+        },
+        'map_app': {
+            'handlers': ['console'],
+            'level': ('DEBUG' if DEBUG else 'INFO')
+        },
+        'easy_maps': {
+            'handlers': ['console'],
+            'level': ('DEBUG' if DEBUG else 'INFO')
+        }
+    },
+}
