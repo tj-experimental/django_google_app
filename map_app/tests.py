@@ -1,9 +1,14 @@
 from __future__ import absolute_import
 
+import json
+
+from django.contrib.auth.models import AnonymousUser
 from django.core.urlresolvers import resolve
+from django.http import HttpResponseBadRequest
 from django.test import TestCase
-from django.http import HttpRequest, HttpResponse
+from django.http import HttpRequests
 from django.template.loader import render_to_string
+from django.contrib.messages.middleware import MessageMiddleware
 
 from .views import home, address_view, reset_address
 from .models import Address
@@ -16,31 +21,26 @@ class BaseTestCase(TestCase):
 
     def setUp(self):
         self.request = HttpRequest()
+        self.request.user = AnonymousUser()
+        self.request.session = {}
+        self.message_middleware = MessageMiddleware()
         if self.create_address:
             self.address = 'Toronto, Ontario'
-            self.address_object, self.delete_address = (
-                self._create_test_address(self.address))
+            self.address_object = (
+                self._create_test_address(self.address)
+            )
 
     def _create_test_address(self, address_str):
-        delete_address = True
-        if self._address_exists(address_str):
-            address_object = self._get_first_address(address_str)
-            delete_address = False
-        else:
-            address_object = Address.objects.create(address=address_str)
-        return address_object, delete_address
+        address_object = Address.objects.create(address=address_str)
+        return address_object
 
     @staticmethod
     def _address_exists(address_str):
-        return Address.objects.filter(address__icontains=address_str).exists()
+        return Address.objects.filter(address__icontains=address_str).count() > 0
 
     @staticmethod
     def _get_first_address(address_str):
         return Address.objects.filter(address__icontains=address_str).first()
-
-    def tearDown(self):
-        if self.delete_address and self.create_address:
-            self.address_object.delete()
 
 
 class HomePageTestCase(BaseTestCase):
@@ -54,21 +54,45 @@ class HomePageTestCase(BaseTestCase):
         # TODO: Use address generator.
         pass
 
-    def test_POST_request_return_correct_html(self):
+    def test_post_request_return_correct_html(self):
         request = self.request
         request.method = 'POST'
+        self.message_middleware.process_request(request)
+        # Delete the existing address to prevent violating the
+        # unique constraint.
+        self.address_object.delete()
         request.POST['address'] = self.address
-        table = AddressTable(Address.objects.only('address')
-                             .order_by('-id').all())
         form = AddressForm(request.POST)
-        expected_html = render_to_string('table.html',
-                                         context={'table': table,
-                                                  'form': form},
-                                         request=self.request)
 
         response = home(request)
 
+        # Moved below since new instance of the address will be created
+        addresses = (Address.objects.only('address')
+                     .order_by('-id').all())
+        expected_html = render_to_string(
+            'table.html',
+            context={'table': AddressTable(addresses),
+                     'form': form},
+            request=self.request)
+
         self.assertEqual(response.content.decode(), expected_html)
+
+    def test_post_invalid_request_returns_http_bad_request(self):
+        request = self.request
+        request.method = 'POST'
+        # Address already created before request raises
+        # HttpBadRequest
+        request.POST['address'] = self.address
+        self.message_middleware.process_request(request)
+
+        response = home(request)
+
+        self.assertIsInstance(response, HttpResponseBadRequest)
+
+        response_text = json.loads(response.content.decode())
+        self.assertEqual(
+            'EasyMaps Address with this Address already exists.',
+            ''.join(response_text.get('address')))
 
 
 class AddressTestCase(BaseTestCase):
@@ -85,3 +109,6 @@ class AddressResetTestCase(BaseTestCase):
     def test_reset_address_url_resolves_to_reset_address_view(self):
         found = resolve('/reset-address')
         self.assertEqual(found.func, reset_address)
+
+    def test_send_get_request_returns_correct_html(self):
+        request
