@@ -61,7 +61,7 @@ class FusionTableMixin(object):
     @classmethod
     def delete_all_addresses(cls, service, table_id):
         return (service.query()
-                .sql(sql='DELETE * FROM %s' % table_id).execute())
+                .sql(sql='DELETE FROM %s' % table_id).execute())
 
     @classmethod
     def insert_address(cls, address, service, table_id):

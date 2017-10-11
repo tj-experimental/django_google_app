@@ -84,7 +84,5 @@ class FusionTableHandler(TemplateView, FusionTableMixin):
     def get_context_data(self):
         service, table_id = self.get_service_and_table_id()
         results = self.select_all_rows(service, table_id)
-        import pdb
-        pdb.set_trace()
         table = FusionTable(self._process_result(results))
         return {'fusion_table': table}
