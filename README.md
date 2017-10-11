@@ -55,3 +55,8 @@ python3 manage.py migrate static_precompiler
 
 ##### Visit
 >  http://localhost:8081
+
+#### Run Test
+```
+ tox
+```

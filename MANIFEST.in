@@ -1,0 +1,4 @@
+Include README  LICENSE
+recursive-include eval_project *.py *html *.js *.es6
+include docs/Makefile
+recursive-include docs/source *

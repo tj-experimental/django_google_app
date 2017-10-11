@@ -1,3 +1,4 @@
+{% load compile_static %}
 {% load staticfiles %}
 <!DOCTYPE html>
 <html>
@@ -24,7 +25,34 @@
                 {% include "alert.html" %}
             {% endblock %}
         </div>
-		{% block content %}
-		{% endblock %}
-	</body>
+        <div class="content">
+            {% block content %}
+            {% endblock %}
+            <script type="text/javascript" src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+            <script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js" integrity="sha256-uEFhyfv3UgzRTnAZ+SEgvYepKKB0FW6RqZLrqfyUNug=" crossorigin="anonymous" async defer></script>
+            <script type="application/javascript" src="{% static "map_app/js/alert.es6"|compile %}" async defer></script>
+            <script type="text/javascript">
+                var csrfSafeMethod = function(method){
+                    return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+                };
+                $.ajaxSetup({
+                    beforeSend: function (xhr, settings) {
+                        // TODO: verify the origin also
+                        if(!csrfSafeMethod(settings.method)){
+                            xhr.setRequestHeader('X-CSRFToken', $.cookie('csrftoken'))
+                        }
+                    }
+                });
+                $('.confirmation-required').on('click', function(e) {
+                    if(confirm("Are you sure ?")){
+                        return true
+                    }
+                    e.preventDefault();
+                    e.stopPropagation();
+                })
+            </script>
+            <script type="application/javascript" src="{% static "map_app/js/progress.es6"|compile %}" ></script>
+        </div>
+    </body>
 </html>

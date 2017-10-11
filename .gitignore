@@ -6,3 +6,5 @@ __pycache__
 client_id.json
 node_modules/
 service_account.json
+.tox/
+django_map_app.egg-info

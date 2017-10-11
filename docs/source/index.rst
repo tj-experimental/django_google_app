@@ -3,7 +3,7 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to Django Web App using Google API and Google Fusion tables.'s documentation!
+Welcome to using Google Fusion tables with django.'s documentation!
 =====================================================================================
 
 .. toctree::
