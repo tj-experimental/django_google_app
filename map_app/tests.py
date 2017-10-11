@@ -6,7 +6,7 @@ from django.contrib.auth.models import AnonymousUser
 from django.core.urlresolvers import resolve
 from django.http import HttpResponseBadRequest
 from django.test import TestCase
-from django.http import HttpRequests
+from django.http import HttpRequest
 from django.template.loader import render_to_string
 from django.contrib.messages.middleware import MessageMiddleware
 
