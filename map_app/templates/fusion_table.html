@@ -1,8 +1,14 @@
 {% extends "layout.html" %}
 {% load render_table from django_tables2 %}
+{% load django_bootstrap_breadcrumbs %}
 
 {% block title %}
     Fusion Table Addresses
+{% endblock %}
+
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% breadcrumb "Fusion Table Address" "fusion-tables" %}
 {% endblock %}
 
 {% block nav_links %}

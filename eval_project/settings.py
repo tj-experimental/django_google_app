@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_bootstrap_breadcrumbs',
 ] + PROJECT_APPS
 
 MIDDLEWARE_CLASSES = [
@@ -82,6 +83,8 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'eval_project.wsgi.application'
 
+# Breadcrumb template
+BREADCRUMBS_TEMPLATE = 'django_bootstrap_breadcrumbs/bootstrap3.html'
 
 # Database
 # https://docs.djangoproject.com/en/1.9/ref/settings/#databases
@@ -150,6 +153,9 @@ EASY_MAPS_GOOGLE_MAPS_API_KEY = json.load(open(GOOGLE_API_KEYS_JSON_FILE),
 GOOGLE_FUSION_TABLE_API_KEY = json.load(open(GOOGLE_API_KEYS_JSON_FILE),
                                         object_hook=lambda f: f['fusion-table-api-key'])
 
+SECRET = json.load(open(GOOGLE_API_KEYS_JSON_FILE),
+                   object_hook=lambda f: f['client-secret'])
+
 VIEW_GOOGLE_MAP_LINK = 'https://www.google.com/maps/search/?api=1&map_action=map'
 
 GOOGLE_OAUTH2_CLIENT_SECRETS_JSON = os.path.join(BASE_DIR, 'client_id.json')
@@ -158,7 +164,7 @@ GOOGLE_SERVICE_ACCOUNT_KEY_FILE = os.path.join(BASE_DIR, 'service_account.json')
 
 FUSION_TABLE_SCOPE = 'https://www.googleapis.com/auth/fusiontables'
 
-OAUTH2_CLIENT_REDIRECT_PATH = '/oauth2callback'
+OAUTH2_CLIENT_REDIRECT_PATH = 'http://localhost:8000/oauth2callback'
 
 FUSION_TABLE_ID = '1ckNKTPf6djI8teuiQuxExAQwMXSqytwvAWdh7yAQ'
 

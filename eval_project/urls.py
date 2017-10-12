@@ -18,6 +18,8 @@ from django.conf.urls import url
 from django.conf.urls.static import static
 from django.conf import settings
 from django.contrib import admin
+from django.views.generic import TemplateView
+from django.contrib.auth.views import login, logout
 
 from map_app import views
 
@@ -26,6 +28,9 @@ urlpatterns = [
     url(r'^address$', views.address_view, name='address'),
     url(r'^reset-address$', views.reset_address, name='reset-address'),
     url(r'^fusion-tables$', views.FusionTableHandler.as_view(), name='fusion-tables'),
-    # url(r'^admin/', admin.site.urls),
+    url(r'^oauth2callback$', views.oauth_callback, name='oauth2-callback'),
+    url(r'^accounts/login/$', login, {'template_name': 'admin/login.html'}, name='login'),
+    url(r'^accounts/logout/$', logout, {'next_page': '/'}, name='logout'),
+    url(r'^admin/', admin.site.urls),
 ] + static(settings.STATIC_URL,
            document_root=settings.STATIC_ROOT)

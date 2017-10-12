@@ -1,8 +1,14 @@
 {% extends "layout.html" %}
 {% load render_table from django_tables2 %}
+{% load django_bootstrap_breadcrumbs %}
 
 {% block title %}
     Searched Addresses
+{% endblock %}
+
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% breadcrumb "Address" "address" %}
 {% endblock %}
 
 {% block nav_links %}

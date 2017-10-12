@@ -1,14 +1,13 @@
 
 const $progress = $("#progress");
 
-const stopProgress = () => $progress.hide().addClass("done");
+const stopProgress = () => $progress.addClass("done");
 
 const errorProgress = () => $progress.removeClass("success").addClass("error");
 
 const successProgress = () => $progress.addClass("success").removeClass("error");
 
 const startProgress = (status = "", duration = 4000) => {
-    $progress.show();
     return $({property: 0}).animate({property: 105}, {
                 duration: duration,
                 step: function() {

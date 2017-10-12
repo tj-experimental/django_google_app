@@ -46,7 +46,9 @@ def messages_to_dict(request, to_str=False):
     :type to_str: bool
     :rtype: str|dict
     """
-    for message in get_messages(request):
+    storage = get_messages(request)
+    storage.used = True
+    for message in storage:
         ret_dict = {'message': message.message,
                     'level_tag': message.level_tag,
                     'level': message.level}

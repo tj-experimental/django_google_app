@@ -1,5 +1,7 @@
 {% load compile_static %}
 {% load staticfiles %}
+{% load i18n admin_static %}
+{% load django_bootstrap_breadcrumbs %}
 <!DOCTYPE html>
 <html>
 	<meta name="viewport" content="initial-scale=1.0, user-scalable=no">
@@ -10,17 +12,27 @@
 		<title>{% block title %}{% endblock %}</title>
 	</head>
 	<body>
-        <div class="nav-alert">
+        <div class="nav-breadcrumbs-alert">
             {% block nav %}
                 <nav class="nav navbar-inverse" id="top-nav">
                     <ul class="nav navbar-nav">
                        {% block nav_links %}{% endblock %}
+                    </ul>
+                    <ul class="nav nvabar-nav pull-right">
+                        <li class="nav-item">
+                            <a href="{% url 'admin:logout' %}">{% trans 'Log out' %}</a>
+                        </li>
                     </ul>
                 </nav>
             {% endblock %}
             {% block progress %}
                 {% include "progress.html" %}
             {% endblock %}
+            {% block breadcrumbs %}
+                {% clear_breadcrumbs %}
+                {% breadcrumb "Home" "/" %}
+            {% endblock %}
+            {% render_breadcrumbs %}
             {% block alert %}
                 {% include "alert.html" %}
             {% endblock %}
@@ -29,8 +41,8 @@
             {% block content %}
             {% endblock %}
             <script type="text/javascript" src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js" integrity="sha256-uEFhyfv3UgzRTnAZ+SEgvYepKKB0FW6RqZLrqfyUNug=" crossorigin="anonymous"></script>
             <script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-            <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js" integrity="sha256-uEFhyfv3UgzRTnAZ+SEgvYepKKB0FW6RqZLrqfyUNug=" crossorigin="anonymous" async defer></script>
             <script type="application/javascript" src="{% static "map_app/js/alert.es6"|compile %}" async defer></script>
             <script type="text/javascript">
                 var csrfSafeMethod = function(method){

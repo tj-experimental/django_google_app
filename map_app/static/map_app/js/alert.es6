@@ -1,9 +1,9 @@
 const displayAlert = (message, tag = "info") => {
-    // if (tag === 'error'){
-    //     tag = 'danger'
-    // }
+    if (tag === 'error'){
+        tag = 'danger'
+    }
     let alertDiv = `<div class="alert alert-${tag}" id="page-alert" style="display: none;">${message}</div>`;
-    $(alertDiv).appendTo($('.nav-alert')).slideDown(120);
+    $(alertDiv).appendTo($('.nav-breadcrumbs-alert')).slideDown(120);
     addAlertHandler();
 };
 

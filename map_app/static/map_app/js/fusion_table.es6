@@ -3,22 +3,11 @@ const initFusionTable = (map) => {
     const service = new google.maps.places.PlacesService(map);
     const layer = new google.maps.FusionTablesLayer({
         query: {
-            select: "'latitude', 'longitude'",
+            select: "longitude",
             from: $.cookie('fusion_table_id')
         },
         map: map,
-        styles: [{
-            markerOptions: {
-                fillColor: '#f31800',
-                fillOpacity: 1.0
-            }
-        }, {
-            where: "'latitude' IS NOT NULL",
-            markerOptions: {
-                fillColor: "#30d454",
-                fillOpacity: 1.0
-            }
-        }]
+        styles: 2
     });
 
     google.maps.event.addListener(layer, 'click', function (e) {

@@ -3,7 +3,7 @@ const displayAlert = (message, tag = "info") => {
         tag = 'danger'
     }
     let alertDiv = `<div class="alert alert-${tag}" id="page-alert" style="display: none;">${message}</div>`;
-    $(alertDiv).appendTo($('.nav-alert')).slideDown(200);
+    $(alertDiv).appendTo($('.nav-breadcrumbs-alert')).slideDown(120);
     addAlertHandler();
 };
 
@@ -14,7 +14,7 @@ const renderAlerts = (messages) => {
 };
 
 const removeAlert = (e) => {
-    $(e.target).fadeTo(500, 0).slideUp(300, () => $(e.target).remove());
+    $(e.target).fadeTo(400, 0).slideUp(200, () => $(e.target).remove());
 };
 
 

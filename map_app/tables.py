@@ -1,11 +1,9 @@
 from __future__ import absolute_import, unicode_literals
 
-from future.moves.urllib.parse import quote_plus
-
 from django.utils.html import mark_safe
 from django.conf import settings
 import django_tables2 as tables
-from django_tables2.columns import LinkColumn
+from django_tables2.columns import LinkColumn, Column
 
 from .models import Address
 
@@ -13,15 +11,23 @@ from .models import Address
 class BassAddressTable(tables.Table):
     map_link = LinkColumn(text='', orderable=False)
 
+    def safe_get_value(self, record, attr):
+        return (getattr(record, attr)
+                if hasattr(record, attr)
+                else record.get(attr, ''))
+
     def render_map_link(self, record):
         extra_classes = 'btn-info disabled'
-        if record.address and record.latitude and record.longitude:
+        address = self.safe_get_value(record, 'address')
+        latitude = self.safe_get_value(record, 'latitude')
+        longitude = self.safe_get_value(record, 'longitude')
+        if address and latitude and longitude:
             extra_classes = 'btn-success'
         query_ = ('&query={address}&query={latitude},'
                   '{longitude}&zoom=7'
-                  .format(latitude=record.latitude,
-                          longitude=record.longitude,
-                          address=record.address))
+                  .format(latitude=latitude,
+                          longitude=longitude,
+                          address=address))
         url = settings.VIEW_GOOGLE_MAP_LINK + query_
         return (mark_safe('<a href="{url}" target="__blank" '
                           'class="btn {extra_classes}">'
@@ -48,9 +54,19 @@ class SearchedAddressesTable(BassAddressTable):
                   'latitude', 'map_link',)
 
 
-class FusionTable(tables.Table):
+class FusionTable(BassAddressTable):
+    address = Column('address', orderable=True)
+    longitude = Column('longitude', orderable=True)
+    latitude = Column('latitude', orderable=True)
+    computed_address = Column('computed_address', orderable=True)
+    rowid = Column('rowid', orderable=True)
+
     class Meta:
+        order_by = 'rowid'
         attrs = {'class': 'address_table table table-hover' +
                           'table-condensed table-striped'}
+
+        fields = ('rowid', 'address', 'longitude', 'latitude',
+                  'computed_address',)
 
 

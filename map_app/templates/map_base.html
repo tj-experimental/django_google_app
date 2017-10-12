@@ -1,0 +1,106 @@
+{% extends "easy_maps/map.html" %}
+{% load compile_static %}
+{% load staticfiles %}
+
+{% block html %}
+    <div id="map-canvas-{{ map.pk }}"
+    {% if map.computed_address %}
+    style="width: 100% !important; height: {{ height|default:"400" }}px;"
+    {% endif %}
+    class="easy-map-googlemap">
+    {% block noscript %}{{ block.super }}{% endblock %}
+    {% if not map.computed_address %}<!-- geocoding error -->{% endif %}
+    </div>
+{% endblock %}
+
+{% block api_js %}
+   <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?
+    key={{ api_key }}&libraries=places&callback=initialize_map_{{ map.pk }}" async defer></script>
+    <script type="text/javascript" src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js" integrity="sha256-uEFhyfv3UgzRTnAZ+SEgvYepKKB0FW6RqZLrqfyUNug=" crossorigin="anonymous"></script>
+    <script type="application/javascript" src="{% static "map_app/js/fusion_table.es6"|compile %}" ></script>
+{% endblock %}
+
+{% block map_loading_js %}
+{% endblock %}
+
+{% block extra_js %}
+    $("#map-canvas-{{ map.pk }}").data("map", map);
+    var infowindow = new google.maps.InfoWindow();
+    var geocoder = new google.maps.Geocoder();
+    var marker = new google.maps.Marker({
+                position: latlng,
+                map: map,
+                draggable: true,
+                title: "{{ map.address }}"
+            });
+    var getInfoContent = function(name, formatted_address){
+        var nameStr = '', addressStr = '';
+        if (typeof name !== 'undefined'){
+            nameStr = "<strong>" + name + "</strong><br>"
+        }
+        if (typeof formatted_address !== 'undefined'){
+            addressStr = "Address:" + formatted_address 
+        }
+        return "<div>" + nameStr + addressStr + "</div>"
+    };
+
+    var modifyMarker = function(results, latLng){
+        map.panTo(latLng);
+        marker.setPosition(latLng);
+        infowindow.setContent(getInfoContent(results[0].name, results[0].formatted_address))
+        infowindow.open(map, marker)
+    }
+    infowindow.setContent(getInfoContent('', "{{ map.address }}" ));
+    infowindow.open(map, marker)
+    var placeMarkerAndPanTo = function(e){
+        var latLng = e.latLng;
+        var latLngStr = [latLng.lat(), latLng.lng()].join(',');
+        var on_land = true;
+        startProgress();
+        geocoder.geocode({location: latLng}, 
+            function(results, status){
+            if(status === 'OK'){
+                $.getJSON('https://api.onwater.io/api/v1/results/' + latLngStr)
+                .done(function(data){
+                    on_land = !data.water;
+                    if (on_land){
+                        modifyMarker(results, latLng);
+                        $.ajax({
+                             url: document.location.href,
+                             method: 'POST',
+                             data: {address: results[0].formatted_address}
+                        }).done(function(data, textStatus, jqXHR){
+                            window.successProgress();
+                            $('#addresses_table').empty().append(data)
+                            window.stopProgress();
+                            var message = "Successfully added address: " +results[0].formatted_address
+                            window.renderAlerts([{message: message, level_tag: 'success'}]);
+                            console.log(textStatus);
+                        }).fail(function(jqXHR, textStatus, err){
+                            var errorMessage;
+                            window.errorProgress();
+                            window.stopProgress();
+                            if(jqXHR.responseText) errorMessage = JSON.parse(jqXHR.responseText);
+                            var message = "Error adding address: " + results[0].formatted_address;
+                            if(errorMessage) message += '\n' + errorMessage.address.join('\n');
+                            window.renderAlerts([{message: message, level_tag: 'danger'}]);
+                            console.error(errorMessage.address);
+                        });
+                    }else{
+                        window.errorProgress();
+                        window.alert('Locations in woods/mountain/ocean are not valid.');
+                    }
+                }).fail(function(err){
+                    window.errorProgress();
+                    console.error("Error occurred retrieving location on land status:", err)
+                });
+            }else{
+                window.alert(`Geocode was not successful for the following reason: ${status}`)
+            }
+        })
+    };
+    google.maps.event.addDomListener(map, 'click', placeMarkerAndPanTo);
+    marker.addListener('dragend', placeMarkerAndPanTo);
+    initFusionTable(map);
+{% endblock %}

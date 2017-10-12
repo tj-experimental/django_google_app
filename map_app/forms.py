@@ -7,7 +7,8 @@ from django.contrib import messages
 from django.utils.encoding import smart_str
 from easy_maps.models import Address
 
-from .lib import FusionTableMixin
+from map_app.exceptions import RequestNotFoundException
+from .lib import FusionTableMixin, FlowClient
 
 log = logging.getLogger(__name__)
 
@@ -41,42 +42,47 @@ class AddressForm(forms.ModelForm):
             messages.error(request, smart_str(e))
         else:
             if instance and not self._valid_address(instance):
-                messages.error(request,
-                               'Error occurred saving %s: %s' %
-                               (instance.__class__.__name__,
-                                self.errors.get('address')))
+                message_ = ('Geocode error occurred saving %s: %s' %
+                            (instance.__class__.__name__, instance.address,))
+                messages.error(request, message_)
                 instance.delete()
                 return
             log.info("Adding address to fusion table.")
-
-            service, table_id = FusionTableMixin.get_service_and_table_id()
-            fusion_table_address_exists = FusionTableMixin.address_exists(
-                    instance, service, table_id)
-            added_to_fusion_table = False
-            if fusion_table_address_exists:
-                log.debug("Address already exist in fusion table.")
+            if not request or not request.user:
+                message_ = "Request or user required objects not found."
+                log.error(message_)
+                raise RequestNotFoundException(message_)
             else:
-                log.info("Adding address to fusion table : %s"
-                         % instance.address)
-                added_to_fusion_table = True
-                FusionTableMixin.save(instance, service, table_id)
+                flow = FlowClient(request)
+                service, table_id = flow.get_service_and_table_id()
+                fusion_table_addresses = FusionTableMixin.address_exists(
+                        instance, service, table_id)
+                added_to_fusion_table = False
+                if fusion_table_addresses is not None:
+                    log.debug("Address already exist in fusion table:"
+                              " %s" % (instance.address,))
+                else:
+                    log.info("Adding address to fusion table : %s"
+                             % instance.address)
+                    added_to_fusion_table = True
+                    FusionTableMixin.save(instance, service, table_id)
 
-            if request and instance:
-                part = "Successfully added a new "
-                message_ = "%s %s: %s" % (
-                        part,
-                        instance.__class__.__name__,
-                        instance.address
-                    )
-                if added_to_fusion_table:
-                    f_part = part + "%s to fusion table: %s"
-                    f_message_ = f_part % (
-                        instance.__class__.__name__,
-                        instance.address
-                    )
-                    log.info(f_message_)
-                messages.success(request, message_)
-                log.info(message_)
+                if instance:
+                    part = "Successfully added a new "
+                    message_ = "%s %s: %s" % (
+                            part,
+                            instance.__class__.__name__,
+                            instance.address
+                        )
+                    if added_to_fusion_table:
+                        f_part = part + "%s to fusion table: %s"
+                        f_message_ = f_part % (
+                            instance.__class__.__name__,
+                            instance.address
+                        )
+                        log.info(f_message_)
+                    messages.success(request, message_)
+                    log.info(message_)
             return instance
 
     def _valid_address(self, instance):
