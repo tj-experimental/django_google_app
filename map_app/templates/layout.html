@@ -14,13 +14,13 @@
 	<body>
         <div class="nav-breadcrumbs-alert">
             {% block nav %}
-                <nav class="nav navbar-inverse" id="top-nav">
+                <nav class="nav navbar-light" id="top-nav" style="background-color: #417690;">
                     <ul class="nav navbar-nav">
                        {% block nav_links %}{% endblock %}
                     </ul>
-                    <ul class="nav nvabar-nav pull-right">
-                        <li class="nav-item">
-                            <a href="{% url 'admin:logout' %}">{% trans 'Log out' %}</a>
+                    <ul class="nav navbar-nav pull-right">
+                        <li class="nav-item text-white">
+                            <a href="{% url 'admin:logout' %}" class="nav-link text-white">{% trans 'Log out' %}</a>
                         </li>
                     </ul>
                 </nav>

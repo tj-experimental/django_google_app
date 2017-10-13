@@ -1,6 +1,6 @@
 {% load easy_maps_tags cache %}
 
 {% cache 600 my_test_map address %}
-	{% easy_map address using 'map_base.html' %}
+	{% easy_map address 100 420 10 using 'map_base.html' %}
 {% endcache %}
 {% include "table.html" %}

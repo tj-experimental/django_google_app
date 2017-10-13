@@ -5,7 +5,7 @@
 {% block html %}
     <div id="map-canvas-{{ map.pk }}"
     {% if map.computed_address %}
-    style="width: 100% !important; height: {{ height|default:"400" }}px;"
+    style="width: 100% !important; height: 410px;"
     {% endif %}
     class="easy-map-googlemap">
     {% block noscript %}{{ block.super }}{% endblock %}
@@ -75,8 +75,9 @@
                             $('#addresses_table').empty().append(data)
                             window.stopProgress();
                             var message = "Successfully added address: " +results[0].formatted_address
-                            window.renderAlerts([{message: message, level_tag: 'success'}]);
+                            renderAlerts([{message: message, level_tag: 'success'}]);
                             console.log(textStatus);
+                            return true;
                         }).fail(function(jqXHR, textStatus, err){
                             var errorMessage;
                             window.errorProgress();
@@ -84,15 +85,18 @@
                             if(jqXHR.responseText) errorMessage = JSON.parse(jqXHR.responseText);
                             var message = "Error adding address: " + results[0].formatted_address;
                             if(errorMessage) message += '\n' + errorMessage.address.join('\n');
-                            window.renderAlerts([{message: message, level_tag: 'danger'}]);
-                            console.error(errorMessage.address);
+                            renderAlerts([{message: message, level_tag: 'danger'}]);
+                            console.error(message);
+                            return true;
                         });
                     }else{
                         window.errorProgress();
+                        window.stopProgress();
                         window.alert('Locations in woods/mountain/ocean are not valid.');
                     }
                 }).fail(function(err){
                     window.errorProgress();
+                    window.stopProgress();
                     console.error("Error occurred retrieving location on land status:", err)
                 });
             }else{

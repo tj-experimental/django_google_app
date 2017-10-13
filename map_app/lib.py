@@ -63,7 +63,7 @@ class FlowClient(object):
 
     def generate_token(self):
         token = xsrfutil.generate_token(
-            settings.SECRET_KEY, self.user.id)
+            settings.SECRET, self.user.id)
         self.flow.params['state'] = token
         return token
 

@@ -55,11 +55,11 @@ class SearchedAddressesTable(BassAddressTable):
 
 
 class FusionTable(BassAddressTable):
-    address = Column('address', orderable=True)
-    longitude = Column('longitude', orderable=True)
-    latitude = Column('latitude', orderable=True)
-    computed_address = Column('computed_address', orderable=True)
-    rowid = Column('rowid', orderable=True)
+    address = Column('Address', orderable=True)
+    longitude = Column('Longitude', orderable=True)
+    latitude = Column('Latitude', orderable=True)
+    computed_address = Column('Computed Address', orderable=True)
+    rowid = Column('ID', orderable=True)
 
     class Meta:
         order_by = 'rowid'

@@ -2,10 +2,8 @@ from __future__ import absolute_import, unicode_literals
 
 import json
 import logging
-from base64 import urlsafe_b64encode
 
 from django.conf import settings
-from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseBadRequest, HttpResponseRedirect
 from django.shortcuts import render, redirect
@@ -14,11 +12,11 @@ from django.views.decorators.http import require_GET
 from django.views.generic import TemplateView
 from oauth2client.contrib import xsrfutil
 
-from .lib import FusionTableMixin, FlowClient
-from .utils import messages_to_dict, verify_table_id_cookie_set
 from .forms import AddressForm
-from .models import Address, UserTokens
+from .lib import FusionTableMixin, FlowClient
+from .models import Address
 from .tables import AddressTable, SearchedAddressesTable, FusionTable
+from .utils import messages_to_dict, verify_table_id_cookie_set
 
 log = logging.getLogger(__name__)
 
@@ -38,7 +36,8 @@ def home(request):
         return HttpResponseRedirect(authorization_url)
     else:
         table = AddressTable(Address.objects.only('address')
-                             .order_by('-id').all())
+                             .order_by('-id').all(),
+                             request=request)
         street_address = 'Toronto, Canada'
         if request.method == 'POST':
             form = AddressForm(request.POST)
@@ -96,9 +95,10 @@ def reset_address(request):
 def oauth_callback(request):
     if not xsrfutil.validate_token(
             settings.SECRET,
-            request.GET['state'].encode('ascii'),
+            bytes(request.GET['state'],
+                  encoding='utf-8'),
             request.user.id):
-        return HttpResponseBadRequest()
+        return HttpResponseBadRequest('')
     flow = FlowClient(request)
     flow.update_user_credential()
     return redirect('/')
