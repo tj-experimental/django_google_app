@@ -8,7 +8,7 @@ from django.utils.encoding import smart_str
 from easy_maps.models import Address
 
 from map_app.exceptions import RequestNotFoundException
-from .lib import FusionTableMixin, FlowClient
+from . import lib
 
 log = logging.getLogger(__name__)
 
@@ -53,9 +53,9 @@ class AddressForm(forms.ModelForm):
                 log.error(message_)
                 raise RequestNotFoundException(message_)
             else:
-                flow = FlowClient(request)
+                flow = lib.FlowClient(request)
                 service, table_id = flow.get_service_and_table_id()
-                fusion_table_addresses = FusionTableMixin.address_exists(
+                fusion_table_addresses = lib.FusionTableMixin.address_exists(
                         instance, service, table_id)
                 added_to_fusion_table = False
                 if fusion_table_addresses is not None:
@@ -65,7 +65,7 @@ class AddressForm(forms.ModelForm):
                     log.info("Adding address to fusion table : %s"
                              % instance.address)
                     added_to_fusion_table = True
-                    FusionTableMixin.save(instance, service, table_id)
+                    lib.FusionTableMixin.save(instance, service, table_id)
 
                 if instance:
                     part = "Successfully added a new "
@@ -94,3 +94,6 @@ class AddressForm(forms.ModelForm):
             return False
         return True
 
+    @staticmethod
+    def get_addresses():
+        return Address.objects.only('address').order_by('-id').all()

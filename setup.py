@@ -7,7 +7,6 @@ install_requires = [
     'Django==1.9',
     'google-api-python-client==1.6.4',
     'django-easy-maps==0.9.3',
-    'django-easy-maps==0.9.3',
     'django-appconf==1.0.2',
     'django-classy-tags==0.8.0',
     'django-pipeline==1.6.9',
@@ -26,12 +25,21 @@ install_requires = [
     'six==1.11.0',
     'uritemplate==3.0.0',
     'gcloud',
+    'alabaster==0.7.10',
+    'Babel==2.5.1',
+    'beautifulsoup4==4.6.0',
+    'certifi==2017.7.27.1',
+    'chardet==3.0.4',
+    'click==6.7',
+    'colorama==0.3.9',
     'jsonpickle==0.9.5',
     'django-bootstrap-breadcrumbs==0.8.2',
 ]
 
 test_requires = [
     'tox>=2.9.1',
+    'coverage',
+    'mock',
 ]
 
 doc_requires = [

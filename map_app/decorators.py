@@ -1,7 +1,17 @@
 from __future__ import unicode_literals, absolute_import
 
-from django.http import HttpResponseBadRequest
+import logging
+
+from django.conf import settings
+from django.core.urlresolvers import reverse
+from django.http import HttpResponseBadRequest, HttpResponseRedirect
 from functools import wraps
+from oauth2client.client import HttpAccessTokenRefreshError
+from oauth2client.contrib import xsrfutil
+
+from map_app.lib import FlowClient
+
+log = logging.getLogger(__name__)
 
 
 def ajax_permitted(func):
@@ -11,3 +21,59 @@ def ajax_permitted(func):
             return HttpResponseBadRequest('Invalid ajax Request.')
         return func(request, *args, **kwargs)
     return wrapped
+
+
+class OAuth2Decorator(object):
+
+    def __init__(self, client_id, secret, scope):
+        self._client_id = client_id
+        self._secret = secret
+        self._scope = scope
+
+    def oauth_required(self, method):
+        """Decorator that starts the OAuth 2.0 dance.
+
+        Starts the OAuth dance for the logged in user if they haven't already
+        granted access for this application.
+
+        Args:
+            method: callable, to be decorated method of a webapp.RequestHandler
+                    instance.
+        """
+
+        def check_oauth(request_handler, *args, **kwargs):
+            user = request_handler.user
+            if not user:
+                # This should be an extra argument
+                request_handler.redirect(reverse('admin:login'))
+                return
+
+            flow_client = FlowClient(request_handler)
+            if not flow_client.credential_is_valid():
+                log.debug("Invalid user credential: %d",
+                          request_handler.user.id)
+                authorization_url = flow_client.get_authorization_url()
+                return HttpResponseRedirect(authorization_url)
+
+            if 'state' in request_handler.GET:
+                token = bytes(request_handler.GET['state'], encoding='utf-8')
+                if not xsrfutil.validate_token(
+                        settings.SECRET,
+                        token,
+                        request_handler.user.id):
+                    return HttpResponseBadRequest('Invalid Token')
+
+            try:
+                return method(request_handler, *args, **kwargs)
+            except HttpAccessTokenRefreshError as e:
+                log.debug(e)
+                authorization_url = flow_client.get_authorization_url()
+                return HttpResponseRedirect(authorization_url)
+        return check_oauth
+
+
+oauth_decorator = OAuth2Decorator(
+    settings.CLIENT_ID,
+    settings.SECRET,
+    settings.FUSION_TABLE_SCOPE
+)

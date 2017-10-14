@@ -1,6 +1,6 @@
 db.sqlite3
 __pycache__
-.pyc
+*.pyc
 .git
 .idea/
 client_id.json

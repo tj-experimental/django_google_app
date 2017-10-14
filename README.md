@@ -38,6 +38,12 @@ pip3 install -r requirements.txt
 npm install
 ```
 
+Create a super user.
+
+```
+python3 manage.py createsuperuser
+```
+
 ### Run migrations
 ```sh
 python3 manage.py migrate map_app
@@ -72,11 +78,27 @@ python3 manage.py runserver
    cd docs
    make html
 ```
+OR Run in project root
+```
+    make docs
+```
+
+On Windows run
+
+```
+    make.bat docs
+```
+
+
 
 #### View Documentation
-```sh
+```
    cd docs
    sphinx-serve -b build
+```
+OR
+```sh
+   make view_docs
 ```
 
 ##### Visit

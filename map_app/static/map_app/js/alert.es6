@@ -17,7 +17,7 @@ const renderAlerts = (messages) => {
 };
 
 const removeAlert = (e) => {
-    $(e.target).fadeTo(400, 0).slideUp(200, () => $(e.target).remove());
+    $(e.target).fadeTo(400, 0).slideUp(200, () => $(e.target).empty().remove());
 };
 
 

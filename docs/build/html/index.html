@@ -60,14 +60,8 @@
 <dl class="function">
 <dt id="map_app.views.home">
 <code class="descclassname">map_app.views.</code><code class="descname">home</code><span class="sig-paren">(</span><em>request</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/map_app/views.html#home"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#map_app.views.home" title="Permalink to this definition">¶</a></dt>
-<dd><p>Render the home page with a default address if no addresses exists.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="map_app.views.oauth_view">
-<code class="descclassname">map_app.views.</code><code class="descname">oauth_view</code><span class="sig-paren">(</span><em>request</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/map_app/views.html#oauth_view"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#map_app.views.oauth_view" title="Permalink to this definition">¶</a></dt>
-<dd><p>Callback view to handle google OAuth request.
-:param request:</p>
+<dd><p>Render the home page with a default address if no address.</p>
+<p>Redirect to google authorization page credential is invalid.</p>
 </dd></dl>
 
 <dl class="function">
@@ -127,6 +121,11 @@
 </dd></dl>
 
 <span class="target" id="module-map_app.forms"></span><span class="target" id="module-map_app.models"></span><dl class="class">
+<dt id="map_app.models.CredentialsModel">
+<em class="property">class </em><code class="descclassname">map_app.models.</code><code class="descname">CredentialsModel</code><span class="sig-paren">(</span><em>id</em>, <em>credential</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/map_app/models.html#CredentialsModel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#map_app.models.CredentialsModel" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="class">
 <dt id="map_app.models.UserTokens">
 <em class="property">class </em><code class="descclassname">map_app.models.</code><code class="descname">UserTokens</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/map_app/models.html#UserTokens"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#map_app.models.UserTokens" title="Permalink to this definition">¶</a></dt>
 <dd><p>User token model use for google Oauth authentication.</p>

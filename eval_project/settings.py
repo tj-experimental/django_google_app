@@ -24,9 +24,10 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = '+#z9@$brqm+z*@4me@wrl9ud)rjcqz7s-m+q#gm$pgpd#g%s^s'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+# Will have to run with --insecure to serve static files.
+DEBUG = False
 
-ALLOWED_HOSTS = ['localhost']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 
 
 # Application definition
@@ -34,12 +35,11 @@ ALLOWED_HOSTS = ['localhost']
 PROJECT_APPS = ['easy_maps',
                 'map_app',
                 'django_tables2',
-                # 'compressor',
-                # 'compressor_toolkit',
                 'static_precompiler',
                 'oauth2client',
                 'googleapiclient',
                 'geopy',
+                'django_bootstrap_breadcrumbs',
                 ]
 
 INSTALLED_APPS = [
@@ -49,7 +49,6 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'django_bootstrap_breadcrumbs',
 ] + PROJECT_APPS
 
 MIDDLEWARE_CLASSES = [
@@ -160,6 +159,8 @@ VIEW_GOOGLE_MAP_LINK = 'https://www.google.com/maps/search/?api=1&map_action=map
 
 GOOGLE_OAUTH2_CLIENT_SECRETS_JSON = os.path.join(BASE_DIR, 'client_id.json')
 
+CLIENT_ID = json.load(open(GOOGLE_OAUTH2_CLIENT_SECRETS_JSON))['web']['client_id']
+
 GOOGLE_SERVICE_ACCOUNT_KEY_FILE = os.path.join(BASE_DIR, 'service_account.json')
 
 FUSION_TABLE_SCOPE = 'https://www.googleapis.com/auth/fusiontables'
@@ -186,8 +187,7 @@ STATIC_EXCLUDE_APPS = (
 STATIC_PRECOMPILER_COMPILERS = (
     ('static_precompiler.compilers.Babel',
         {"executable": os.path.join('node_modules', '.bin', 'babel'),
-         "sourcemap_enabled": True}
-    ),
+         "sourcemap_enabled": True}),
 )
 
 LOGGING = {

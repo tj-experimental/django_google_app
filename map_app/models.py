@@ -14,8 +14,14 @@ class UserTokens(models.Model):
     access_token = models.TextField(null=True)
     authorized_url = models.URLField(null=True)
 
+    def __str__(self):
+        return 'UserToken Model'
+
 
 @python_2_unicode_compatible
 class CredentialsModel(models.Model):
     id = models.OneToOneField(User, primary_key=True)
     credential = CredentialsField()
+
+    def __str__(self):
+        return 'Credential Model'

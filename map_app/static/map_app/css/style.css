@@ -132,4 +132,11 @@
     box-shadow: #ff2011 1px 0 6px 1px;
 }
 
+a.text-muted {
+    color: white;
+}
+
+.nav-link {
+    font-weight: 500;
+}
 

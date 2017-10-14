@@ -46,50 +46,67 @@
 <span class="kn">import</span> <span class="nn">logging</span>
 
 <span class="kn">from</span> <span class="nn">django.conf</span> <span class="k">import</span> <span class="n">settings</span>
-<span class="kn">from</span> <span class="nn">django.http</span> <span class="k">import</span> <span class="n">HttpResponseBadRequest</span>
+<span class="kn">from</span> <span class="nn">django.contrib.auth.decorators</span> <span class="k">import</span> <span class="n">login_required</span>
+<span class="kn">from</span> <span class="nn">django.http</span> <span class="k">import</span> <span class="n">HttpResponseBadRequest</span><span class="p">,</span> <span class="n">HttpResponseRedirect</span>
 <span class="kn">from</span> <span class="nn">django.shortcuts</span> <span class="k">import</span> <span class="n">render</span><span class="p">,</span> <span class="n">redirect</span>
 <span class="kn">from</span> <span class="nn">django.views.decorators.csrf</span> <span class="k">import</span> <span class="n">ensure_csrf_cookie</span>
 <span class="kn">from</span> <span class="nn">django.views.decorators.http</span> <span class="k">import</span> <span class="n">require_GET</span>
+<span class="kn">from</span> <span class="nn">django.views.generic</span> <span class="k">import</span> <span class="n">TemplateView</span>
+<span class="kn">from</span> <span class="nn">oauth2client.contrib</span> <span class="k">import</span> <span class="n">xsrfutil</span>
 
-<span class="kn">from</span> <span class="nn">.utils</span> <span class="k">import</span> <span class="n">messages_to_dict</span><span class="p">,</span> <span class="n">verify_table_id_cookie_set</span>
 <span class="kn">from</span> <span class="nn">.forms</span> <span class="k">import</span> <span class="n">AddressForm</span>
+<span class="kn">from</span> <span class="nn">.lib</span> <span class="k">import</span> <span class="n">FusionTableMixin</span><span class="p">,</span> <span class="n">FlowClient</span>
 <span class="kn">from</span> <span class="nn">.models</span> <span class="k">import</span> <span class="n">Address</span>
-<span class="kn">from</span> <span class="nn">.tables</span> <span class="k">import</span> <span class="n">AddressTable</span><span class="p">,</span> <span class="n">SearchedAddressesTable</span>
+<span class="kn">from</span> <span class="nn">.tables</span> <span class="k">import</span> <span class="n">AddressTable</span><span class="p">,</span> <span class="n">SearchedAddressesTable</span><span class="p">,</span> <span class="n">FusionTable</span>
+<span class="kn">from</span> <span class="nn">.utils</span> <span class="k">import</span> <span class="n">messages_to_dict</span><span class="p">,</span> <span class="n">verify_table_id_cookie_set</span>
 
 <span class="n">log</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="home"><a class="viewcode-back" href="../../index.html#map_app.views.home">[docs]</a><span class="nd">@ensure_csrf_cookie</span>
+<div class="viewcode-block" id="home"><a class="viewcode-back" href="../../index.html#map_app.views.home">[docs]</a><span class="nd">@login_required</span>
+<span class="nd">@ensure_csrf_cookie</span>
 <span class="k">def</span> <span class="nf">home</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Render the home page with a default address if no addresses exists.</span>
+<span class="sd">    Render the home page with a default address if no address.</span>
+
+<span class="sd">    Redirect to google authorization page credential is invalid.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">table</span> <span class="o">=</span> <span class="n">AddressTable</span><span class="p">(</span><span class="n">Address</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">only</span><span class="p">(</span><span class="s1">&#39;address&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="s1">&#39;-id&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">())</span>
-    <span class="n">street_address</span> <span class="o">=</span> <span class="s1">&#39;Toronto, Canada&#39;</span>
-    <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;POST&#39;</span><span class="p">:</span>
-        <span class="n">form</span> <span class="o">=</span> <span class="n">AddressForm</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">POST</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">form</span><span class="o">.</span><span class="n">is_valid</span><span class="p">():</span>
-            <span class="c1"># TODO Add record to Fusion table.</span>
-            <span class="n">form</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">request</span><span class="o">=</span><span class="n">request</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Error address form invalid.&quot;</span><span class="p">,</span> <span class="n">extra</span><span class="o">=</span><span class="n">form</span><span class="o">.</span><span class="n">errors</span><span class="p">)</span>
-            <span class="k">return</span> <span class="n">HttpResponseBadRequest</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">form</span><span class="o">.</span><span class="n">errors</span><span class="p">))</span>
-        <span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s1">&#39;table.html&#39;</span><span class="p">,</span>
-                      <span class="p">{</span><span class="s1">&#39;table&#39;</span><span class="p">:</span> <span class="n">table</span><span class="p">,</span>
-                       <span class="s1">&#39;form&#39;</span><span class="p">:</span> <span class="n">form</span><span class="p">,</span>
-                       <span class="s1">&#39;storage&#39;</span><span class="p">:</span> <span class="n">messages_to_dict</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">to_str</span><span class="o">=</span><span class="kc">True</span><span class="p">)})</span>
-    <span class="n">address</span> <span class="o">=</span> <span class="p">(</span><span class="n">Address</span><span class="o">.</span><span class="n">objects</span>
-               <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">geocode_error</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-               <span class="o">.</span><span class="n">exclude</span><span class="p">(</span><span class="n">computed_address__isnull</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
-    <span class="k">if</span> <span class="n">address</span><span class="o">.</span><span class="n">count</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Found existing address.&quot;</span><span class="p">)</span>
-        <span class="n">last_address</span> <span class="o">=</span> <span class="n">address</span><span class="o">.</span><span class="n">last</span><span class="p">()</span>
-        <span class="n">street_address</span> <span class="o">=</span> <span class="n">last_address</span><span class="o">.</span><span class="n">address</span>
-    <span class="n">response</span> <span class="o">=</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s1">&#39;index.html&#39;</span><span class="p">,</span>
-                      <span class="p">{</span><span class="s1">&#39;address&#39;</span><span class="p">:</span> <span class="n">street_address</span><span class="p">,</span>
-                       <span class="s1">&#39;table&#39;</span><span class="p">:</span> <span class="n">table</span><span class="p">})</span>
-    <span class="n">verify_table_id_cookie_set</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">response</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">response</span></div>
+    <span class="n">flow</span> <span class="o">=</span> <span class="n">FlowClient</span><span class="p">(</span><span class="n">request</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">flow</span><span class="o">.</span><span class="n">credential_is_valid</span><span class="p">():</span>
+        <span class="n">authorization_url</span> <span class="o">=</span> <span class="n">flow</span><span class="o">.</span><span class="n">get_authorization_url</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">HttpResponseRedirect</span><span class="p">(</span><span class="n">authorization_url</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">table</span> <span class="o">=</span> <span class="n">AddressTable</span><span class="p">(</span><span class="n">Address</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">only</span><span class="p">(</span><span class="s1">&#39;address&#39;</span><span class="p">)</span>
+                             <span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="s1">&#39;-id&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">(),</span>
+                             <span class="n">request</span><span class="o">=</span><span class="n">request</span><span class="p">)</span>
+        <span class="n">street_address</span> <span class="o">=</span> <span class="s1">&#39;Toronto, Canada&#39;</span>
+        <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;POST&#39;</span><span class="p">:</span>
+            <span class="n">form</span> <span class="o">=</span> <span class="n">AddressForm</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">POST</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">form</span><span class="o">.</span><span class="n">is_valid</span><span class="p">():</span>
+                <span class="n">form</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">request</span><span class="o">=</span><span class="n">request</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Error address form invalid.&quot;</span><span class="p">,</span>
+                          <span class="n">extra</span><span class="o">=</span><span class="n">form</span><span class="o">.</span><span class="n">errors</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">HttpResponseBadRequest</span><span class="p">(</span>
+                    <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">form</span><span class="o">.</span><span class="n">errors</span><span class="p">))</span>
+            <span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s1">&#39;table.html&#39;</span><span class="p">,</span>
+                          <span class="p">{</span><span class="s1">&#39;table&#39;</span><span class="p">:</span> <span class="n">table</span><span class="p">,</span>
+                           <span class="s1">&#39;form&#39;</span><span class="p">:</span> <span class="n">form</span><span class="p">,</span>
+                           <span class="s1">&#39;storage&#39;</span><span class="p">:</span> <span class="n">messages_to_dict</span><span class="p">(</span>
+                               <span class="n">request</span><span class="p">,</span> <span class="n">to_str</span><span class="o">=</span><span class="kc">True</span><span class="p">)})</span>
+        <span class="n">address</span> <span class="o">=</span> <span class="p">(</span><span class="n">Address</span><span class="o">.</span><span class="n">objects</span>
+                   <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">geocode_error</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+                   <span class="o">.</span><span class="n">exclude</span><span class="p">(</span><span class="n">computed_address__isnull</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">address</span><span class="o">.</span><span class="n">count</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Found existing address.&quot;</span><span class="p">)</span>
+            <span class="n">last_address</span> <span class="o">=</span> <span class="n">address</span><span class="o">.</span><span class="n">last</span><span class="p">()</span>
+            <span class="n">street_address</span> <span class="o">=</span> <span class="n">last_address</span><span class="o">.</span><span class="n">address</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s1">&#39;index.html&#39;</span><span class="p">,</span>
+                          <span class="p">{</span><span class="s1">&#39;address&#39;</span><span class="p">:</span> <span class="n">street_address</span><span class="p">,</span>
+                           <span class="s1">&#39;table&#39;</span><span class="p">:</span> <span class="n">table</span><span class="p">})</span>
+        <span class="n">verify_table_id_cookie_set</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">response</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">response</span></div>
 
 
 <div class="viewcode-block" id="address_view"><a class="viewcode-back" href="../../index.html#map_app.views.address_view">[docs]</a><span class="nd">@require_GET</span>
@@ -97,10 +114,10 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Render a table of valid searched/clicked addresses.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">table</span> <span class="o">=</span> <span class="n">SearchedAddressesTable</span><span class="p">(</span><span class="n">Address</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="s1">&#39;-id&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">())</span>
+    <span class="n">table</span> <span class="o">=</span> <span class="n">SearchedAddressesTable</span><span class="p">(</span>
+        <span class="n">Address</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="s1">&#39;-id&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">())</span>
     <span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s1">&#39;address.html&#39;</span><span class="p">,</span>
-                  <span class="p">{</span><span class="s1">&#39;table&#39;</span><span class="p">:</span> <span class="n">table</span><span class="p">,</span>
-                   <span class="s1">&#39;fusion_api_key&#39;</span><span class="p">:</span> <span class="n">settings</span><span class="o">.</span><span class="n">GOOGLE_FUSION_TABLE_API_KEY</span><span class="p">})</span></div>
+                  <span class="p">{</span><span class="s1">&#39;table&#39;</span><span class="p">:</span> <span class="n">table</span><span class="p">})</span></div>
 
 
 <div class="viewcode-block" id="reset_address"><a class="viewcode-back" href="../../index.html#map_app.views.reset_address">[docs]</a><span class="nd">@require_GET</span>
@@ -108,20 +125,53 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Resets all previously added addresses.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># TODO: Delete all from google fusion table.</span>
+    <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Deleting all saved addresses.&quot;</span><span class="p">)</span>
     <span class="n">Address</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">all</span><span class="p">()</span><span class="o">.</span><span class="n">delete</span><span class="p">()</span>
-    <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Deleted all saved addresses.&quot;</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="s1">&#39;home&#39;</span><span class="p">)</span></div>
+    <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Deleting all addresses in fusion table.&quot;</span><span class="p">)</span>
+    <span class="n">FusionTableMixin</span><span class="o">.</span><span class="n">delete_all_addresses</span><span class="p">(</span>
+        <span class="o">*</span><span class="n">FusionTableMixin</span><span class="o">.</span><span class="n">get_service_and_table_id</span><span class="p">())</span>
+    <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="oauth_view"><a class="viewcode-back" href="../../index.html#map_app.views.oauth_view">[docs]</a><span class="nd">@require_GET</span>
-<span class="k">def</span> <span class="nf">oauth_view</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Callback view to handle google OAuth request.</span>
-<span class="sd">    :param request:</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">pass</span></div>
+<span class="nd">@login_required</span>
+<span class="k">def</span> <span class="nf">oauth_callback</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">xsrfutil</span><span class="o">.</span><span class="n">validate_token</span><span class="p">(</span>
+            <span class="n">settings</span><span class="o">.</span><span class="n">SECRET</span><span class="p">,</span>
+            <span class="nb">bytes</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">GET</span><span class="p">[</span><span class="s1">&#39;state&#39;</span><span class="p">],</span>
+                  <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">),</span>
+            <span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">id</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">HttpResponseBadRequest</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+    <span class="n">flow</span> <span class="o">=</span> <span class="n">FlowClient</span><span class="p">(</span><span class="n">request</span><span class="p">)</span>
+    <span class="n">flow</span><span class="o">.</span><span class="n">update_user_credential</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)</span>
 
+
+<span class="k">class</span> <span class="nc">FusionTableHandler</span><span class="p">(</span><span class="n">TemplateView</span><span class="p">,</span> <span class="n">FusionTableMixin</span><span class="p">):</span>
+
+    <span class="n">template_name</span> <span class="o">=</span> <span class="s1">&#39;fusion_table.html&#39;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">FusionTableHandler</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">flow</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">flow</span> <span class="o">=</span> <span class="n">FlowClient</span><span class="p">(</span><span class="n">request</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">flow</span><span class="o">.</span><span class="n">credential_is_valid</span><span class="p">():</span>
+            <span class="k">return</span> <span class="n">HttpResponseRedirect</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)</span>
+        <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;_request&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">request</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">FusionTableHandler</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+            <span class="n">request</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">get_context_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">flow</span><span class="p">:</span>
+            <span class="n">service</span><span class="p">,</span> <span class="n">table_id</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">flow</span><span class="o">.</span><span class="n">get_service_and_table_id</span><span class="p">())</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">service</span><span class="p">,</span> <span class="n">table_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_service_and_table_id</span><span class="p">()</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">select_all_rows</span><span class="p">(</span><span class="n">service</span><span class="p">,</span> <span class="n">table_id</span><span class="p">)</span>
+        <span class="n">table</span> <span class="o">=</span> <span class="n">FusionTable</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_process_result</span><span class="p">(</span><span class="n">results</span><span class="p">),</span>
+                            <span class="n">request</span><span class="o">=</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;_request&#39;</span><span class="p">))</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;fusion_table&#39;</span><span class="p">:</span> <span class="n">table</span><span class="p">}</span>
 </pre></div>
 
           </div>
