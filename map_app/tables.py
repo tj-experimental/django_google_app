@@ -46,7 +46,6 @@ class AddressTable(BassAddressTable):
 
 class SearchedAddressesTable(BassAddressTable):
     class Meta:
-        # fix paginator
         exclude = ['geocode_error']
         model = Address
         attrs = {'class': 'address_table table table-hover' +

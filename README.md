@@ -43,6 +43,8 @@ Create a super user.
 ```
 python3 manage.py createsuperuser
 ```
+OR
+`make superuser` from project root folder
 
 ### Run migrations
 ```sh
