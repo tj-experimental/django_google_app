@@ -9,7 +9,7 @@ from functools import wraps
 from oauth2client.client import HttpAccessTokenRefreshError
 from oauth2client.contrib import xsrfutil
 
-from map_app.lib import FlowClient
+from . import lib
 
 log = logging.getLogger(__name__)
 
@@ -42,13 +42,17 @@ class OAuth2Decorator(object):
         """
 
         def check_oauth(request_handler, *args, **kwargs):
+            class_handler = None
+            if hasattr(request_handler, 'request'):
+                class_handler = request_handler
+                request_handler = request_handler.request
             user = request_handler.user
             if not user:
                 # This should be an extra argument
                 request_handler.redirect(reverse('admin:login'))
                 return
 
-            flow_client = FlowClient(request_handler)
+            flow_client = lib.FlowClient(request_handler)
             if not flow_client.credential_is_valid():
                 log.debug("Invalid user credential: %d",
                           request_handler.user.id)
@@ -64,7 +68,11 @@ class OAuth2Decorator(object):
                     return HttpResponseBadRequest('Invalid Token')
 
             try:
-                return method(request_handler, *args, **kwargs)
+                if class_handler:
+                    return method(class_handler, request_handler,
+                                  *args, **kwargs)
+                else:
+                    return method(request_handler, *args, **kwargs)
             except HttpAccessTokenRefreshError as e:
                 log.debug(e)
                 authorization_url = flow_client.get_authorization_url()

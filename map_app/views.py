@@ -5,16 +5,16 @@ import logging
 
 from django.conf import settings
 from django.contrib.auth import decorators
-from django.http import HttpResponseBadRequest, HttpResponseRedirect
+from django.http import HttpResponseBadRequest
 from django.shortcuts import render, redirect
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.views.decorators.http import require_GET
 from django.views.generic import TemplateView
 from oauth2client.contrib import xsrfutil
 
-from map_app.decorators import oauth_decorator
-from .forms import AddressForm
 from . import lib
+from .decorators import oauth_decorator
+from .forms import AddressForm
 from .models import Address
 from .tables import AddressTable, SearchedAddressesTable, FusionTable
 from .utils import messages_to_dict, verify_table_id_cookie_set
@@ -70,7 +70,8 @@ def address_view(request):
     Render a table of valid searched/clicked addresses.
     """
     table = SearchedAddressesTable(
-        Address.objects.order_by('-id').all())
+        Address.objects.order_by('-id').all(),
+        request=request)
     return render(request, 'address.html',
                   {'table': table})
 
@@ -86,7 +87,7 @@ def reset_address(request):
     log.info("Deleting all addresses in fusion table.")
     lib.FusionTableMixin.delete_all_addresses(
         *lib.FusionTableMixin.get_service_and_table_id())
-    return redirect('/')
+    return redirect('/' if not request.path else request.path)
 
 
 @decorators.login_required
@@ -102,7 +103,7 @@ def oauth_callback(request):
         return HttpResponseBadRequest('Invalid Token')
     flow = lib.FlowClient(request)
     flow.update_user_credential()
-    return redirect('/')
+    return redirect('/' if not request.path else request.path)
 
 
 class FusionTableHandler(TemplateView, lib.FusionTableMixin):
@@ -115,9 +116,10 @@ class FusionTableHandler(TemplateView, lib.FusionTableMixin):
 
     @oauth_decorator.oauth_required
     def get(self, request, *args, **kwargs):
+        # This relies on get called first will neat to
+        # have an interface without having to
+        # create the flow here
         self.flow = lib.FlowClient(request)
-        if not self.flow.credential_is_valid():
-            return HttpResponseRedirect('/')
         kwargs['_request'] = request
         return super(FusionTableHandler, self).get(
             request, *args, **kwargs)
