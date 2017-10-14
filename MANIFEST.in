@@ -1,4 +1,5 @@
-Include README  LICENSE
-recursive-include eval_project *.py *html *.js *.es6
+Include README LICENSE
+recursive-include map_app *.py *.html *.css *.es6 *.js
+recursive-include eval_project *.py *html *.js *.css
 include docs/Makefile
 recursive-include docs/source *
