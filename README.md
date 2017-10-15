@@ -1,8 +1,10 @@
-# DJANGO app using google maps api and synchronized google fusion tables.
+# DJANGO app using google maps api for synchronizing data to google fusion tables using OAuth2.
 
-- Add locations to google fusion table.
-- Stores previously pinned locations.
-- Display Fusion tables layer with styles applied.
+- Validate access to google fusion table v2 api using OAuth2.
+- Perform updates to google fusion table with locations on the map by clicking or changing the position of the marker on the map. 
+- Delete all locations from google fusion by clicking the reset button.
+- Stores previously pinned/clicked locations in the fusion table.
+- Display Fusion tables layer with styles applied (i.e All locations saved in the fusion table have custom style and description Text Content).
 - Personalized Info window for previously searched addresses.
 
 ## Usage requirements
@@ -17,10 +19,11 @@ Add API keys for [Google Maps API](https://developers.google.com/maps/web/), and
 
 Also manage API Keys from the [Console](https://console.developers.google.com/apis/credentials)
 
+### Sample `google_api_keys.json`
 ```json
 {
-  "maps-api-key": "[[insert map api key]]",
-  "fusion-table-api-key": "[[insert fusion table api key]]",
+  "maps-api-key": "[[insert google map api key]]",
+  "fusion-table-api-key": "[[insert google fusion table api key]]",
   "client-secret": "[[insert client_id.json client_secret]]"
 }
 ```
@@ -29,34 +32,51 @@ Also manage API Keys from the [Console](https://console.developers.google.com/ap
 - Run
 ```
 pip install virtualenv virtualenvwrapper
+mkvirtualenv localve
 ```
+### Using virtaulenv
+- Run
+```
+pip install virtualenv
+virtualenv localve
+```
+On Windows run
+```
+localve\Scripts\activate
+``` 
+On Posix 
+```
+source localve/bin/activate
+```
+
 
 ### Installation
 ```bash
-mkvirtualenv test
+
 pip3 install -r requirements.txt
 npm install
 ```
 
-Create a super user.
-
+Create a super user to access the application.
 ```
 python3 manage.py createsuperuser
 ```
-OR
+OR run
 `make superuser` from project root folder
 
 ### Run migrations
 ```sh
-python3 manage.py migrate map_app
-python3 manage.py migrate static_precompiler
+python3 manage.py migrate
 ```
 
 ### Start django web server
 ```
 python3 manage.py runserver
 ```
-
+OR 
+```
+make run
+```
 
 ### Navigate to `localhost` server listens on port `8000`
 
@@ -69,44 +89,45 @@ cd django_google_app`
 pip install -e .
 pip install -e .[test]`
 npm install --only=dev`
-python3 manage.py migrate map_app
-python3 manage.py migrate static_precompiler
+python3 manage.py migrate 
 python3 manage.py runserver
 ```
 
 
+
 #### Generate Documentation
 ```
-   cd docs
-   make html
+cd docs
+make html
 ```
 OR Run in project root
-```
-    make docs
-```
 
+```
+make docs
+```
 On Windows run
 
 ```
-    make.bat docs
+make.bat docs
 ```
-
 
 
 #### View Documentation
 ```
-   cd docs
-   sphinx-serve -b build
+cd docs
+sphinx-serve -b build
 ```
-OR
-```sh
-   make view_docs
-```
-
 ##### Visit
 >  http://localhost:8081
 
+OR Run
+> This opens up a browser window with the documentation url http://localhost:8081.
+```sh
+make view_docs
+```
+
 #### Run Test
 ```
- tox
+make test
+tox
 ```
