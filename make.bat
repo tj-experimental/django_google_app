@@ -79,7 +79,7 @@ if -%PORT%-==-- (
     )
 )
 echo.Starting server on !HOST!^:!PORT!
-start chrome.exe !HOSTNAME!^:!PORT!
+start chrome.exe --new-tab !HOSTNAME!^:!PORT!
 call :manage runserver !HOST!^:!PORT!
 exit /b
 
@@ -129,7 +129,7 @@ echo.Serving sphinx docs
 call :doc_install
 call :docs
 cd docs
-start chrome.exe localhost:8899
+start chrome.exe --new-tab http:\\localhost:8899
 sphinx-serve -b build -p 8899
 
 :end
