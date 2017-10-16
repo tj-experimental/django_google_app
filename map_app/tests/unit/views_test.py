@@ -1,25 +1,22 @@
 from __future__ import absolute_import
 
 import json
-import sys
+from unittest import skip
 
-from django.shortcuts import render
-from mock import patch, MagicMock, Mock
-
-from django.contrib.auth.models import AnonymousUser, AbstractUser, User
-from django.core.urlresolvers import resolve, reverse
-from django.http import HttpResponseBadRequest, HttpResponseRedirect
-from django.test import TestCase
-from django.http import HttpRequest
-from unittest import skipIf, skip
-from django.template.loader import render_to_string
+from django.contrib.auth.models import AnonymousUser, User
 from django.contrib.messages.middleware import MessageMiddleware
+from django.core.urlresolvers import resolve
+from django.http import HttpRequest
+from django.http import HttpResponseBadRequest, HttpResponseRedirect
+from django.shortcuts import render
+from django.test import TestCase
+from mock import patch, MagicMock
 
 from map_app.utils import messages_to_dict
-from ...views import home, address_view, reset_address
+from ...forms import AddressForm
 from ...models import Address, UserTokens
 from ...tables import AddressTable
-from ...forms import AddressForm
+from ...views import home, address_view, reset_address
 
 
 class BaseTestCase(TestCase):
@@ -74,7 +71,6 @@ class HomePageTestCase(BaseTestCase):
 
     @skip('Need to implement.')
     def test_home_page_can_save_POST_request(self):
-        new_address = 'New york'
         pass
 
     def test_post_request_return_correct_html(self):
@@ -95,9 +91,9 @@ class HomePageTestCase(BaseTestCase):
         fusion_table_mixin.address_exists = None
 
         with patch('map_app.lib.FlowClient',
-                   return_value=flow_client) as fc, \
+                   return_value=flow_client), \
                 patch('map_app.lib.FusionTableMixin',
-                      return_value=fusion_table_mixin) as ft:
+                      return_value=fusion_table_mixin):
             response = home(request)
 
             # Moved below since new instance of
@@ -114,6 +110,7 @@ class HomePageTestCase(BaseTestCase):
 
             self.assertHTMLEqual(response.content.decode(),
                                  expected.content.decode())
+            flow_client.credential_is_valid.assert_called_once()
 
     def test_invalid_credentials_returns_redirect(self):
         request = self.request

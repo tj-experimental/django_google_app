@@ -4,10 +4,10 @@ import logging
 
 from django import forms
 from django.contrib import messages
+from django.http import Http404
 from django.utils.encoding import smart_str
 from easy_maps.models import Address
 
-from map_app.exceptions import RequestNotFoundException
 from . import lib
 
 log = logging.getLogger(__name__)
@@ -49,9 +49,9 @@ class AddressForm(forms.ModelForm):
                 return
             log.info("Adding address to fusion table.")
             if not request or not request.user:
-                message_ = "Request or user required objects not found."
+                message_ = "Request or user not found."
                 log.error(message_)
-                raise RequestNotFoundException(message_)
+                raise Http404(message_)
             else:
                 flow = lib.FlowClient(request)
                 service, table_id = flow.get_service_and_table_id()

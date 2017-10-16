@@ -47,9 +47,15 @@ doc_requires = [
     'sphinx-serve==1.0.1',
 ]
 
+lint_requires = [
+    'flake8',
+    'autopep8',
+]
+
 extras_require = {
     'test': test_requires,
     'docs': doc_requires,
+    'lint': lint_requires,
 }
 
 setup(

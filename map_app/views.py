@@ -82,11 +82,12 @@ def reset_address(request):
     """
     Resets all previously added addresses.
     """
+    flow = lib.FlowClient(request)
     log.info("Deleting all saved addresses.")
     Address.objects.all().delete()
     log.info("Deleting all addresses in fusion table.")
     lib.FusionTableMixin.delete_all_addresses(
-        *lib.FusionTableMixin.get_service_and_table_id())
+        *flow.get_service_and_table_id())
     return redirect('/' if not request.path else request.path)
 
 

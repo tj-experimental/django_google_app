@@ -25,7 +25,7 @@ SECRET_KEY = '+#z9@$brqm+z*@4me@wrl9ud)rjcqz7s-m+q#gm$pgpd#g%s^s'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 # Will have to run with --insecure to serve static files.
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 
@@ -81,6 +81,8 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'eval_project.wsgi.application'
+
+TEST_RUNNER = 'eval_project.test_runner.DisableLoggingTestRunner'
 
 # Breadcrumb template
 BREADCRUMBS_TEMPLATE = 'django_bootstrap_breadcrumbs/bootstrap3.html'
@@ -149,13 +151,15 @@ GOOGLE_API_KEYS_JSON_FILE = os.path.join(BASE_DIR, 'google_api_keys.json')
 EASY_MAPS_GOOGLE_MAPS_API_KEY = json.load(open(GOOGLE_API_KEYS_JSON_FILE),
                                           object_hook=lambda f: f['maps-api-key'])
 
-GOOGLE_FUSION_TABLE_API_KEY = json.load(open(GOOGLE_API_KEYS_JSON_FILE),
-                                        object_hook=lambda f: f['fusion-table-api-key'])
+GOOGLE_FUSION_TABLE_API_KEY = json.load(
+    open(GOOGLE_API_KEYS_JSON_FILE),
+    object_hook=lambda f: f['fusion-table-api-key'])
 
 SECRET = json.load(open(GOOGLE_API_KEYS_JSON_FILE),
                    object_hook=lambda f: f['client-secret'])
 
-VIEW_GOOGLE_MAP_LINK = 'https://www.google.com/maps/search/?api=1&map_action=map'
+VIEW_GOOGLE_MAP_LINK = ('https://www.google.com/maps/search/'
+                        '?api=1&map_action=map')
 
 GOOGLE_OAUTH2_CLIENT_SECRETS_JSON = os.path.join(BASE_DIR, 'client_id.json')
 
@@ -195,7 +199,8 @@ LOGGING = {
     'disable_existing_loggers': False,
     'formatters': {
         'verbose': {
-            'format': '[%(asctime)s %(thread)d %(name)s %(pathname)s] %(levelname)s : %(message)s',
+            'format': ('[%(asctime)s %(thread)d %(name)s %(pathname)s] '
+                       '%(levelname)s : %(message)s'),
             'datefmt': '%a, %d/%b/%Y %H:%M:%S'
         },
         'simple': {

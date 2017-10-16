@@ -39,18 +39,14 @@ python manage.py %*
 exit /b
 
 :test
-echo. Running test
+echo.Running test...
 call :manage test
-echo. Completed running test
 exit /b
 
 :migrate
-echo. Starting migration
+echo.Starting migration...
 call :manage makemigrations
-echo. Ended Migration
-echo. Starting Migrate
 call :manage migrate
-echo.Completed migrate
 exit /b
 
 :collectstatic
@@ -78,54 +74,63 @@ if -%PORT%-==-- (
         exit /b
     )
 )
-echo.Starting server on !HOST!^:!PORT!
-start chrome.exe --new-tab !HOSTNAME!^:!PORT!
+echo.Starting server on !HOST!^:!PORT! ...
+start chrome.exe --new-tab http:\\!HOSTNAME!^:!PORT!
 call :manage runserver !HOST!^:!PORT!
 exit /b
 
 :app
-echo.Creating app %2
+echo.Creating app %2 ...
 call :manage startapp %2
 exit /b
 
 :superuser
+echo.Creating Super user...
 call :manage createsuperuser
 exit /b
 
 :clean-pyc
+echo.Cleaning *.pyc files...
 find . -name "*.pyc" -exec rm --force {}
 exit /b
 
 :clean-build
+echo.Removing build assets...
 rm --force -r .\*.egg-info
 rm --force -r dist\
 rm --force -r build\
 exit /b
 
 :lint
-flake --exclude=.tox --include=*.py
+echo.Running flake8...
+pip install -q -e .[lint]
+flake8 --exclude=.tox,docs --include=*.py
 exit /b
 
 :install
+echo.Installing project deps locally...
 pip install -e . -r requirements.txt
 exit /b
 
 :test_install
-pip install -e .[test]
+echo.Installing test deps...
+pip install -e -q .[test] --no-deps
 exit /b
 
 :doc_install
-pip install -e .[doc]
+echo. Installing documentation deps...
+pip install -q -e .[doc] --no-deps
 exit /b
 
 :docs
+echo.Building sphinx docs...
 echo.%~dp0docs
 cd docs
 make.bat html -b build
 exit /b
 
 :view_docs
-echo.Serving sphinx docs
+echo.Serving sphinx docs...
 call :doc_install
 call :docs
 cd docs

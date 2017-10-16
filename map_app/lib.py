@@ -1,6 +1,10 @@
+from __future__ import absolute_import
+
 import functools
 import json
+import os
 
+from django.conf import settings
 from django.shortcuts import get_object_or_404
 from googleapiclient.discovery import build
 from httplib2 import Http
@@ -9,19 +13,18 @@ from oauth2client.contrib import xsrfutil
 from oauth2client.contrib.django_util.storage import DjangoORMStorage
 from oauth2client.service_account import ServiceAccountCredentials
 
-from django.conf import settings
-from django.http.response import HttpResponseNotAllowed
-
-from map_app.models import UserTokens, CredentialsModel
+from .exceptions import InvalidCredentialException
+from .models import UserTokens, CredentialsModel
 
 
 @functools.lru_cache(maxsize=None)
-def get_http_auth():
-    if not settings.GOOGLE_SERVICE_ACCOUNT_KEY_FILE:
-        raise HttpResponseNotAllowed('No service account key file found.')
+def get_http_auth(service_account_json_file=None):
+    if (not service_account_json_file
+       or not os.path.isfile(service_account_json_file)):
+        raise InvalidCredentialException('No service account key file found.')
     else:
         credentials = ServiceAccountCredentials.from_json_keyfile_name(
-            settings.GOOGLE_SERVICE_ACCOUNT_KEY_FILE,
+            service_account_json_file,
             settings.FUSION_TABLE_SCOPE
         )
         # TODO: Add file based cache for http auth
@@ -29,7 +32,7 @@ def get_http_auth():
         return http
 
 
-def get_service(http, service_name='fusiontables', version='v1'):
+def _build_service(http, service_name='fusiontables', version='v1'):
     return build(service_name, version, http=http,
                  developerKey=settings.GOOGLE_FUSION_TABLE_API_KEY)
 
@@ -113,7 +116,7 @@ class FlowClient(object):
         # http is authorized with the user's Credentials and can be
         # used in API calls
         table_id = settings.FUSION_TABLE_ID
-        service = get_service(self.http)
+        service = _build_service(self.http)
         return service, table_id
 
 
@@ -170,11 +173,11 @@ class FusionTableMixin(object):
     @classmethod
     def get_service_and_table_id(cls):
         # This should be removed.
-        http = get_http_auth()
+        http = get_http_auth(settings.GOOGLE_SERVICE_ACCOUNT_KEY_FILE)
         # http is authorized with the user's Credentials and can be
         # used in API calls
         table_id = settings.FUSION_TABLE_ID
-        service = get_service(http)
+        service = _build_service(http)
         return service, table_id
 
     @classmethod
