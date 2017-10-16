@@ -8,6 +8,10 @@ notifications:
     recipients:
       - tonyejck@gmail.com
 
+install:
+  - pip install -e .[test]
+  - sudo apt-get python-tox
+
 before_script:
   - npm install 
   - pip install -e .[test] --no-deps
