@@ -7,7 +7,15 @@ notifications:
   email:
     recipients:
       - tonyejck@gmail.com
-    
+
+before_script:
+  - npm install 
+  - pip install -e .[test]
+  - echo {"type": "service account", "client_id": "12233"} >> service_account.json
+  - echo {"web": {"client_id": "123454", "client_secret": "afsfn"}} >> client_id.json
+  - echo {"maps-api-key": "T2yY0n3DoJ0sQpA", "fusion-table-api-key": "hG3k99ULtKMQ", "client-secret": "f7sdff"} >> google_api_keys.json
+  
+  
 script:
   make test
   make tox
