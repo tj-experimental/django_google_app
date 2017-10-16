@@ -1,0 +1,10 @@
+language: python
+sudo: enabled
+node_js:
+  - '0.10'
+
+notifications:
+  email:
+    recipients:
+      - tonyejck@gmail.com
+    
