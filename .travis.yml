@@ -11,6 +11,7 @@ notifications:
 install:
   - pip install -e .[test]
   - sudo apt-get install python-tox
+  - sudo apt-get install python3.6
 
 before_script:
   - npm install 
