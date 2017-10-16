@@ -1,0 +1,37 @@
+language: python
+sudo: enabled
+node_js:
+  - '0.10'
+python:
+  - "2.7"
+  - "3.6"
+
+notifications:
+  email:
+    recipients:
+      - tonyejck@gmail.com
+
+install:
+  - wget https://www.python.org/ftp/python/3.6.3/Python-3.6.3.tar.xz
+  - tar xJf Python-3.6.3.tar.xz
+  - rm Python-3.6.3.tar.xz
+  - cd Python-3.6.3
+  - ./configure
+  - sudo make
+  - sudo make install
+  - cd ..
+  - pip install -r requirements.txt
+  - pip install -e .
+  - pip install -e .[test]
+  - sudo apt-get install python-tox
+
+before_script:
+  - npm install 
+  - pip install -e .[test] --no-deps
+  - "echo '{ \"type\": \"service account\", \"client_id\": \"12233\" }' >> service_account.json"
+  - "echo '{ \"web\": {\"client_id\": \"5271883-l.apps.googleusercontent.com\", \"client_secret\": \"abc1234\", \"redirect_uris\": \"http://localhost:8000/oauth2callback\", \"auth_uri\": \"https://accounts.google.com/o/oauth2/auth\", \"token_uri\": \"https://accounts.google.com/o/oauth2/token\" }}' >> client_id.json"
+  - "echo '{ \"maps-api-key\": \"J0sQpA\", \"fusion-table-api-key\": \"KMQ\", \"client-secret\": \"f7TlA\" }' >> google_api_keys.json"
+  
+script:
+  - make test
+  - tox
