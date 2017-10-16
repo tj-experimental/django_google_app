@@ -10,7 +10,7 @@ notifications:
 
 install:
   - pip install -e .[test]
-  - sudo apt-get python-tox
+  - sudo apt-get install python-tox
 
 before_script:
   - npm install 
