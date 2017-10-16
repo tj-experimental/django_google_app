@@ -11,9 +11,9 @@ notifications:
 before_script:
   - npm install 
   - pip install -e .[test] --no-deps
-  - "echo { \"type\": \"service account\", \"client_id\": \"12233\" } >> service_account.json"
-  - "echo { \"web\": {\"client_id\": \"103m\", \"client_secret\": \"abc1234\"} } >> client_id.json"
-  - "echo { \"maps-api-key\": \"J0sQpA\", \"fusion-table-api-key\": \"KMQ\", \"client-secret\": \"f7TlA\" } >> google_api_keys.json"
+  - "echo '{ \"type\": \"service account\", \"client_id\": \"12233\" }' >> service_account.json"
+  - "echo '{ \"web\": {\"client_id\": \"103m\", \"client_secret\": \"abc1234\"} }' >> client_id.json"
+  - "echo '{ \"maps-api-key\": \"J0sQpA\", \"fusion-table-api-key\": \"KMQ\", \"client-secret\": \"f7TlA\" }' >> google_api_keys.json"
   
 script:
   make test
