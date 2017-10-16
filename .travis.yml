@@ -12,7 +12,7 @@ before_script:
   - npm install 
   - pip install -e .[test] --no-deps
   - touch service_account.json
-  - echo {"type": "service account", "client_id": "12233"} >> service_account.json
+  - "echo {\"type\": \"service account\", \"client_id\": \"12233\"} >> service_account.json"
   - touch client_id.json
   - touch google_api_keys.json
   
