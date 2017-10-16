@@ -88,23 +88,25 @@ def reset_address(request):
     log.info("Deleting all addresses in fusion table.")
     lib.FusionTableMixin.delete_all_addresses(
         *flow.get_service_and_table_id())
-    return redirect('/' if not request.path else request.path)
+    return redirect('/')
 
 
 @decorators.login_required
 def oauth_callback(request):
-    token = bytes(request.GET['state'],
-                  encoding='utf-8')
+    token = request.GET.get('state')
+    if not token:
+        log.error('Invalid request.')
+        return HttpResponseBadRequest('Invalid Request.')
     if not xsrfutil.validate_token(
             settings.SECRET,
-            token,
+            bytes(token, encoding='utf-8'),
             request.user.id):
         log.error("User id %d Invalid Token used: %s"
                   % (request.user.id, token))
         return HttpResponseBadRequest('Invalid Token')
     flow = lib.FlowClient(request)
     flow.update_user_credential()
-    return redirect('/' if not request.path else request.path)
+    return redirect('/')
 
 
 class FusionTableHandler(TemplateView, lib.FusionTableMixin):

@@ -4,7 +4,7 @@ const displayAlert = (message, tag = "info") => {
     }
     let alertDiv = `<div class="alert alert-${tag}" id="page-alert" style="display: none;">
                     <strong>${message}</strong>
-                    <a href="#" class="close" data-dimiss="alert">&times;</a>
+                    <a href="#" class="close" data-dismiss="alert">&times;</a>
                     </div>`;
     $(alertDiv).appendTo($('.nav-breadcrumbs-alert')).slideDown(100);
     addAlertHandler();
@@ -17,7 +17,7 @@ const renderAlerts = (messages) => {
 };
 
 const removeAlert = (e) => {
-    $(e.target).fadeTo(400, 0).slideUp(200, () => $(e.target).empty().remove());
+    $(e.target).remove();
 };
 
 

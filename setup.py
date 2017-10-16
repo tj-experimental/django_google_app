@@ -17,7 +17,7 @@ install_requires = [
     'geopy==1.11.0',
     'httplib2==0.10.3',
     'jsmin==2.2.2',
-    'oauth2client==4.1.2',
+    'oauth2client==3.0.0',
     'pyasn1==0.3.7',
     'pyasn1-modules==0.1.4',
     'pytz==2017.2',

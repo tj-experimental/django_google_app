@@ -10,7 +10,7 @@ const initFusionTable = (map) => {
         styles: 2
     });
 
-    google.maps.event.removeEventListener(layer, 'click');
+    google.maps.event.clearListeners(layer, 'click');
     google.maps.event.addListener(layer, 'click', function (e) {
         let row = e.row;
         let address = row.address.value;

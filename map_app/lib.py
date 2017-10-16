@@ -80,7 +80,7 @@ class FlowClient(object):
         credential = self.get_credential()
         # Credential not valid if None or credential.invalid == True
         if credential:
-            return credential.invalid != True
+            return not credential.access_token_expired
         return False
 
     def get_authorization_url(self):
