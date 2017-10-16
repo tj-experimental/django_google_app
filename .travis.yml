@@ -8,6 +8,6 @@ notifications:
     recipients:
       - tonyejck@gmail.com
     
-scripts:
+script:
   make test
   make tox
