@@ -119,7 +119,7 @@ class FusionTableHandler(TemplateView, lib.FusionTableMixin):
 
     @oauth_decorator.oauth_required
     def get(self, request, *args, **kwargs):
-        # This relies on get called first will neat to
+        # This relies on get called first will need to
         # have an interface without having to
         # create the flow here
         self.flow = lib.FlowClient(request)
