@@ -20,14 +20,12 @@ install:
   - sudo make
   - sudo make install
   - cd ..
-  - pip install -r requirements.txt
-  - pip install -e .
-  - pip install -e .[test]
+  - pip install -e . -r requirements.txt
   - sudo apt-get install python-tox
 
 before_script:
   - npm install 
-  - pip install -e .[test] --no-deps
+  - pip install -e .[test] --no-deps --ignore-installed
   - "echo '{ \"type\": \"service account\", \"client_id\": \"12233\" }' >> service_account.json"
   - "echo '{ \"web\": {\"client_id\": \"5271883-l.apps.googleusercontent.com\", \"client_secret\": \"abc1234\", \"redirect_uris\": \"http://localhost:8000/oauth2callback\", \"auth_uri\": \"https://accounts.google.com/o/oauth2/auth\", \"token_uri\": \"https://accounts.google.com/o/oauth2/token\" }}' >> client_id.json"
   - "echo '{ \"maps-api-key\": \"J0sQpA\", \"fusion-table-api-key\": \"KMQ\", \"client-secret\": \"f7TlA\" }' >> google_api_keys.json"
