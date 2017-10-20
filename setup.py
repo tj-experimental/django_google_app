@@ -6,7 +6,7 @@ from setuptools import find_packages
 install_requires = [
     'Django==1.9',
     'google-api-python-client==1.6.4',
-    'git+git://github.com/jackton1/django-easy-maps.git',
+    'django-easy-maps==0.9.3',
     'django-appconf==1.0.2',
     'django-classy-tags==0.8.0',
     'django-pipeline==1.6.9',
