@@ -31,7 +31,7 @@ app:
 
 test:
 	@echo "Running test..."
-	${MANAGE_PY} test
+	${MANAGE_PY} test --settings=eval_project.settings
 
 docs:
 	@echo "Building sphinx docs"
