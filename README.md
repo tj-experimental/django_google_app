@@ -1,5 +1,6 @@
 # DJANGO app using google maps api for synchronizing data to google fusion tables using OAuth2. 
 [![Build Status](https://travis-ci.org/jackton1/django_google_app.svg?branch=master)](https://travis-ci.org/jackton1/django_google_app)
+[![Build status](https://ci.appveyor.com/api/projects/status/r713eskuf4qp1uda/branch/master?svg=true)](https://ci.appveyor.com/project/jackton1/django-google-app/branch/master)
 
 - Validate access to google fusion table v2 api using OAuth2.
 - Perform updates to google fusion table with locations on the map by clicking or changing the position of the marker on the map. 
