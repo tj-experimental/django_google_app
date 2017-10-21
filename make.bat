@@ -40,7 +40,7 @@ exit /b
 
 :test
 echo.Running test...
-call :manage test
+call :manage test --settings=eval_project.settings
 exit /b
 
 :migrate
