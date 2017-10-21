@@ -4,7 +4,7 @@ environment:
 
 # Install scripts. (runs after repo cloning)
 install:
-  - pip install install -e . -r requirements.txt
+  - pip install -e . -r requirements.txt
 
 # Post-install test scripts.
 test_script:
