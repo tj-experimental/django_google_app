@@ -1,0 +1,14 @@
+
+environment:
+  python: "3.6"
+
+# Install scripts. (runs after repo cloning)
+install:
+  - pip install install -e . -r requirements.txt
+
+# Post-install test scripts.
+test_script:
+  # run tests
+  - make test
+
+build: on
