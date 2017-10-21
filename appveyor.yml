@@ -11,4 +11,4 @@ test_script:
   # run tests
   - make test
 
-build: on
+build: off
