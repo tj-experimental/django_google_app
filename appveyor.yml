@@ -10,10 +10,10 @@ install:
 # Before running test create dummy files.
 before_test:
   - pip install -e .[test]
-  - "echo '{ \"type\": \"service account\", \"client_id\": \"12233\" }' >> service_account.json"
-  - "echo '{ \"web\": {\"client_id\": \"5271883-l.apps.googleusercontent.com\", \"client_secret\": \"abc1234\", \"redirect_uris\": \"http://localhost:8000/oauth2callback\", \"auth_uri\": \"https://accounts.google.com/o/oauth2/auth\", \"token_uri\": \"https://accounts.google.com/o/oauth2/token\" }}' >> client_id.json"
-  - "echo '{ \"maps-api-key\": \"J0sQpA\", \"fusion-table-api-key\": \"KMQ\", \"client-secret\": \"f7TlA\" }' >> google_api_keys.json"
-
+  - "echo '{\"type\": \"service account\", \"client_id\": \"12233\"}' >> service_account.json"
+  - "echo '{\"web\": {\"client_id\": \"5271883-l.apps.googleusercontent.com\", \"client_secret\": \"abc1234\", \"redirect_uris\": \"http://localhost:8000/oauth2callback\", \"auth_uri\": \"https://accounts.google.com/o/oauth2/auth\", \"token_uri\": \"https://accounts.google.com/o/oauth2/token\"}}' >> client_id.json"
+  - "echo '{\"maps-api-key\": \"J0sQpA\", \"fusion-table-api-key\": \"KMQ\", \"client-secret\": \"f7TlA\"}' >> google_api_keys.json"
+  - type google_api_keys.json
 # Post-install test scripts.
 test_script:
   # run tests
