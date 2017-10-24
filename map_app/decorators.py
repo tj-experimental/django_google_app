@@ -49,8 +49,7 @@ class OAuth2Decorator(object):
             user = request_handler.user
             if not user:
                 # This should be an extra argument
-                request_handler.redirect(reverse('admin:login'))
-                return
+                return HttpResponseRedirect(reverse('admin:login'))
 
             flow_client = lib.FlowClient(request_handler)
             if not flow_client.credential_is_valid():
@@ -65,6 +64,8 @@ class OAuth2Decorator(object):
                         settings.SECRET,
                         token,
                         request_handler.user.id):
+                    log.error('Invalid token used by %s: %d' % (
+                        request_handler.user.username, request_handler.user.id))
                     return HttpResponseBadRequest('Invalid Token')
 
             try:
