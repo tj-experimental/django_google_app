@@ -7,7 +7,6 @@ const displayAlert = (message, tag = "info") => {
                     <a href="#" class="close" data-dismiss="alert">&times;</a>
                     </div>`;
     $(alertDiv).appendTo($('.nav-breadcrumbs-alert')).slideDown(100);
-    addAlertHandler();
 };
 
 const renderAlerts = (messages) => {
@@ -15,16 +14,3 @@ const renderAlerts = (messages) => {
         displayAlert(message.message, message.level_tag);
     }
 };
-
-const removeAlert = (e) => {
-    $(e.target).remove();
-};
-
-
-const addAlertHandler = (target = '.alert') => {
-    $(target).bind('click', removeAlert)
-};
-
-$('#addresses_table').on('saved-address', addAlertHandler);
-
-$(document).ready(() => addAlertHandler());
