@@ -11,10 +11,7 @@
 
 ## Usage requirements
 
-Generate a `service_account.json` from [Service Account Page](https://console.cloud.google.com/iam-admin/serviceaccounts)
-and a `client_id.json` for Oauth 2.0 authentication
-
-Create one [here](https://console.developers.google.com/apis/credentials) and save in project root directory
+Create a `client_id.json` [here](https://console.developers.google.com/apis/credentials) for OAuth v2.0 authentication and save in project root directory.
 
 Add API keys for [Google Maps API](https://developers.google.com/maps/web/), and [Google Fusion Table REST API](https://developers.google.com/fusiontables/docs/v2/getting_started#about-rest) to `google_api_keys.json`
 
