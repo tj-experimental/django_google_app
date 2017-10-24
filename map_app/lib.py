@@ -3,6 +3,7 @@ from __future__ import absolute_import
 import functools
 import json
 import os
+from abc import ABCMeta
 
 from django.conf import settings
 from django.shortcuts import get_object_or_404
@@ -15,21 +16,6 @@ from oauth2client.service_account import ServiceAccountCredentials
 
 from .exceptions import InvalidCredentialException
 from .models import UserTokens, CredentialsModel
-
-
-@functools.lru_cache(maxsize=None)
-def get_http_auth(service_account_json_file=None):
-    if (not service_account_json_file
-       or not os.path.isfile(service_account_json_file)):
-        raise InvalidCredentialException('No service account key file found.')
-    else:
-        credentials = ServiceAccountCredentials.from_json_keyfile_name(
-            service_account_json_file,
-            settings.FUSION_TABLE_SCOPE
-        )
-        # TODO: Add file based cache for http auth
-        http = credentials.authorize(Http())
-        return http
 
 
 def _build_service(http, service_name='fusiontables', version='v1'):
@@ -46,6 +32,9 @@ def store_user_tokens(user, access_token, refresh_token):
 
 
 class FlowClient(object):
+    """
+    FlowClient to manage credentials.
+    """
     def __init__(self,
                  request,
                  client_secret_json=settings.GOOGLE_OAUTH2_CLIENT_SECRETS_JSON,
@@ -120,8 +109,10 @@ class FlowClient(object):
         return service, table_id
 
 
-class FusionTableMixin(object):
-
+class FusionTableMixin(metaclass=ABCMeta):
+    """
+    Mixin to manage Interactions with google fusion table.
+    """
     @classmethod
     def select_all_rows(cls, service, table_id):
         return (service.query()
@@ -144,7 +135,7 @@ class FusionTableMixin(object):
             return json.dumps(style)
 
     @classmethod
-    def insert_address(cls, address, service, table_id):
+    def save(cls, address, service, table_id):
         values_dict = cls.sanitize_address(address)
         values_dict.update({'table_id': table_id})
         if not cls.address_exists(address, service, table_id):
@@ -173,12 +164,13 @@ class FusionTableMixin(object):
     @classmethod
     def get_service_and_table_id(cls):
         # This should be removed.
-        http = get_http_auth(settings.GOOGLE_SERVICE_ACCOUNT_KEY_FILE)
+        # http = get_http_auth(settings.GOOGLE_SERVICE_ACCOUNT_KEY_FILE)
         # http is authorized with the user's Credentials and can be
         # used in API calls
-        table_id = settings.FUSION_TABLE_ID
-        service = _build_service(http)
-        return service, table_id
+        # table_id = settings.FUSION_TABLE_ID
+        # service = _build_service(http)
+        # return service, table_id
+        raise NotImplementedError()
 
     @classmethod
     def _process_result(cls, results):
@@ -194,7 +186,3 @@ class FusionTableMixin(object):
                        'longitude': address.longitude or '',
                        'computed_address': address.computed_address or ''}
         return values_dict
-
-    @classmethod
-    def save(cls, address, service, table_id):
-        return cls.insert_address(address, service, table_id)
