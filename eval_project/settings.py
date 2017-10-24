@@ -165,8 +165,6 @@ GOOGLE_OAUTH2_CLIENT_SECRETS_JSON = os.path.join(BASE_DIR, 'client_id.json')
 
 CLIENT_ID = json.load(open(GOOGLE_OAUTH2_CLIENT_SECRETS_JSON))['web']['client_id']
 
-GOOGLE_SERVICE_ACCOUNT_KEY_FILE = os.path.join(BASE_DIR, 'service_account.json')
-
 FUSION_TABLE_SCOPE = 'https://www.googleapis.com/auth/fusiontables'
 
 OAUTH2_CLIENT_REDIRECT_PATH = 'http://localhost:8000/oauth2callback'
