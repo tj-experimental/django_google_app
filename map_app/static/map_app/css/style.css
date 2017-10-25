@@ -140,6 +140,6 @@ a.text-muted {
     font-weight: 500;
 }
 
-.navbar-inverse .navbar-nav>li>a:hover {
+.navbar-inverse .navbar-nav>li>a.reset-link:hover {
   color: red;
 }
