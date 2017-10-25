@@ -14,15 +14,29 @@
 	<body>
         <div class="nav-breadcrumbs-alert">
             {% block nav %}
-                <nav class="nav navbar-light" id="top-nav" style="background-color: #417690;">
-                    <ul class="nav navbar-nav">
-                       {% block nav_links %}{% endblock %}
-                    </ul>
-                    <ul class="nav navbar-nav pull-right">
-                        <li class="nav-item text-white">
-                            <a href="{% url 'admin:logout' %}" class="nav-link text-muted">{% trans 'Log out' %}</a>
-                        </li>
-                    </ul>
+                <nav class="navbar navbar-inverse navbar-light" id="top-nav" style="background-color: #417690;">
+		    <div class="container-fluid">
+			 <div class="navbar-header">
+			    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navBody">
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>                        
+			    </button>
+			    <a class="navbar-brand" href="#">Using Google API</a>
+			  </div>
+			  <div class="collapse navbar-collapse" id="navBody">
+			     <ul class="nav navbar-nav">
+			         {% block nav_links %}{% endblock %}
+			     </ul>
+			     <ul class="nav navbar-nav navbar-right">
+			         <li class="nav-item text-white">
+				    <a href="{% url 'admin:logout' %}" class="nav-link text-muted">
+					    <span class="glyphicon glyphicon-log-out"></span>
+					    {% trans 'Log out' %}</a>
+				 </li>
+			      </ul>
+			  </div>
+		    </div>
                 </nav>
             {% endblock %}
             {% block progress %}
