@@ -54,18 +54,15 @@ source localve/bin/activate
 pip3 install -r requirements.txt
 npm install
 ```
-
-Create a super user to access the application.
-```
-python3 manage.py createsuperuser
-```
-OR run
-`make superuser` from project root folder
-
 ### Run migrations
 ```sh
 python3 manage.py migrate
 ```
+### Create a super user to access the application.
+```
+python3 manage.py createsuperuser
+```
+##### OR run `make superuser` from project root folder
 
 ### Start django web server
 ```
@@ -75,22 +72,17 @@ OR
 ```
 make run
 ```
-
-### Navigate to `localhost` server listens on port `8000`
-
-> http://localhost:8000
+### Navigate to http://localhost:8000
 
 ### Local Development
 ```bash
 git clone https://github.com/jackton1/django_google_app.git
-cd django_google_app`
-pip install -e .
-pip install -e .[test]`
-npm install --only=dev`
+cd django_google_app
+pip install -e . -r requirements.txt
+npm install 
 python3 manage.py migrate 
 python3 manage.py runserver
 ```
-
 
 
 #### Generate Documentation
@@ -98,34 +90,23 @@ python3 manage.py runserver
 cd docs
 make html
 ```
-OR Run in project root
-
-```
-make docs
-```
-On Windows run
-
-```
-make.bat docs
-```
-
+##### OR Run in project root `make docs`
 
 #### View Documentation
 ```
 cd docs
 sphinx-serve -b build
 ```
+
 ##### Visit
 >  http://localhost:8081
 
-OR Run
+###### OR run `make view_docs` 
 > This opens up a browser window with the documentation url http://localhost:8081.
-```sh
-make view_docs
-```
 
 #### Run Test
 ```
+pip install -e .[test]
 make test
 tox
 ```
