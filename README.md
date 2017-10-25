@@ -34,17 +34,16 @@ pip install virtualenv virtualenvwrapper
 mkvirtualenv localve
 ```
 
-### Setup with `virtualenv`
-- Run
+### Setup with `virtualenv` 
 ```
 pip install virtualenv
 virtualenv localve
 ```
-- On Windows run
+#### On Windows activate the virtaulenv.
 ```
 localve\Scripts\activate
 ``` 
-- On Posix system run
+#### On Posix system activate the virtualenv
 ```
 source localve/bin/activate
 ```
