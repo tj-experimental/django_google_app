@@ -27,31 +27,31 @@ Also manage API Keys from the [Console](https://console.developers.google.com/ap
 }
 ```
 
-### Project requires `virtualenv` and `virtualenvwrapper`
+### Create a virtual environment using `virtualenvwrapper`
 - Run
 ```
 pip install virtualenv virtualenvwrapper
 mkvirtualenv localve
 ```
-### Using virtaulenv
+
+### Setup with `virtualenv`
 - Run
 ```
 pip install virtualenv
 virtualenv localve
 ```
-On Windows run
+- On Windows run
 ```
 localve\Scripts\activate
 ``` 
-On Posix system run
+- On Posix system run
 ```
 source localve/bin/activate
 ```
 
 
-### Installation
+### Install the project requirements
 ```bash
-
 pip3 install -r requirements.txt
 npm install
 ```
