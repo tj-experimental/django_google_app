@@ -140,3 +140,6 @@ a.text-muted {
     font-weight: 500;
 }
 
+.reset-link:hover {
+  color: red;
+}
