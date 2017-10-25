@@ -11,15 +11,17 @@
 
 {% block nav_links %}
     <li class="nav-item active"> 
-    	<a href="{% url 'address' %}" class="nav-link text-muted"> Address Table </a>
+    	 <a href="{% url 'home' %}" class="nav-link text-muted">Home</a>
     </li>
     <li class="nav-item">
-    	<a href="{% url 'fusion-tables' %}" class="nav-link text-muted"> Fusion Table </a>
+       <a href="{% url 'address' %}" class="nav-link text-muted">Address Table</a>
     </li>
     <li class="nav-item">
-        <a href="{% url 'reset-address' %}" class="nav-link confirmation-required text-danger">
-            <span class="glyphicon glyphicon-trash"></span> Reset Addresses
-        </a>
+    	<a href="{% url 'fusion-tables' %}" class="nav-link text-muted">Fusion Table</a>
+    </li>
+    <li class="nav-item">
+        <a href="{% url 'reset-address' %}" class="confirmation-required btn btn-danger navbar-btn">
+            <span class="glyphicon glyphicon-trash"></span>Reset Addresses</a>
     </li>
 {% endblock %}
 
