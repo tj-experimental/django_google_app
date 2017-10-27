@@ -15,7 +15,7 @@ class UserTokens(models.Model):
     authorized_url = models.URLField(null=True)
 
     def __str__(self):
-        return 'UserToken Model'
+        return self.__class__.__name__ + ' Model'
 
 
 @python_2_unicode_compatible
@@ -24,4 +24,4 @@ class CredentialsModel(models.Model):
     credential = CredentialsField()
 
     def __str__(self):
-        return 'Credential Model'
+        return self.__class__.__name__ + ' Model'
