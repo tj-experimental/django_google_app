@@ -12,6 +12,9 @@ DATABASES['default'].update(db_from_env)
 # Serving static files with whitenoise
 STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
 
+SITE_NAME = 'gogglefusion.herokuapp.com'
+SITE_DOMAIN = 'gogglefusion.herokuapp.com'
+
 # From registration email
 REGISTRATION_DEFAULT_FROM_EMAIL = 'django_google@yahoo.com'
 # Set the email backend
