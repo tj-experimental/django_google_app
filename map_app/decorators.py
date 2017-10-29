@@ -3,6 +3,7 @@ from __future__ import unicode_literals, absolute_import
 import logging
 
 from django.conf import settings
+from django.contrib.sites.models import Site
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseBadRequest, HttpResponseRedirect
 from functools import wraps
@@ -12,6 +13,18 @@ from oauth2client.contrib import xsrfutil
 from . import lib
 
 log = logging.getLogger(__name__)
+
+
+def update_site_info(func):
+    @wraps(func)
+    def wrapped(*args, **kwargs):
+        current_site = Site.objects.get_or_create(
+            name=settings.SITE_NAME,
+            domain=settings.SITE_DOMAIN)
+        site, exists = current_site
+        settings.SITE_ID = site.id
+        return func(*args, **kwargs)
+    return wrapped
 
 
 def ajax_permitted(func):
@@ -49,7 +62,7 @@ class OAuth2Decorator(object):
             user = request_handler.user
             if not user:
                 # This should be an extra argument
-                return HttpResponseRedirect(reverse('admin:login'))
+                return HttpResponseRedirect(reverse('auth_login'))
 
             flow_client = lib.FlowClient(request_handler)
             if not flow_client.credential_is_valid():

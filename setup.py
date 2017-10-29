@@ -23,6 +23,10 @@ install_requires = [
     'six==1.11.0',
     'uritemplate==3.0.0',
     'gcloud',
+    'gunicorn==19.7.1',
+    'dj-database-url==0.4.2',
+    'whitenoise==3.3.1',
+    'django-registration-redux==1.8',
     'alabaster==0.7.10',
     'Babel==2.5.1',
     'beautifulsoup4==4.6.0',
@@ -58,7 +62,7 @@ extras_require = {
 
 setup(
     name='django_map_app',
-    version='1.0.0',
+    version='1.0.1',
     author='Tonye Jack',
     author_email='jtonye@ymail.com',
     packages=find_packages(),

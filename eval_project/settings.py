@@ -44,6 +44,8 @@ PROJECT_APPS = ['easy_maps',
 
 INSTALLED_APPS = [
     'django.contrib.admin',
+    'django.contrib.sites',
+    'registration',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -146,29 +148,48 @@ STATIC_PRECOMPILER_FINDER_LIST_FILES = False
 # Folder to store the compiled files using the STATIC_ROOT
 STATIC_PRECOMPILER_OUTPUT_DIR = 'compiled'
 
-GOOGLE_API_KEYS_JSON_FILE = os.path.join(BASE_DIR, 'google_api_keys.json')
+GOOGLE_API_KEYS_FILE_PATH = os.path.join(BASE_DIR, 'google_api_keys.json')
 
-EASY_MAPS_GOOGLE_MAPS_API_KEY = json.load(open(GOOGLE_API_KEYS_JSON_FILE),
-                                          object_hook=lambda f: f['maps-api-key'])
+GOOGLE_API_KEYS_JSON_FILE = (None if not
+                             os.path.exists(GOOGLE_API_KEYS_FILE_PATH)
+                             else json.load(open(GOOGLE_API_KEYS_FILE_PATH)))
 
-GOOGLE_FUSION_TABLE_API_KEY = json.load(
-    open(GOOGLE_API_KEYS_JSON_FILE),
-    object_hook=lambda f: f['fusion-table-api-key'])
+if GOOGLE_API_KEYS_JSON_FILE is not None:
+    EASY_MAPS_GOOGLE_MAPS_API_KEY = GOOGLE_API_KEYS_JSON_FILE['maps-api-key']
 
-SECRET = json.load(open(GOOGLE_API_KEYS_JSON_FILE),
-                   object_hook=lambda f: f['client-secret'])
+    GOOGLE_FUSION_TABLE_API_KEY = (
+        GOOGLE_API_KEYS_JSON_FILE['fusion-table-api-key'])
+
+    SECRET = GOOGLE_API_KEYS_JSON_FILE['client-secret']
+else:
+    EASY_MAPS_GOOGLE_MAPS_API_KEY = os.environ.get(
+        'EASY_MAPS_GOOGLE_MAPS_API_KEY', '')
+
+    GOOGLE_FUSION_TABLE_API_KEY = os.environ.get(
+        'GOOGLE_FUSION_TABLE_API_KEY', '')
+
+    SECRET = os.environ.get('SECRET', '')
 
 VIEW_GOOGLE_MAP_LINK = ('https://www.google.com/maps/search/'
                         '?api=1&map_action=map')
 
 GOOGLE_OAUTH2_CLIENT_SECRETS_JSON = os.path.join(BASE_DIR, 'client_id.json')
 
-CLIENT_ID = json.load(open(GOOGLE_OAUTH2_CLIENT_SECRETS_JSON))['web']['client_id']
+GOOGLE_OAUTH2_CLIENT_SECRETS_JSON_OBJ = (
+    None if not os.path.exists(GOOGLE_OAUTH2_CLIENT_SECRETS_JSON)
+    else json.load(open(GOOGLE_OAUTH2_CLIENT_SECRETS_JSON))
+)
+
+if GOOGLE_OAUTH2_CLIENT_SECRETS_JSON_OBJ:
+    CLIENT_ID = GOOGLE_OAUTH2_CLIENT_SECRETS_JSON_OBJ['web']['client_id']
+else:
+    CLIENT_ID = os.environ.get('CLIENT_ID')
 
 FUSION_TABLE_SCOPE = 'https://www.googleapis.com/auth/fusiontables'
 
 OAUTH2_CLIENT_REDIRECT_PATH = 'http://localhost:8000/oauth2callback'
 
+# Set the fusion table id
 FUSION_TABLE_ID = '1ckNKTPf6djI8teuiQuxExAQwMXSqytwvAWdh7yAQ'
 
 STATICFILES_DIRS = [
@@ -181,15 +202,54 @@ STATICFILES_FINDERS = (
     'static_precompiler.finders.StaticPrecompilerFinder',
 )
 
-STATIC_EXCLUDE_APPS = (
-    'django.contrib.admin',
-    'django_tables2',
-)
+
+# Enable django sites
+# https://docs.djangoproject.com/en/1.9/ref/contrib/sites/#enabling-the-sites-framework
+# Refer to map_app.decorators.update_site_info
+SITE_ID = 2
+SITE_NAME = 'localhost'
+SITE_DOMAIN = 'localhost:8000'
+
+
+# Settings for django-registration-redux
+# ---------------------------------------------------
+REGISTRATION_OPEN = True        # If True, users can register
+ACCOUNT_ACTIVATION_DAYS = 7     # One-week activation window
+REGISTRATION_AUTO_LOGIN = True
+LOGIN_REDIRECT_URL = 'home'
+LOGIN_URL = '/accounts/login/'
+ACCOUNT_AUTHENTICATED_REGISTRATION_REDIRECTS = True
+# REGISTRATION_USE_SITE_EMAIL = True
+# Registration emails will be sent in format admin@host
+# 3REGISTRATION_SITE_USER_EMAIL = 'admin'
+# Send registration email in False text or True html format
+REGISTRATION_EMAIL_HTML = True
+# Use django.contrib.auth.views
+INCLUDE_AUTH_URLS = True
+
+# To test locally run
+# python -m smtpd -n -c DebuggingServer localhost:1025
+# From registration email
+REGISTRATION_DEFAULT_FROM_EMAIL = 'localhost@test.com'
+# Set the email backend
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+# Email connect to host
+EMAIL_HOST = 'localhost'
+# Email port
+EMAIL_PORT = 1025
+# Email user to send the mail from
+EMAIL_HOST_USER = 'localhost@test.com'
+# Email user password
+EMAIL_HOST_PASSWORD = ''
+# Enable TLS
+EMAIL_USE_TLS = False
+# ---------------------------------------------------
+
 
 STATIC_PRECOMPILER_COMPILERS = (
     ('static_precompiler.compilers.Babel',
-        {"executable": os.path.join('node_modules', '.bin', 'babel'),
-         "sourcemap_enabled": True}),
+        {'executable': os.path.join('node_modules', '.bin', 'babel'),
+         'sourcemap_enabled': True}),
 )
 
 LOGGING = {

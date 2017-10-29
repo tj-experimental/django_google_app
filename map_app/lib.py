@@ -1,9 +1,9 @@
 from __future__ import absolute_import
 
-import functools
-import json
 import os
-from abc import ABCMeta
+import json
+import logging
+from abc import ABCMeta, abstractmethod
 
 from django.conf import settings
 from django.shortcuts import get_object_or_404
@@ -12,11 +12,10 @@ from httplib2 import Http
 from oauth2client import client
 from oauth2client.contrib import xsrfutil
 from oauth2client.contrib.django_util.storage import DjangoORMStorage
-from oauth2client.service_account import ServiceAccountCredentials
 
-from .exceptions import InvalidCredentialException
 from .models import UserTokens, CredentialsModel
 
+log = logging.getLogger(__name__)
 
 def _build_service(http, service_name='fusiontables', version='v1'):
     return build(service_name, version, http=http,
@@ -24,11 +23,32 @@ def _build_service(http, service_name='fusiontables', version='v1'):
 
 
 def store_user_tokens(user, access_token, refresh_token):
-    return UserTokens.objects.create(
+    return UserTokens.objects.get_or_create(
         user=user,
         access_token=access_token,
         refresh_token=refresh_token,
     )
+
+
+def verify_client_id_json(filename):
+    client_id = json.load(filename)
+    required_keys = ['client_id', 'project_id',
+                     'client_secret']
+    for k in required_keys:
+        if client_id.get(k) == '' and os.environ.get(k.upper()):
+            client_id[k] = os.environ[k.upper()]
+        else:
+            log.exception('Required key missing from %s: %s'
+                          % (filename, k))
+    try:
+        os.unlink(filename)
+    except OSError:
+        pass
+    f = open(filename, 'wb')
+    json.dump(client_id, f)
+    f.flush()
+    f.close()
+    return filename
 
 
 class FlowClient(object):
@@ -41,6 +61,7 @@ class FlowClient(object):
                  scope=settings.FUSION_TABLE_SCOPE,
                  redirect_url=settings.OAUTH2_CLIENT_REDIRECT_PATH,
                  ):
+        verify_client_id_json(client_secret_json)
         self.flow = client.flow_from_clientsecrets(
             filename=client_secret_json, scope=scope,
             redirect_uri=redirect_url)
@@ -109,10 +130,12 @@ class FlowClient(object):
         return service, table_id
 
 
-class FusionTableMixin(metaclass=ABCMeta):
+class FusionTableMixin(object):
     """
     Mixin to manage Interactions with google fusion table.
     """
+    __metaclass__ = ABCMeta
+
     @classmethod
     def select_all_rows(cls, service, table_id):
         return (service.query()
@@ -162,6 +185,7 @@ class FusionTableMixin(metaclass=ABCMeta):
         return None
 
     @classmethod
+    @abstractmethod
     def get_service_and_table_id(cls):
         # This should be removed.
         # http = get_http_auth(settings.GOOGLE_SERVICE_ACCOUNT_KEY_FILE)

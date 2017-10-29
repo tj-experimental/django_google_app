@@ -13,7 +13,7 @@ from django.views.generic import TemplateView
 from oauth2client.contrib import xsrfutil
 
 from . import lib
-from .decorators import oauth_decorator
+from .decorators import oauth_decorator, update_site_info
 from .forms import AddressForm
 from .models import Address
 from .tables import AddressTable, SearchedAddressesTable, FusionTable
@@ -22,6 +22,7 @@ from .utils import messages_to_dict, verify_table_id_cookie_set
 log = logging.getLogger(__name__)
 
 
+@update_site_info
 @decorators.login_required
 @ensure_csrf_cookie
 @oauth_decorator.oauth_required

@@ -137,5 +137,8 @@ cd docs
 start chrome.exe --new-tab http:\\localhost:8899
 sphinx-serve -b build -p 8899
 
+:get_package
+pip freeze | grep -i "%*"
+
 :end
 popd
