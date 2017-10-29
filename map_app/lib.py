@@ -45,10 +45,15 @@ def verify_client_id_json(filename):
     f = NamedTemporaryFile(mode='w', dir=os.path.dirname(filename),
                            suffix='.json', delete=False)
     json.dump(client_id, f)
+    f.seek(0)
+    f.close()
     try:
-        yield f
+        yield f.name
     finally:
-        f.close()
+        try:
+            os.unlink(f.name)
+        except OSError:
+            pass
 
 
 class FlowClient(object):
@@ -63,7 +68,7 @@ class FlowClient(object):
                  ):
         with verify_client_id_json(client_secret_json) as client_secret:
             self.flow = client.flow_from_clientsecrets(
-                    filename=client_secret.name,
+                    filename=client_secret,
                     scope=scope,
                     redirect_uri=redirect_url)
         self.request = request
