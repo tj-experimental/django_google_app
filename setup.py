@@ -33,6 +33,7 @@ install_requires = [
     'certifi==2017.7.27.1',
     'chardet==3.0.4',
     'click==6.7',
+    'psycopg2==2.7.3.2',
     'colorama==0.3.9',
     'jsonpickle==0.9.5',
     'django-bootstrap-breadcrumbs==0.8.2',
