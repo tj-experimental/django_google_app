@@ -15,12 +15,11 @@ production = os.environ.get('PRODUCTION', False)
 staging = os.environ.get('STAGING', False)
 
 # This should be set depending on the context.
+os.environ['DJANGO_SETTINGS_MODULE'] = 'eval_project.settings'
 if production:
     os.environ['DJANGO_SETTINGS_MODULE'] = 'eval_project.production_settings'
 elif staging:
     os.environ['DJANGO_SETTINGS_MODULE'] = 'eval_project.staging_settings'
-else:
-    os.environ['DJANGO_SETTINGS_MODULE'] = 'eval_project.settings'
 
 application = get_wsgi_application()
 
