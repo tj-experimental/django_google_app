@@ -61,9 +61,10 @@ class FlowClient(object):
                  scope=settings.FUSION_TABLE_SCOPE,
                  redirect_url=settings.OAUTH2_CLIENT_REDIRECT_PATH,
                  ):
-        with verify_client_id_json(client_secret_json):
+        with verify_client_id_json(client_secret_json) as client_secret:
             self.flow = client.flow_from_clientsecrets(
-                    filename=client_secret_json, scope=scope,
+                    filename=client_secret.name,
+                    scope=scope,
                     redirect_uri=redirect_url)
         self.request = request
         self.user = self.request.user
