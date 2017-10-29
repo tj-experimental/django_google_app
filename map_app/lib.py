@@ -62,17 +62,10 @@ class FlowClient(object):
                  scope=settings.FUSION_TABLE_SCOPE,
                  redirect_url=settings.OAUTH2_CLIENT_REDIRECT_PATH,
                  ):
-        try:
+        with verify_client_id_json(client_secret_json):
             self.flow = client.flow_from_clientsecrets(
-                filename=client_secret_json, scope=scope,
-                redirect_uri=redirect_url)
-        except (InvalidClientSecretsError, UnknownClientSecretsFlowError) as e:
-            log.error(e)
-            with verify_client_id_json(client_secret_json):
-                self.flow = client.flow_from_clientsecrets(
                     filename=client_secret_json, scope=scope,
                     redirect_uri=redirect_url)
-
         self.request = request
         self.user = self.request.user
         self.http = Http()
