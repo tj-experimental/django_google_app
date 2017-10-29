@@ -12,7 +12,7 @@ class UserTokens(models.Model):
     """User token model use for google Oauth authentication."""
     user = models.OneToOneField(User, primary_key=True)
     access_token = models.TextField(null=True)
-    authorized_url = models.URLField(null=True)
+    authorized_url = models.URLField(null=True, max_length=300)
 
     def __str__(self):
         return self.__class__.__name__ + ' Model'
