@@ -43,7 +43,7 @@ def verify_client_id_json(filename):
     for k in required_keys:
         if client_id['web'][k] == '':
             client_id['web'][k] = os.environ.get(k.upper(), '')
-    f = NamedTemporaryFile(mode='w',dir=os.path.dirname(filename),
+    f = NamedTemporaryFile(mode='w', dir=os.path.dirname(filename),
                            suffix='.json', delete=False)
     json.dump(client_id, f)
     try:

@@ -9,6 +9,9 @@ ALLOWED_HOSTS += ['gogglefusion.herokuapp.com']
 db_from_env = dj_database_url.config(conn_max_age=600)
 DATABASES['default'].update(db_from_env)
 
+OAUTH2_CLIENT_REDIRECT_PATH = (
+    'https://gogglefusion.herokuapp.com/oauth2callback')
+
 # Serving static files with whitenoise
 STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
 
