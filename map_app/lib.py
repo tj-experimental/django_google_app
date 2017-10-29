@@ -4,12 +4,16 @@ import os
 import json
 import logging
 from abc import ABCMeta, abstractmethod
+from contextlib import contextmanager
+from tempfile import NamedTemporaryFile
 
 from django.conf import settings
 from django.shortcuts import get_object_or_404
 from googleapiclient.discovery import build
 from httplib2 import Http
 from oauth2client import client
+from oauth2client.client import UnknownClientSecretsFlowError
+from oauth2client.clientsecrets import InvalidClientSecretsError
 from oauth2client.contrib import xsrfutil
 from oauth2client.contrib.django_util.storage import DjangoORMStorage
 
@@ -30,25 +34,22 @@ def store_user_tokens(user, access_token, refresh_token):
     )
 
 
+@contextmanager
 def verify_client_id_json(filename):
-    client_id = json.load(filename)
+    fp = open(filename)
+    client_id = json.load(fp)
     required_keys = ['client_id', 'project_id',
                      'client_secret']
     for k in required_keys:
-        if client_id.get(k) == '' and os.environ.get(k.upper()):
-            client_id[k] = os.environ[k.upper()]
-        else:
-            log.exception('Required key missing from %s: %s'
-                          % (filename, k))
-    try:
-        os.unlink(filename)
-    except OSError:
-        pass
-    f = open(filename, 'wb')
+        if client_id['web'][k] == '':
+            client_id['web'][k] = os.environ.get(k.upper(), '')
+    f = NamedTemporaryFile(dir=os.path.dirname(filename),
+                           suffix='.json', delete=False)
     json.dump(client_id, f)
-    f.flush()
-    f.close()
-    return filename
+    try:
+        yield f
+    finally:
+        f.close()
 
 
 class FlowClient(object):
@@ -61,10 +62,17 @@ class FlowClient(object):
                  scope=settings.FUSION_TABLE_SCOPE,
                  redirect_url=settings.OAUTH2_CLIENT_REDIRECT_PATH,
                  ):
-        verify_client_id_json(client_secret_json)
-        self.flow = client.flow_from_clientsecrets(
-            filename=client_secret_json, scope=scope,
-            redirect_uri=redirect_url)
+        try:
+            self.flow = client.flow_from_clientsecrets(
+                filename=client_secret_json, scope=scope,
+                redirect_uri=redirect_url)
+        except (InvalidClientSecretsError, UnknownClientSecretsFlowError) as e:
+            log.error(e)
+            with verify_client_id_json(client_secret_json):
+                self.flow = client.flow_from_clientsecrets(
+                    filename=client_secret_json, scope=scope,
+                    redirect_uri=redirect_url)
+
         self.request = request
         self.user = self.request.user
         self.http = Http()
