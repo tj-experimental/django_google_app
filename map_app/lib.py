@@ -1,8 +1,8 @@
 from __future__ import absolute_import
 
-import os
 import json
 import logging
+import os
 from abc import ABCMeta, abstractmethod
 from contextlib import contextmanager
 from tempfile import NamedTemporaryFile
@@ -12,14 +12,13 @@ from django.shortcuts import get_object_or_404
 from googleapiclient.discovery import build
 from httplib2 import Http
 from oauth2client import client
-from oauth2client.client import UnknownClientSecretsFlowError
-from oauth2client.clientsecrets import InvalidClientSecretsError
 from oauth2client.contrib import xsrfutil
 from oauth2client.contrib.django_util.storage import DjangoORMStorage
 
 from .models import UserTokens, CredentialsModel
 
 log = logging.getLogger(__name__)
+
 
 def _build_service(http, service_name='fusiontables', version='v1'):
     return build(service_name, version, http=http,
