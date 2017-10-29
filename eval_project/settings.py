@@ -206,7 +206,7 @@ STATICFILES_FINDERS = (
 # Enable django sites
 # https://docs.djangoproject.com/en/1.9/ref/contrib/sites/#enabling-the-sites-framework
 # Refer to map_app.decorators.update_site_info
-SITE_ID = 2
+SITE_ID = 1
 SITE_NAME = 'localhost'
 SITE_DOMAIN = 'localhost:8000'
 
