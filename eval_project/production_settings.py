@@ -3,20 +3,20 @@ import dj_database_url
 
 DEBUG = False
 
-ALLOWED_HOSTS = ['gogglefusion.herokuapp.com']
+ALLOWED_HOSTS = ['googlefusion.herokuapp.com']
 
 # Update database configuration with $DATABASE_URL.
 db_from_env = dj_database_url.config(conn_max_age=600)
 DATABASES['default'].update(db_from_env)
 
 OAUTH2_CLIENT_REDIRECT_PATH = (
-    'https://gogglefusion.herokuapp.com/oauth2callback')
+    'https://googlefusion.herokuapp.com/oauth2callback')
 
 # Serving static files with whitenoise
 STATICFILES_STORAGE = 'whitenoise.storage.GzipManifestStaticFilesStorage'
 
-SITE_NAME = 'gogglefusion.herokuapp.com'
-SITE_DOMAIN = 'gogglefusion.herokuapp.com'
+SITE_NAME = 'googlefusion.herokuapp.com'
+SITE_DOMAIN = 'googlefusion.herokuapp.com'
 
 # From registration email
 REGISTRATION_DEFAULT_FROM_EMAIL = 'django_google@yahoo.com'
