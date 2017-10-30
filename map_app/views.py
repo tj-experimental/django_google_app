@@ -35,7 +35,6 @@ def home(request):
     table = AddressTable(Address.objects.only('address')
                          .order_by('-id').all(),
                          request=request)
-    street_address = 'Toronto, Canada'
     if request.method == 'POST':
         form = AddressForm(request.POST)
         if form.is_valid():
@@ -58,12 +57,15 @@ def home(request):
                .exclude(computed_address__isnull=True))
     if address.count() > 0:
         log.info("Found existing address.")
-        last_address = address.last()
-        street_address = last_address.address
+        address_ = address.last()
+    else:
+        address_ = Address(address='Toronto, Canada')
+        address_.save()
+
     style = lib.FusionTableMixin.get_style(
         *lib.FlowClient(request).get_service_and_table_id())
     response = render(request, 'index.html',
-                      {'address': street_address,
+                      {'address': address_.address,
                        'table': table,
                        'style': style})
     verify_table_id_cookie_set(request, response)
