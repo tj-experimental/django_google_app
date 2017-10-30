@@ -27,6 +27,17 @@ Also manage API Keys from the [Console](https://console.developers.google.com/ap
 }
 ```
 
+OR Optionally set ENV vars
+
+```
+CLIENT_ID=
+PROJECT_ID=
+CLIENT_SECRET=
+SECRET=
+EASY_MAPS_GOOGLE_MAPS_API_KEY=
+GOOGLE_FUSION_TABLE_API_KEY=
+```
+
 ### Create a virtual environment using `virtualenvwrapper`
 - Run
 ```
