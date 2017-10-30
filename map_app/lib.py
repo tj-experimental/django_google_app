@@ -227,7 +227,7 @@ class FusionTableMixin(object):
         # table_id = settings.FUSION_TABLE_ID
         # service = _build_service(http)
         # return service, table_id
-        raise NotImplementedError()
+        pass
 
     @staticmethod
     def get_columns(results):
