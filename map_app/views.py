@@ -59,7 +59,7 @@ def home(request):
         log.info("Found existing address.")
         address_ = address.last()
     else:
-        address_ = Address.objects.get_or_create(
+        address_, exists = Address.objects.get_or_create(
             address='Toronto, Canada')
 
     style = lib.FusionTableMixin.get_style(
