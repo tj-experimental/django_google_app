@@ -1,0 +1,44 @@
+{
+  "name": "django_google_app",
+  "scripts": {
+  },
+  "env": {
+    "CLIENT_ID": {
+      "required": true
+    },
+    "CLIENT_SECRET": {
+      "required": true
+    },
+    "DJANGO_SETTINGS_MODULE": {
+      "required": true
+    },
+    "EASY_MAPS_GOOGLE_MAPS_API_KEY": {
+      "required": true
+    },
+    "GOOGLE_FUSION_TABLE_API_KEY": {
+      "required": true
+    },
+    "PROJECT_ID": {
+      "required": true
+    },
+    "SECRET": {
+      "required": true
+    },
+    "STAGING": {
+      "required": true
+    }
+  },
+  "formation": {
+  },
+  "addons": [
+    "heroku-postgresql"
+  ],
+  "buildpacks": [
+    {
+      "url": "heroku/nodejs"
+    },
+    {
+      "url": "heroku/python"
+    }
+  ]
+}
