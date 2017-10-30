@@ -28,12 +28,11 @@ urlpatterns = [
     url(r'^reset-address$', views.reset_address, name='reset-address'),
     url(r'^fusion-tables$', views.FusionTableHandler.as_view(),
         name='fusion-tables'),
+    url(r'^sync-fusion-table$', views.sync_fusion_table,
+        name='sync-fusion-table'),
+    url(r'^sync-address$', views.sync_address, name='sync-address'),
     url(r'^oauth2callback$', views.oauth_callback, name='oauth2-callback'),
     url(r'^accounts/', include('registration.backends.default.urls')),
-    # url(r'^reset/(?P<uidb64>[0-9A-Za-z_\-]+)/'
-    #     r'(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$',
-    #     password_reset_confirm,
-    #     name='password_reset_confirm'),
     url(r'^admin/', admin.site.urls),
 ] + static(settings.STATIC_URL,
            document_root=settings.STATIC_ROOT)

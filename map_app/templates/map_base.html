@@ -57,55 +57,54 @@
         var latLng = e.latLng;
         var latLngStr = [latLng.lat(), latLng.lng()].join(',');
         var on_land = true;
-        startProgress();
+        window.startProgress();
+        window.successProgress();
         geocoder.geocode({location: latLng}, 
             function(results, status){
-            if(status === 'OK'){
-                $.getJSON('https://api.onwater.io/api/v1/results/' + latLngStr)
-                .done(function(data){
-                    on_land = !data.water;
-                    if (on_land){
-                        modifyMarker(results, latLng);
-                        $.ajax({
-                             url: document.location.href,
-                             method: 'POST',
-                             data: {address: results[0].formatted_address}
-                        }).done(function(data, textStatus, jqXHR){
-                            window.successProgress();
-                            $('#addresses_table').empty().append(data)
-                            window.stopProgress();
-                            var message = "Successfully added address: " +results[0].formatted_address
-                            renderAlerts([{message: message, level_tag: 'success'}]);
-                            console.log(textStatus);
-                            window.initFusionTable(map);
-                            return true;
-                        }).fail(function(jqXHR, textStatus, err){
-                            var errorMessage;
+                if(status === 'OK'){
+                    $.getJSON('https://api.onwater.io/api/v1/results/' + latLngStr)
+                    .done(function(data){
+                        on_land = !data.water;
+                        if (on_land){
+                            modifyMarker(results, latLng);
+                            $.ajax({
+                                 url: document.location.href,
+                                 method: 'POST',
+                                 data: {address: results[0].formatted_address}
+                            }).done(function(data, textStatus, jqXHR){
+                                $('#addresses_table').empty().append(data)
+                                var message = "Successfully added address: " +results[0].formatted_address
+                                renderAlerts([{message: message, level_tag: 'success'}]);
+                                return true;
+                            }).fail(function(jqXHR, textStatus, err){
+                                var errorMessage;
+                                window.errorProgress();
+                                if(jqXHR.responseText) errorMessage = JSON.parse(jqXHR.responseText);
+                                var message = "Error adding address: " + results[0].formatted_address;
+                                if(errorMessage) message += '\n' + errorMessage.address.join('\n');
+                                renderAlerts([{message: message, level_tag: 'danger'}]);
+                                console.error(message);
+                                return true;
+                            }).always(function(){
+                                window.stopProgress();
+                            });
+                        }else{
                             window.errorProgress();
                             window.stopProgress();
-                            if(jqXHR.responseText) errorMessage = JSON.parse(jqXHR.responseText);
-                            var message = "Error adding address: " + results[0].formatted_address;
-                            if(errorMessage) message += '\n' + errorMessage.address.join('\n');
-                            renderAlerts([{message: message, level_tag: 'danger'}]);
-                            console.error(message);
-                            return true;
-                        });
-                    }else{
+                            window.alert('Locations in woods/mountain/ocean are not valid.');
+                        }
+                    }).fail(function(err){
                         window.errorProgress();
+                        console.error("Error occurred retrieving location on land status:", err)
+                    }).always(function(){
                         window.stopProgress();
-                        window.alert('Locations in woods/mountain/ocean are not valid.');
-                    }
-                }).fail(function(err){
-                    window.errorProgress();
-                    window.stopProgress();
-                    console.error("Error occurred retrieving location on land status:", err)
-                });
-            }else{
-                window.alert(`Geocode was not successful for the following reason: ${status}`)
-            }
+                    });
+                }else{
+                    window.alert(`Geocode was not successful for the following reason: ${status}`)
+                }
         })
     };
     google.maps.event.addDomListener(map, 'click', placeMarkerAndPanTo);
     marker.addListener('dragend', placeMarkerAndPanTo);
-    initFusionTable(map);
+    window.initFusionTable(map);
 {% endblock %}

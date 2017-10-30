@@ -1,12 +1,10 @@
 {% extends "layout.html" %}
 {% load django_bootstrap_breadcrumbs %}
+{% load compile_static %}
+{% load staticfiles %}
 
 {%block title %}
    	Map Application
-{% endblock %}
-
-{% block breadcrumbs %}
-    {{ block.super }}
 {% endblock %}
 
 {% block nav_links %}
@@ -20,11 +18,22 @@
     	<a href="{% url 'fusion-tables' %}" class="nav-link text-muted">Fusion Table</a>
     </li>
     <li class="nav-item">
-        <a href="{% url 'reset-address' %}" class="nav-link confirmation-required reset-link">
-            <span class="glyphicon glyphicon-trash"></span>Reset Addresses</a>
+        <button class="confirmation-required btn btn-danger navbar-btn" id="reset-button">
+            <span class="glyphicon glyphicon-trash"></span>Reset Addresses</button>
     </li>
 {% endblock %}
 
+{% block scripts %}
+    {{ block.super }}
+    <script type="application/javascript" >
+        var resetUrl = "{% url 'reset-address' %}"
+    </script>
+    <script type="application/javascript" src="{% static "map_app/js/reset.es6"|compile %}" ></script>
+{% endblock %}
+
 {% block content %}
+    <script type="application/javascript">
+        var fusionTableStyle = {{ style|safe }};
+    </script>
     {% include "map.html" %}
 {% endblock %}

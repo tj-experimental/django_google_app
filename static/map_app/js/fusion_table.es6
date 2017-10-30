@@ -4,10 +4,10 @@ const initFusionTable = (map) => {
     const layer = new google.maps.FusionTablesLayer({
         query: {
             select: "longitude",
-            from: $.cookie('fusion_table_id')
+            from: $.cookie('fusion_table_id').split(':')[0]
         },
         map: map,
-        styles: 2
+        styles: window.fusionTableStyle
     });
 
     google.maps.event.clearListeners(layer, 'click');

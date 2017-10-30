@@ -27,8 +27,14 @@ SECRET_KEY = '+#z9@$brqm+z*@4me@wrl9ud)rjcqz7s-m+q#gm$pgpd#g%s^s'
 # Will have to run with --insecure to serve static files.
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1']
+# import socket
+# try:
+#     HOSTNAME = socket.gethostbyname(socket.gethostname())
+# except:
 
+HOSTNAME = 'localhost'
+
+ALLOWED_HOSTS = [HOSTNAME, '127.0.0.1']
 
 # Application definition
 
@@ -120,7 +126,7 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 # Update the messages error tag for bootstrap
-MESSAGES_TAGS = {messages.ERROR: 'danger'}
+messages.DEFAULT_TAGS.update({messages.ERROR: 'danger'})
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.9/topics/i18n/
@@ -143,8 +149,27 @@ STATIC_URL = '/static/'
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static'),
+]
+
+STATICFILES_FINDERS = (
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+    'static_precompiler.finders.StaticPrecompilerFinder',
+)
+
 # Allow collectstatic find the precompiled files.
-STATIC_PRECOMPILER_FINDER_LIST_FILES = False
+STATIC_PRECOMPILER_FINDER_LIST_FILES = True
+
+STATIC_PRECOMPILER_COMPILERS = (
+    ('static_precompiler.compilers.Babel',
+        {'executable': os.path.join('node_modules', '.bin', 'babel'),
+         'sourcemap_enabled': True}
+     ),
+)
+
+COOKIE_SALT = 'test_salt'
 
 # Folder to store the compiled files using the STATIC_ROOT
 STATIC_PRECOMPILER_OUTPUT_DIR = 'compiled'
@@ -188,28 +213,19 @@ else:
 
 FUSION_TABLE_SCOPE = 'https://www.googleapis.com/auth/fusiontables'
 
-OAUTH2_CLIENT_REDIRECT_PATH = 'http://localhost:8000/oauth2callback'
-
+# Before changing the PORT change the callback uri needs to be updated at
+# https://console.developers.google.com/apis/credentials
+OAUTH2_CLIENT_REDIRECT_PATH = 'http://{}:8000/oauth2callback'.format(HOSTNAME)
 # Set the fusion table id
-FUSION_TABLE_ID = '1ckNKTPf6djI8teuiQuxExAQwMXSqytwvAWdh7yAQ'
-
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'map_app', 'static'),
-]
-
-STATICFILES_FINDERS = (
-    'django.contrib.staticfiles.finders.FileSystemFinder',
-    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-    'static_precompiler.finders.StaticPrecompilerFinder',
-)
+FUSION_TABLE_ID = '1LEZrMwrTo0ASHryoo-5FtxnqfG0MIrhCt8ljSkNj'
 
 
 # Enable django sites
 # https://docs.djangoproject.com/en/1.9/ref/contrib/sites/#enabling-the-sites-framework
 # Refer to map_app.decorators.update_site_info
 SITE_ID = 1
-SITE_NAME = 'localhost'
-SITE_DOMAIN = 'localhost:8000'
+SITE_NAME = HOSTNAME
+SITE_DOMAIN = '{}:8000'.format(HOSTNAME)
 
 
 # Settings for django-registration-redux
@@ -231,15 +247,15 @@ INCLUDE_AUTH_URLS = True
 # To test locally run
 # python -m smtpd -n -c DebuggingServer localhost:1025
 # From registration email
-REGISTRATION_DEFAULT_FROM_EMAIL = 'localhost@test.com'
+REGISTRATION_DEFAULT_FROM_EMAIL = '{}@test.com'.format(HOSTNAME)
 # Set the email backend
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 # Email connect to host
-EMAIL_HOST = 'localhost'
+EMAIL_HOST = HOSTNAME
 # Email port
 EMAIL_PORT = 1025
 # Email user to send the mail from
-EMAIL_HOST_USER = 'localhost@test.com'
+EMAIL_HOST_USER = '{}@test.com'.format(HOSTNAME)
 # Email user password
 EMAIL_HOST_PASSWORD = ''
 # Enable TLS
@@ -247,18 +263,12 @@ EMAIL_USE_TLS = False
 # ---------------------------------------------------
 
 
-STATIC_PRECOMPILER_COMPILERS = (
-    ('static_precompiler.compilers.Babel',
-        {'executable': os.path.join('node_modules', '.bin', 'babel'),
-         'sourcemap_enabled': True}),
-)
-
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
     'formatters': {
         'verbose': {
-            'format': ('[%(asctime)s %(thread)d %(name)s %(pathname)s] '
+            'format': ('[%(asctime)s %(thread)d %(name)s %(module)s] '
                        '%(levelname)s : %(message)s'),
             'datefmt': '%a, %d/%b/%Y %H:%M:%S'
         },

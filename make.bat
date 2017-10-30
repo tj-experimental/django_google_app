@@ -51,7 +51,7 @@ exit /b
 
 :collectstatic
 echo.Collecting Static files.
-call :manage collectstatic
+call :manage collectstatic "%*"
 echo.Completed collecting static files
 exit /b
 
@@ -74,7 +74,7 @@ if -%PORT%-==-- (
         exit /b
     )
 )
-echo.Starting server on !HOST!^:!PORT! ...
+echo.Starting server on !HOST!^:!PORT!...
 start chrome.exe --new-tab http:\\!HOSTNAME!^:!PORT!
 call :manage runserver !HOST!^:!PORT!
 exit /b

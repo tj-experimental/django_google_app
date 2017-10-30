@@ -9,3 +9,4 @@ service_account.json
 django_map_app.egg-info
 google_api_keys.json
 env.cmd
+addresses.csv

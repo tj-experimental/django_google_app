@@ -4,11 +4,13 @@ import json
 import logging
 
 from django.conf import settings
+from django.contrib import messages
 from django.contrib.auth import decorators
+from django.core.urlresolvers import reverse
 from django.http import HttpResponseBadRequest
 from django.shortcuts import render, redirect
 from django.views.decorators.csrf import ensure_csrf_cookie
-from django.views.decorators.http import require_GET
+from django.views.decorators.http import require_GET, require_http_methods
 from django.views.generic import TemplateView
 from oauth2client.contrib import xsrfutil
 
@@ -58,9 +60,12 @@ def home(request):
         log.info("Found existing address.")
         last_address = address.last()
         street_address = last_address.address
+    style = lib.FusionTableMixin.get_style(
+        *lib.FlowClient(request).get_service_and_table_id())
     response = render(request, 'index.html',
                       {'address': street_address,
-                       'table': table})
+                       'table': table,
+                       'style': style})
     verify_table_id_cookie_set(request, response)
     return response
 
@@ -77,7 +82,7 @@ def address_view(request):
                   {'table': table})
 
 
-@require_GET
+@require_http_methods(['DELETE'])
 @oauth_decorator.oauth_required
 def reset_address(request):
     """
@@ -89,7 +94,47 @@ def reset_address(request):
     log.info("Deleting all addresses in fusion table.")
     lib.FusionTableMixin.delete_all_addresses(
         *flow.get_service_and_table_id())
-    return redirect('/')
+    return redirect(reverse('home'))
+
+
+@require_GET
+@oauth_decorator.oauth_required
+def sync_fusion_table(request):
+    """Synchronize the fusion table using the address table."""
+    # Delete addresses not available in the address table.
+    flow = lib.FlowClient(request)
+    service, table_id = flow.get_service_and_table_id()
+    addresses = Address.objects.all()
+    lib.FusionTableMixin.delete_all_addresses(service, table_id)
+    lib.FusionTableMixin.bulk_save(addresses, service, table_id)
+    message_ = 'Successfully synchronized fusion table with address table.'
+    messages.success(request, message_)
+    log.info(message_)
+    return redirect(reverse('home'))
+
+
+@require_GET
+@oauth_decorator.oauth_required
+def sync_address(request):
+    """Synchronize the address table using the fusion table."""
+    # Delete addresses not available in the fusion table
+    flow = lib.FlowClient(request)
+    service, table_id = flow.get_service_and_table_id()
+    results = lib.FusionTableMixin.select_all_rows(service, table_id)
+    columns = lib.FusionTableMixin.get_columns(results)
+    try:
+        index = columns.index('rowid')
+        columns[index] = 'id'
+    except ValueError:
+        pass
+    fusion_table_address = list(
+        lib.FusionTableMixin._process_result(results, columns=columns))
+    Address.objects.all().delete()
+    Address.objects.bulk_create([Address(**row) for row in fusion_table_address])
+    message_ = 'Successfully synchronized address table with fusion table.'
+    messages.success(request, message_)
+    log.info(message_)
+    return redirect(reverse('home'))
 
 
 @decorators.login_required
@@ -107,7 +152,7 @@ def oauth_callback(request):
         return HttpResponseBadRequest('Invalid Token')
     flow = lib.FlowClient(request)
     flow.update_user_credential()
-    return redirect('/')
+    return redirect(reverse('home'))
 
 
 class FusionTableHandler(TemplateView, lib.FusionTableMixin):
@@ -129,12 +174,10 @@ class FusionTableHandler(TemplateView, lib.FusionTableMixin):
             request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
+        results = {}
         if self.flow:
-            service, table_id = (
-                self.flow.get_service_and_table_id())
-        else:
-            service, table_id = self.get_service_and_table_id()
-        results = self.select_all_rows(service, table_id)
+            results = self.select_all_rows(
+                *self.flow.get_service_and_table_id())
         table = FusionTable(self._process_result(results),
                             request=kwargs.get('_request'))
         return {'fusion_table': table}

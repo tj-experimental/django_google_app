@@ -15,7 +15,10 @@ def verify_table_id_cookie_set(request, response):
     :param response: HttpResponse object
     :type response: :class:`django.http.response.HttpResponse`.
     """
-    if 'fusion_table_id' not in request.COOKIES:
+    if ('fusion_table_id' not in request.COOKIES
+        or request.get_signed_cookie('fusion_table_id',
+                                     False, settings.COOKIE_SALT)
+            != settings.FUSION_TABLE_ID):
         return set_fusion_table_cookie(response)
 
 
@@ -28,7 +31,9 @@ def set_fusion_table_cookie(response):
     :return: An instance of the HttpResponse object.
     :rtype: :class:`django.http.HttpResponse`
     """
-    response.set_cookie('fusion_table_id', settings.FUSION_TABLE_ID)
+    response.set_signed_cookie('fusion_table_id',
+                               settings.FUSION_TABLE_ID,
+                               settings.COOKIE_SALT)
     return response
 
 

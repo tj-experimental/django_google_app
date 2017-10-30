@@ -14,7 +14,7 @@ const startProgress = (status = "", duration = 4000) => {
                     let _percent = Math.round(this.property);
                     $progress.removeClass("done");
                     $progress.css('width',  _percent+"%");
-                    if(_percent == 105) {
+                    if(_percent === 105) {
                         stopProgress();
                     }
                 },

@@ -5,6 +5,7 @@ import logging
 import os
 from abc import ABCMeta, abstractmethod
 from contextlib import contextmanager
+from functools import lru_cache
 from tempfile import NamedTemporaryFile
 
 from django.conf import settings
@@ -127,6 +128,7 @@ class FlowClient(object):
             credential = self.get_credential()
             self.http = credential.authorize(self.http)
 
+    @lru_cache(maxsize=None)
     def get_service_and_table_id(self):
         self._authorize_http()
         # http is authorized with the user's Credentials and can be
@@ -142,26 +144,51 @@ class FusionTableMixin(object):
     """
     __metaclass__ = ABCMeta
 
-    @classmethod
-    def select_all_rows(cls, service, table_id):
+    @staticmethod
+    def select_all_rows(service, table_id):
         return (service.query()
                 .sql(sql='SELECT ROWID, address,'
                          ' latitude, longitude,'
                          ' computed_address FROM %s'
                          % table_id).execute())
 
+    @staticmethod
+    def select_all_addresses(service, table_id):
+        return (service.query()
+                .sql(sql='SELECT address FROM %s'
+                         % table_id).execute())
+
+    @staticmethod
+    def delete_all_addresses(service, table_id):
+        return service.query().sql(
+            sql='DELETE FROM %s' % table_id).execute()
+
+    @staticmethod
+    def delete_address_at_row(service, table_id, row_id):
+        return service.query().sql(
+            sql='DELETE FROM %s WHERE ROWID = %d' %
+                (table_id, row_id,))
+
     @classmethod
-    def delete_all_addresses(cls, service, table_id):
-        return (service.table()
-                .delete(tableId=table_id).execute())
+    def bulk_delete(cls, results, service, table_id):
+        for row in results:
+            row_id = row.get('rowid')
+            cls.delete_address_at_row(service,
+                                      table_id,
+                                      row_id)
+
+    @classmethod
+    def bulk_save(cls, results, service, table_id):
+        for row in results:
+            cls.save(row, service, table_id)
 
     @classmethod
     def get_style(cls, service, table_id, style_id=1):
-        style = (service.style().get(tableId=table_id,
-                                     styleId=style_id)
-                 .execute())
-        if style:
-            return json.dumps(style)
+        style = (service.style()
+                 .get(tableId=table_id,
+                      styleId=style_id)
+                 .execute()) or {}
+        return json.dumps(style)
 
     @classmethod
     def save(cls, address, service, table_id):
@@ -202,10 +229,14 @@ class FusionTableMixin(object):
         # return service, table_id
         raise NotImplementedError()
 
+    @staticmethod
+    def get_columns(results):
+        return results.get('columns', [])
+
     @classmethod
-    def _process_result(cls, results):
+    def _process_result(cls, results, columns=None):
         rows = results.get('rows', [])
-        columns = results.get('columns', [])
+        columns = columns or cls.get_columns(results)
         for row in rows:
             yield dict(zip(columns, row))
 
@@ -214,5 +245,6 @@ class FusionTableMixin(object):
         values_dict = {'address': address.address or '',
                        'latitude': address.latitude or '',
                        'longitude': address.longitude or '',
-                       'computed_address': address.computed_address or ''}
+                       'computed_address':
+                           address.computed_address or ''}
         return values_dict

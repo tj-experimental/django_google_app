@@ -14,10 +14,23 @@
 {% block nav_links %}
     <li class="nav-item"><a href="{% url 'home' %}"> Home </a></li>
     <li class="nav-item">
-    	<a href="{% url 'address' %}" class="nav-link text-muted"> Address Table </a>
+    	<a href="{% url 'address' %}"
+           class="nav-link text-muted">
+            Address Table
+        </a>
     </li>
     <li class="nav-item active">
-    	<a href="{% url 'fusion-tables' %}" class="nav-link text-muted"> Fusion Table </a>
+    	<a href="{% url 'fusion-tables' %}"
+           class="nav-link text-muted">
+            Fusion Table
+        </a>
+    </li>
+    <li class="nav-item">
+    	<a href="{% url 'sync-address' %}"
+           class="nav-link text-muted confirmation-required"
+           title="Synchronize address table using the fusion table.">
+            Synchronize Address Table
+        </a>
     </li>
 {% endblock %}
 
