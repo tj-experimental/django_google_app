@@ -14,8 +14,7 @@
 {% endblock %}
 
 {% block api_js %}
-   <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?
-    key={{ api_key }}&libraries=places&callback=initialize_map_{{ map.pk }}" async defer></script>
+    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key={{ api_key }}&libraries=places&callback=initialize_map_{{ map.pk }}" async defer></script>
     <script type="text/javascript" src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js" integrity="sha256-uEFhyfv3UgzRTnAZ+SEgvYepKKB0FW6RqZLrqfyUNug=" crossorigin="anonymous"></script>
     <script type="application/javascript" src="{% static "map_app/js/fusion_table.es6"|compile %}" ></script>
