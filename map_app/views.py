@@ -59,8 +59,8 @@ def home(request):
         log.info("Found existing address.")
         address_ = address.last()
     else:
-        address_ = Address(address='Toronto, Canada')
-        address_.save()
+        address_ = Address.objects.get_or_create(
+            address='Toronto, Canada')
 
     style = lib.FusionTableMixin.get_style(
         *lib.FlowClient(request).get_service_and_table_id())
