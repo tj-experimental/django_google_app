@@ -1,5 +1,7 @@
 from setuptools import setup, find_packages
-
+"""
+Django application using google fusion table REST API
+"""
 
 install_requires = [
     'Django==1.9',
