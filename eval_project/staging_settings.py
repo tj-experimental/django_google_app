@@ -3,6 +3,7 @@ from .settings import *
 import dj_database_url
 
 DEBUG = False
+SECRET = os.environ['SECRET']
 
 ALLOWED_HOSTS = ['googlefusion*.herokuapp.com']
 
