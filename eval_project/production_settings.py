@@ -16,7 +16,7 @@ OAUTH2_CLIENT_REDIRECT_PATH = (
     'https://googlefusion.herokuapp.com/oauth2callback')
 
 # Serving static files with whitenoise
-STATICFILES_STORAGE = 'whitenoise.storage.GzipManifestStaticFilesStorage'
+STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
 
 SITE_NAME = 'googlefusion.herokuapp.com'
 SITE_DOMAIN = 'googlefusion.herokuapp.com'
