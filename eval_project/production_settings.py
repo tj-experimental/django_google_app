@@ -6,7 +6,7 @@ DEBUG = False
 # This has to be set
 SECRET_KEY = os.environ['SECRET_KEY']
 
-ALLOWED_HOSTS = ['googlefusion*.herokuapp.com'] 
+ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '').split()
 
 # Update database configuration with $DATABASE_URL.
 db_from_env = dj_database_url.config(conn_max_age=600)
