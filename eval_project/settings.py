@@ -37,7 +37,6 @@ HOSTNAME = 'localhost'
 ALLOWED_HOSTS = [HOSTNAME, '127.0.0.1']
 
 # Application definition
-
 PROJECT_APPS = ['easy_maps',
                 'map_app',
                 'django_tables2',
