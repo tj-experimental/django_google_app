@@ -23,6 +23,7 @@ SITE_DOMAIN = 'googlefusion.herokuapp.com'
 
 # From registration email
 REGISTRATION_DEFAULT_FROM_EMAIL = 'django_google@yahoo.com'
+DEFAULT_FROM_EMAIL = REGISTRATION_DEFAULT_FROM_EMAIL
 # Set the email backend
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 # Email connect to host
