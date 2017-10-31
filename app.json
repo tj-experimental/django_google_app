@@ -26,6 +26,12 @@
     },
     "STAGING": {
       "required": true
+    },
+    "SECRET_KEY": {
+      "required": true
+    },
+    "EMAIL_HOST_PASSWORD": {
+      "required": true
     }
   },
   "formation": {
