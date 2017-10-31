@@ -29,6 +29,6 @@ EMAIL_PORT = 587
 # Email user to send the mail from
 EMAIL_HOST_USER = 'django_google@yahoo.com'
 # Email user password
-EMAIL_HOST_PASSWORD = 'rtlfjdckpeltxusf'
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', '')
 # Enable TLS
 EMAIL_USE_TLS = True
