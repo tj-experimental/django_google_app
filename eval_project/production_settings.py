@@ -3,6 +3,9 @@ import dj_database_url
 
 DEBUG = False
 
+# This has to be set
+SECRET = os.environ['SECRET']
+
 ALLOWED_HOSTS = ['googlefusion*.herokuapp.com'] 
 
 # Update database configuration with $DATABASE_URL.
