@@ -32,6 +32,9 @@
     },
     "EMAIL_HOST_PASSWORD": {
       "required": true
+    },
+    "ALLOWED_HOSTS": {
+      "required": true
     }
   },
   "formation": {
