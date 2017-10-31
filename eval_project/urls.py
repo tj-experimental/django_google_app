@@ -40,7 +40,7 @@ urlpatterns = [
         r'(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$',
         password_reset_confirm,
         name='password_reset_confirm'),
-    url(r'^reset/done/$', password_reset_complete),
+    url(r'^reset/done/$', password_reset_complete, name='password_reset_complete'),
     url(r'^admin/', admin.site.urls),
 ] 
 
