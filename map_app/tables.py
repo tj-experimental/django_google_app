@@ -41,7 +41,8 @@ class AddressTable(BassAddressTable):
         fields = ('id', 'address')
         model = Address
         attrs = {'class': 'address_table table table-hover' +
-                          'table-condensed table-striped'}
+                          'table-condensed table-striped ' +
+                           'table-responsive'}
 
 
 class SearchedAddressesTable(BassAddressTable):
@@ -49,7 +50,8 @@ class SearchedAddressesTable(BassAddressTable):
         exclude = ['geocode_error']
         model = Address
         attrs = {'class': 'address_table table table-hover' +
-                          'table-condensed table-striped'}
+                          'table-condensed table-striped ' + 
+                          'table-responsive'}
         fields = ('id', 'address', 'computed_address', 'longitude',
                   'latitude', 'map_link',)
 
@@ -64,7 +66,8 @@ class FusionTable(BassAddressTable):
     class Meta:
         order_by = 'rowid'
         attrs = {'class': 'address_table table table-hover' +
-                          'table-condensed table-striped'}
+                          'table-condensed table-striped ' +
+                          'table-responsive'}
 
         fields = ('rowid', 'address', 'longitude', 'latitude',
                   'computed_address',)
