@@ -20,7 +20,8 @@ from django.conf.urls import url, include
 from django.conf.urls.static import static
 from django.conf import settings
 from django.contrib import admin
-from django.contrib.auth.views import password_reset_confirm
+from django.contrib.auth.views import (
+    password_reset_complete, password_reset_confirm)
 
 from map_app import views
 
@@ -39,6 +40,7 @@ urlpatterns = [
         r'(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$',
         password_reset_confirm,
         name='password_reset_confirm'),
+    url(r'^reset/done/$', password_reset_complete),
     url(r'^admin/', admin.site.urls),
 ] 
 
