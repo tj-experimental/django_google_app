@@ -248,6 +248,7 @@ INCLUDE_AUTH_URLS = True
 # python -m smtpd -n -c DebuggingServer localhost:1025
 # From registration email
 REGISTRATION_DEFAULT_FROM_EMAIL = '{}@test.com'.format(HOSTNAME)
+DEFAULT_FROM_EMAIL = REGISTRATION_DEFAULT_FROM_EMAIL
 # Set the email backend
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 # Email connect to host
