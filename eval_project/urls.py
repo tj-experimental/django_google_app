@@ -14,6 +14,8 @@ Including another URLconf
     2. Import the include() function: from django.conf.urls import url, include
     3. Add a URL to urlpatterns:  url(r'^blog/', include(blog_urls))
 """
+import os
+
 from django.conf.urls import url, include
 from django.conf.urls.static import static
 from django.conf import settings
@@ -38,5 +40,7 @@ urlpatterns = [
         password_reset_confirm,
         name='password_reset_confirm'),
     url(r'^admin/', admin.site.urls),
-] + static(settings.STATIC_URL,
-           document_root=settings.STATIC_ROOT)
+] 
+
+if not os.environ.get('STAGING') or not os.environ.get('PRODUCTION'):
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
