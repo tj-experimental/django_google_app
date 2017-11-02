@@ -16,13 +16,22 @@ log = logging.getLogger(__name__)
 
 
 def update_site_info(func):
+    """
+    .. py:decorator:: update_site_info(func)
+    
+    Update the `settings.SITE_ID` using the `SITE_NAME` and `SITE_DOMAIN`.
+  
+    :param func: Decorated function.
+    :type func: callable
+    """
     @wraps(func)
     def wrapped(*args, **kwargs):
         current_site = Site.objects.get_or_create(
             name=settings.SITE_NAME,
             domain=settings.SITE_DOMAIN)
         site, exists = current_site
-        settings.SITE_ID = site.id
+        if not exists or settings.SITE_ID != site.id:
+            settings.SITE_ID = site.id
         return func(*args, **kwargs)
     return wrapped
 
@@ -37,14 +46,20 @@ def ajax_permitted(func):
 
 
 class OAuth2Decorator(object):
-
+    """
+    .. py:class:: OAuth2Decorator
+    
+    """
     def __init__(self, client_id, secret, scope):
         self._client_id = client_id
         self._secret = secret
         self._scope = scope
 
     def oauth_required(self, method):
-        """Decorator that starts the OAuth 2.0 dance.
+        """
+        .. py:decorator: oauth_required(method)
+        
+        Decorator that starts the OAuth 2.0 dance.
 
         Starts the OAuth dance for the logged in user if they haven't already
         granted access for this application.
