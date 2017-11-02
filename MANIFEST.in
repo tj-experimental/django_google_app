@@ -1,5 +1,7 @@
 Include README LICENSE
 recursive-include map_app *.py *.html *.css *.es6 *.js
-recursive-include eval_project *.py *html *.js *.css
+recursive-include eval_project *.py 
 include docs/Makefile
 recursive-include docs/source *
+include Makefile
+include make.bat
