@@ -92,10 +92,7 @@ class FlowClient(object):
 
     def get_credential(self):
         # Read credentials
-        storage = DjangoORMStorage(CredentialsModel
-                                   'id',
-                                   self.user,
-                                   'credential')
+        storage = DjangoORMStorage(CredentialsModel, 'id', self.user, 'credential')
         return storage.get()
 
     def generate_token(self):
