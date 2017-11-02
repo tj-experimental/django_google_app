@@ -17,8 +17,6 @@ Indices and tables
 * :ref:`modindex`
 * :ref:`search`
 
-.. automodule:: map_app.forms
-   :members:
 .. automodule:: map_app.models
    :members:
 .. automodule:: map_app.tests
