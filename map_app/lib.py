@@ -36,13 +36,27 @@ def store_user_tokens(user, access_token, refresh_token):
 
 @contextmanager
 def verify_client_id_json(filename):
+    """
+    Veirfy the required client_id.json values are set.
+    
+    A context manager to parse the client_id.json and set the missing
+    values with the env vars.
+    :param filename: Client id json filename.
+    :type filename: str
+    """
     fp = open(filename)
     client_id = json.load(fp)
     required_keys = ['client_id', 'project_id',
                      'client_secret']
     for k in required_keys:
         if client_id['web'][k] == '':
-            client_id['web'][k] = os.environ.get(k.upper(), '')
+            env_var =  k.upper()
+            if not os.environ.get(env_var):
+                raise ValueError("Client ID json required key " +
+                                 "value not set in \"{}\" or missing " +
+                                 "env var {}".format(filename, env_var))
+            else:
+                client_id['web'][k] = os.environ.get(env_var)
     f = NamedTemporaryFile(mode='w', dir=os.path.dirname(filename),
                            suffix='.json', delete=False)
     json.dump(client_id, f)
@@ -78,7 +92,10 @@ class FlowClient(object):
 
     def get_credential(self):
         # Read credentials
-        storage = DjangoORMStorage(CredentialsModel, 'id', self.user, 'credential')
+        storage = DjangoORMStorage(CredentialsModel
+                                   'id',
+                                   self.user,
+                                   'credential')
         return storage.get()
 
     def generate_token(self):
