@@ -3,73 +3,27 @@ from __future__ import absolute_import
 import json
 from unittest import skip
 
-from django.contrib.auth.models import AnonymousUser, User
-from django.contrib.messages.middleware import MessageMiddleware
 from django.core.urlresolvers import resolve
-from django.http import HttpRequest
 from django.http import HttpResponseBadRequest, HttpResponseRedirect
 from django.shortcuts import render
-from django.test import TestCase
 from mock import patch, MagicMock
 
-from map_app.utils import messages_to_dict
+from .base import BaseViewTestCase
+from ...utils import messages_to_dict
 from ...forms import AddressForm
-from ...models import Address, UserTokens
+from ...models import Address
 from ...tables import AddressTable
 from ...views import home, address_view, reset_address
 
 
-class BaseTestCase(TestCase):
-    create_address = False
-    maxDiff = None
-
-    def setUp(self):
-        self.request = HttpRequest()
-        self.request.session = {}
-        self.request.user = self.create_test_superuser()
-        self.anonymous_user = AnonymousUser()
-        self.request.META.update({'SERVER_NAME': 'localhost',
-                                  'SERVER_PORT': '8000'})
-        self.message_middleware = MessageMiddleware()
-        if self.create_address:
-            self.address = 'Toronto, Ontario'
-            self.address_object = (
-                self._create_test_address(self.address)
-            )
-
-    @staticmethod
-    def _create_test_address(address_str):
-        address_object = Address.objects.create(address=address_str)
-        return address_object
-
-    @staticmethod
-    def create_test_superuser():
-        user = User.objects.create(
-            username='test_user',
-            password='testuser',
-            is_active=True
-        )
-        user.save()
-        return user
-
-    def get_user_token(self, user=None):
-        user = user or self.request.user
-        try:
-            return UserTokens.objects.get(
-                user=user)
-        except(UserTokens.DoesNotExist,
-               UserTokens.MultipleObjectsReturned):
-            return None
-
-
-class HomePageTestCase(BaseTestCase):
+class HomePageTestCase(BaseViewTestCase):
     create_address = True
 
     def test_root_url_resolves_to_home_page(self):
         found = resolve('/')
         self.assertEqual(found.func, home)
 
-    @skip('Need to implement.')
+    @skip('Need to implement')
     def test_home_page_can_save_POST_request(self):
         pass
 
@@ -79,6 +33,7 @@ class HomePageTestCase(BaseTestCase):
         # Delete the existing address to prevent violating the
         # unique constraint.
         self.address_object.delete()
+
         request.POST = {'address': self.address}
         self.message_middleware.process_request(self.request)
         form = AddressForm(request.POST)
@@ -149,7 +104,7 @@ class HomePageTestCase(BaseTestCase):
                 ''.join(response_text.get('address')))
 
 
-class AddressTestCase(BaseTestCase):
+class AddressTestCase(BaseViewTestCase):
     create_address = False
 
     def test_address_url_resolves_to_address_view(self):
@@ -157,13 +112,13 @@ class AddressTestCase(BaseTestCase):
         self.assertEqual(found.func, address_view)
 
 
-class AddressResetTestCase(BaseTestCase):
+class AddressResetTestCase(BaseViewTestCase):
     create_address = False
 
     def test_reset_address_url_resolves_to_reset_address_view(self):
         found = resolve('/reset-address')
         self.assertEqual(found.func, reset_address)
 
-    @skip('Need to implement.')
+    @skip('Need to implement')
     def test_send_get_request_returns_correct_html(self):
         pass
