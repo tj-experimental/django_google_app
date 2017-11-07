@@ -50,11 +50,11 @@ def verify_client_id_json(filename):
                      'client_secret']
     for k in required_keys:
         if client_id['web'][k] == '':
-            env_var =  k.upper()
+            env_var = k.upper()
             if not os.environ.get(env_var):
-                raise ValueError("Client ID json required key " +
-                                 "value not set in \"{}\" or missing " +
-                                 "env var {}".format(filename, env_var))
+                raise ValueError("Client ID json required key value"
+                                 " not set in {} or missing env var {}"
+                                 .format(filename, env_var))
             else:
                 client_id['web'][k] = os.environ.get(env_var)
     f = NamedTemporaryFile(mode='w', dir=os.path.dirname(filename),

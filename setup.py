@@ -44,7 +44,7 @@ install_requires = [
 test_requires = [
     'tox>=2.9.1',
     'coverage',
-    'mock',
+    'mock==2.0.0',
 ]
 
 doc_requires = [
@@ -71,6 +71,7 @@ setup(
     packages=find_packages(),
     include_package_data=True,
     install_requires=install_requires,
+    tests_require=test_requires,
     extras_require=extras_require,
     url='https://github.com/jackton1/django_google_app.git',
     license='MIT refer to LICENSE',
