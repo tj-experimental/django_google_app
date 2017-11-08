@@ -65,7 +65,7 @@ extras_require = {
 
 setup(
     name='django_map_app',
-    version='1.0.1',
+    version='1.0.2',
     author='Tonye Jack',
     author_email='jtonye@ymail.com',
     packages=find_packages(),
