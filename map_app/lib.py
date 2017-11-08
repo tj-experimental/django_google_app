@@ -92,7 +92,8 @@ class FlowClient(object):
 
     def get_credential(self):
         # Read credentials
-        storage = DjangoORMStorage(CredentialsModel, 'id', self.user, 'credential')
+        storage = DjangoORMStorage(
+            CredentialsModel, 'id', self.user, 'credential')
         return storage.get()
 
     def generate_token(self):
@@ -216,6 +217,8 @@ class FusionTableMixin(object):
                              "VALUES \"('{address}', {latitude}, "
                              "{longitude}, '{computed_address}')\""
                          .format(**values_dict)).execute())
+        else:
+            log.debug("Saving already existing address.")
 
     @classmethod
     def address_exists(cls, address, service, table_id):
