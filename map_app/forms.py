@@ -27,7 +27,8 @@ class AddressForm(forms.ModelForm):
                 address__icontains=self.cleaned_data['address']
             ).exists()
             if q:
-                message_ = "The %s could not be %s because similar address already exists." % (
+                message_ = ("The %s could not be %s because "
+                            "similar address already exists.") % (
                         self.instance.__class__.__name__, 'created'
                     )
                 log.debug("%s : %s" % (message_, self.cleaned_data['address']))
@@ -55,17 +56,19 @@ class AddressForm(forms.ModelForm):
             else:
                 flow = lib.FlowClient(request)
                 service, table_id = flow.get_service_and_table_id()
-                fusion_table_addresses = lib.FusionTableMixin.address_exists(
-                        instance, service, table_id)
+                fusion_table_address_exists = (
+                    lib.FusionTableMixin.address_exists(instance,
+                                                        service,
+                                                        table_id))
                 added_to_fusion_table = False
-                if fusion_table_addresses is not None:
+                if fusion_table_address_exists is not None:
                     log.debug("Address already exist in fusion table:"
                               " %s" % (instance.address,))
                 else:
                     log.info("Adding address to fusion table : %s"
                              % instance.address)
-                    added_to_fusion_table = True
                     lib.FusionTableMixin.save(instance, service, table_id)
+                    added_to_fusion_table = True
 
                 if instance:
                     part = "Successfully added a new "

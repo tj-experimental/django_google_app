@@ -42,16 +42,17 @@ def home(request):
             table = AddressTable(
                 form.get_addresses(),
                 request=request)
+            return render(request, 'table.html',
+                          {'table': table,
+                           'form': form,
+                           'storage': messages_to_dict(
+                               request, to_str=True)})
         else:
             log.debug("Error address form invalid.",
                       extra=form.errors)
             return HttpResponseBadRequest(
                 json.dumps(form.errors))
-        return render(request, 'table.html',
-                      {'table': table,
-                       'form': form,
-                       'storage': messages_to_dict(
-                           request, to_str=True)})
+
     address = (Address.objects
                .filter(geocode_error=0)
                .exclude(computed_address__isnull=True))
