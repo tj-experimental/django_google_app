@@ -195,17 +195,22 @@ else:
 VIEW_GOOGLE_MAP_LINK = ('https://www.google.com/maps/search/'
                         '?api=1&map_action=map')
 
-GOOGLE_OAUTH2_CLIENT_SECRETS_JSON = os.path.join(BASE_DIR, 'client_id.json')
+GOOGLE_OAUTH2_CLIENT_SECRET = os.path.join(BASE_DIR, 'client_id.json')
 
-GOOGLE_OAUTH2_CLIENT_SECRETS_JSON_OBJ = (
-    None if not os.path.exists(GOOGLE_OAUTH2_CLIENT_SECRETS_JSON)
-    else json.load(open(GOOGLE_OAUTH2_CLIENT_SECRETS_JSON))
+GOOGLE_OAUTH2_CLIENT_SECRET_JSON = (
+    None if not os.path.exists(GOOGLE_OAUTH2_CLIENT_SECRET)
+    else json.load(open(GOOGLE_OAUTH2_CLIENT_SECRET))
 )
 
-if GOOGLE_OAUTH2_CLIENT_SECRETS_JSON_OBJ:
-    CLIENT_ID = GOOGLE_OAUTH2_CLIENT_SECRETS_JSON_OBJ['web']['client_id']
+if not 'CLIENT_ID' in os.environ:
+    CLIENT_ID = GOOGLE_OAUTH2_CLIENT_SECRET_JSON['web']['client_id']
 else:
-    CLIENT_ID = os.environ.get('CLIENT_ID')
+    CLIENT_ID = os.environ['CLIENT_ID']
+
+if not 'CLIENT_SECRET' in os.environ:
+    CLIENT_SECRET = GOOGLE_OAUTH2_CLIENT_SECRET_JSON['web']['client_id']['client_secret']
+else:
+    CLIENT_SECRET = os.environ['CLIENT_SECRET']
 
 FUSION_TABLE_SCOPE = 'https://www.googleapis.com/auth/fusiontables'
 
