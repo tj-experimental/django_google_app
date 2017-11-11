@@ -195,11 +195,11 @@ else:
 VIEW_GOOGLE_MAP_LINK = ('https://www.google.com/maps/search/'
                         '?api=1&map_action=map')
 
-GOOGLE_OAUTH2_CLIENT_SECRET = os.path.join(BASE_DIR, 'client_id.json')
+GOOGLE_OAUTH2_CLIENT_SECRETS_JSON = os.path.join(BASE_DIR, 'client_id.json')
 
 GOOGLE_OAUTH2_CLIENT_SECRET_JSON = (
-    None if not os.path.exists(GOOGLE_OAUTH2_CLIENT_SECRET)
-    else json.load(open(GOOGLE_OAUTH2_CLIENT_SECRET))
+    None if not os.path.exists(GOOGLE_OAUTH2_CLIENT_SECRETS_JSON)
+    else json.load(open(GOOGLE_OAUTH2_CLIENT_SECRETS_JSON))
 )
 
 if not 'CLIENT_ID' in os.environ:

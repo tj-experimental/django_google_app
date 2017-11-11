@@ -44,6 +44,8 @@ def verify_client_id_json(filename):
     :param filename: Client id json filename.
     :type filename: str
     """
+    if not os.path.exists(filename):
+        raise OSError('Path specified doesn\'t exists: ' + filename)
     fp = open(filename)
     client_id = json.load(fp)
     required_keys = ['client_id', 'project_id',
