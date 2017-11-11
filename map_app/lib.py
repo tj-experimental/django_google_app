@@ -37,7 +37,7 @@ def store_user_tokens(user, access_token, refresh_token):
 @contextmanager
 def verify_client_id_json(filename):
     """
-    Veirfy the required client_id.json values are set.
+    Verify the required client_id.json values are set.
     
     A context manager to parse the client_id.json and set the missing
     values with the env vars.
@@ -98,7 +98,7 @@ class FlowClient(object):
 
     def generate_token(self):
         token = xsrfutil.generate_token(
-            settings.SECRET, self.user.id)
+            settings.CLIENT_SECRET, self.user.id)
         self.flow.params['state'] = token
         return token
 

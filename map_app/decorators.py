@@ -89,7 +89,7 @@ class OAuth2Decorator(object):
             if 'state' in request_handler.GET:
                 token = bytes(request_handler.GET['state'], encoding='utf-8')
                 if not xsrfutil.validate_token(
-                        settings.SECRET,
+                        settings.CLIENT_SECRET,
                         token,
                         request_handler.user.id):
                     log.error('Invalid token used by %s: %d' % (
@@ -111,6 +111,6 @@ class OAuth2Decorator(object):
 
 oauth_decorator = OAuth2Decorator(
     settings.CLIENT_ID,
-    settings.SECRET,
+    settings.CLIENT_SECRET,
     settings.FUSION_TABLE_SCOPE
 )

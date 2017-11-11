@@ -185,15 +185,12 @@ if GOOGLE_API_KEYS_JSON_FILE is not None:
     GOOGLE_FUSION_TABLE_API_KEY = (
         GOOGLE_API_KEYS_JSON_FILE['fusion-table-api-key'])
 
-    SECRET = GOOGLE_API_KEYS_JSON_FILE['client-secret']
 else:
     EASY_MAPS_GOOGLE_MAPS_API_KEY = os.environ.get(
         'EASY_MAPS_GOOGLE_MAPS_API_KEY', '')
 
     GOOGLE_FUSION_TABLE_API_KEY = os.environ.get(
         'GOOGLE_FUSION_TABLE_API_KEY', '')
-
-    SECRET = os.environ.get('SECRET', '')
 
 VIEW_GOOGLE_MAP_LINK = ('https://www.google.com/maps/search/'
                         '?api=1&map_action=map')
