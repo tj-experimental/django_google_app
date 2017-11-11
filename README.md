@@ -17,12 +17,12 @@
 - click `Create credentials`.
 - select `OAuth client ID`.
 - click on the client ID name to modify the restrictions. 
-- add the Authorized JavaScript origins e.g `https://*.example.com`
+- add the Authorized JavaScript origins e.g `http://localhost:8000`
 - add Authorized redirect URIs e.g `http://localhost:8000/oauth2callback`
 - click download json.
 
 Using the downloaded json file.
-- rename the downloaded json file to `client_id.json`.
+- rename the file to `client_id.json`.
 - replace `client_id.json` in project root.
 
 OR using the json file copy and set env variables 
