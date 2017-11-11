@@ -9,34 +9,45 @@
 - Display Fusion tables layer with styles applied (i.e All locations saved in the fusion table have custom style and description Text Content).
 - Personalized Info window for previously searched addresses.
 
-## Usage requirements
 
-Create a `client_id.json` [here](https://console.developers.google.com/apis/credentials) for OAuth v2.0 authentication and save in project root directory.
+## Setup requirements
 
-Add API keys for [Google Maps API](https://developers.google.com/maps/web/), and [Google Fusion Table REST API](https://developers.google.com/fusiontables/docs/v2/getting_started#about-rest) to `google_api_keys.json`
+### Generate a OAuth `client_id.json` [here](https://console.developers.google.com/apis/credentials).
+
+- click `Create credentials`.
+- select `OAuth client ID`.
+- click on the client ID name to modify the restrictions. 
+- add the Authorized JavaScript origins e.g `https://*.example.com`
+- add Authorized redirect URIs e.g `http://localhost:8000/oauth2callback`
+- click download json.
+
+Using the downloaded json file.
+- rename the downloaded json file to `client_id.json`.
+- replace `client_id.json` in project root.
+
+OR using the json file copy and set env variables 
+- `CLIENT_ID` , `PROJECT_ID`, `CLIENT_SECRET`.
 
 
-Also manage API Keys from the [Console](https://console.developers.google.com/apis/credentials)
+### Manage API Keys from the [Console](https://console.developers.google.com/apis/credentials)
 
-### Sample `google_api_keys.json`
+#### Generate an API key [here](https://console.developers.google.com/apis/credentials) for [Google Maps API](https://developers.google.com/maps/web/), and [Google Fusion Table REST API](https://developers.google.com/fusiontables/docs/v2/getting_started#about-rest) to keep track of usage information.
+
+##### Create `google_api_keys.json` to store the api keys.
 ```json
 {
   "maps-api-key": "[[insert google map api key]]",
-  "fusion-table-api-key": "[[insert google fusion table api key]]",
-  "client-secret": "[[insert client_id.json client_secret]]"
+  "fusion-table-api-key": "[[insert google fusion table api key]]"
 }
 ```
-
-OR Optionally set ENV vars
+##### OR Optionally set ENV vars 
 
 ```
-CLIENT_ID=
-PROJECT_ID=
-CLIENT_SECRET=
-SECRET=
 EASY_MAPS_GOOGLE_MAPS_API_KEY=
+
 GOOGLE_FUSION_TABLE_API_KEY=
 ```
+
 
 ### Create a virtual environment using `virtualenvwrapper`
 - Run
@@ -69,30 +80,27 @@ npm install
 ```sh
 python3 manage.py migrate
 ```
-### Create a super user to access the application.
-```
-python3 manage.py createsuperuser
-```
-##### OR run `make superuser` from project root folder
-
-### Start django web server
+### Start web server
 ```
 python3 manage.py runserver
 ```
-OR 
+### OR 
 ```
 make run
 ```
+
 ### Navigate to http://localhost:8000
 
-### Local Development
+
+
+
+## Local Development
 ```bash
 git clone https://github.com/jackton1/django_google_app.git
 cd django_google_app
 pip install -e . -r requirements.txt
 npm install 
 python3 manage.py migrate 
-python3 manage.py runserver
 ```
 
 
