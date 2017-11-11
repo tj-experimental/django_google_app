@@ -52,7 +52,7 @@ GOOGLE_FUSION_TABLE_API_KEY=
 ### Create a virtual environment using `virtualenvwrapper`
 - Run
 ```
-pip install virtualenv virtualenvwrapper
+pip install virtualenvwrapper
 mkvirtualenv localve
 ```
 
