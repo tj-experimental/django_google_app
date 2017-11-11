@@ -208,7 +208,7 @@ else:
     CLIENT_ID = os.environ['CLIENT_ID']
 
 if not 'CLIENT_SECRET' in os.environ:
-    CLIENT_SECRET = GOOGLE_OAUTH2_CLIENT_SECRET_JSON['web']['client_id']['client_secret']
+    CLIENT_SECRET = GOOGLE_OAUTH2_CLIENT_SECRET_JSON['web']['client_secret']
 else:
     CLIENT_SECRET = os.environ['CLIENT_SECRET']
 
