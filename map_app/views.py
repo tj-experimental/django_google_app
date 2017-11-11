@@ -147,7 +147,7 @@ def oauth_callback(request):
         log.error('Invalid request.')
         return HttpResponseBadRequest('Invalid Request.')
     if not xsrfutil.validate_token(
-            settings.SECRET,
+            settings.CLIENT_SECRET,
             bytes(token, encoding='utf-8'),
             request.user.id):
         log.error("User id %d Invalid Token used: %s"

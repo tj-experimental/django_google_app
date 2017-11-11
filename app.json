@@ -21,9 +21,6 @@
     "PROJECT_ID": {
       "required": true
     },
-    "SECRET": {
-      "required": true
-    },
     "STAGING": {
       "required": true
     },

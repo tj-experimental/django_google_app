@@ -44,7 +44,7 @@ class OAuth2DecoratorTestCase(BaseTestCase):
     def setUp(self):
         self.oauth_decorator = OAuth2Decorator(
             settings.CLIENT_ID,
-            settings.SECRET,
+            settings.CLIENT_SECRET,
             settings.FUSION_TABLE_SCOPE
         )
 
