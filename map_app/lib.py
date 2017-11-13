@@ -253,11 +253,16 @@ class FusionTableMixin(object):
         return results.get('columns', [])
 
     @classmethod
-    def _process_result(cls, results, columns=None):
+    def _process_result(cls, results, columns=None, excludes=None):
         rows = results.get('rows', [])
         columns = columns or cls.get_columns(results)
         for row in rows:
-            yield dict(zip(columns, row))
+            ret_dict = dict(zip(columns, row))
+            if excludes:
+                for key in excludes:
+                    if key in ret_dict:
+                        del ret_dict[key]
+            yield ret_dict
 
     @classmethod
     def address_model_to_dict(cls, address):

@@ -125,13 +125,8 @@ def sync_address(request):
     service, table_id = flow.get_service_and_table_id()
     results = lib.FusionTableMixin.select_all_rows(service, table_id)
     columns = lib.FusionTableMixin.get_columns(results)
-    try:
-        index = columns.index('rowid')
-        columns.pop(index)
-    except ValueError:
-        pass
     fusion_table_address = list(
-        lib.FusionTableMixin._process_result(results, columns=columns))
+        lib.FusionTableMixin._process_result(results, columns=columns, excludes=['rowid']))
     Address.objects.all().delete()
     Address.objects.bulk_create([Address(**row) for row in fusion_table_address])
     message_ = 'Successfully synchronized address table with fusion table.'
