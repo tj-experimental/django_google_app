@@ -127,7 +127,7 @@ def sync_address(request):
     columns = lib.FusionTableMixin.get_columns(results)
     try:
         index = columns.index('rowid')
-        columns[index] = 'id'
+        columns.pop(index)
     except ValueError:
         pass
     fusion_table_address = list(
