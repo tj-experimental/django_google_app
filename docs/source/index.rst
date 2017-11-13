@@ -10,6 +10,8 @@ Welcome to using Google Fusion tables with django.'s documentation!
    :maxdepth: 2
    :caption: Contents:
 
+   modules
+
 Indices and tables
 ==================
 

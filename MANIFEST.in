@@ -5,3 +5,6 @@ include docs/Makefile
 recursive-include docs/source *
 include Makefile
 include make.bat
+include *.ini *.json *.py *.babelrc
+exclude app.json
+prune build

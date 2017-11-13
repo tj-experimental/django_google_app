@@ -14,6 +14,11 @@ log = logging.getLogger(__name__)
 
 
 class AddressForm(forms.ModelForm):
+    """
+    Address form validator
+
+    Validate the address is unique and it's geocode.
+    """
     address = forms.CharField(max_length=255, required=True)
 
     class Meta:
