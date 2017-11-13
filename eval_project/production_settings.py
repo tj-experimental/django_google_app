@@ -10,7 +10,10 @@ ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '').split()
 
 # Update database configuration with $DATABASE_URL.
 db_from_env = dj_database_url.config(conn_max_age=600)
-DATABASES['default'].update(db_from_env)
+
+DATABASES = {
+    'default': db_from_env
+}
 
 OAUTH2_CLIENT_REDIRECT_PATH = (
     'https://googlefusion.herokuapp.com/oauth2callback')

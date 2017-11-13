@@ -57,11 +57,11 @@ class HomePageTestCase(BaseViewTestCase):
                                  .order_by('-id').all(),
                                  request=request)
             expected = render(
-                    request, 'table.html',
-                    {'table': table,
-                     'form': form,
-                     'storage': messages_to_dict(
-                         request, to_str=True)})
+                request, 'table.html',
+                {'table': table,
+                 'form': form,
+                 'storage': messages_to_dict(request, to_str=True)}
+            )
 
             self.assertHTMLEqual(response.content.decode(),
                                  expected.content.decode())

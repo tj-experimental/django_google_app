@@ -209,7 +209,7 @@ class FusionTableMixin(object):
 
     @classmethod
     def save(cls, address, service, table_id):
-        values_dict = cls.sanitize_address(address)
+        values_dict = cls.address_model_to_dict(address)
         values_dict.update({'table_id': table_id})
         if not cls.address_exists(address, service, table_id):
             return (service.query()
@@ -260,10 +260,16 @@ class FusionTableMixin(object):
             yield dict(zip(columns, row))
 
     @classmethod
-    def sanitize_address(cls, address):
-        values_dict = {'address': address.address or '',
-                       'latitude': address.latitude or '',
-                       'longitude': address.longitude or '',
-                       'computed_address':
-                           address.computed_address or ''}
+    def address_model_to_dict(cls, address):
+        """
+        Convert the ``map_app.models.Address`` instance to a dict.
+
+        :param address: The address model instance.
+        :type address: ``map_app.models.Address``
+        :rtype: dict
+        """
+        keys = ['address', 'latitude', 'longitude', 'computed_address']
+        values_dict = {}
+        for key in keys:
+            values_dict[key] = getattr(address, key, '')
         return values_dict

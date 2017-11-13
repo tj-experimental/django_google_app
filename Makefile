@@ -15,7 +15,7 @@ help:
 	@echo "superuser        - Creates a super user."
 	@echo "clean-build      - Perform a clean build."
 	@echo "lint             - Run flake8 /for project files."
-	@echo "docs             - Update the docs and spin up sphinx server."
+	@echo "view_docs        - Update the docs and spin up sphinx server."
 	@echo "install          - Install project in editable mode."
 
 
@@ -33,14 +33,10 @@ test:
 	@echo "Running test..."
 	${MANAGE_PY} test --settings=eval_project.settings
 
-docs:
-	@echo "Building sphinx docs"
-	cd docs
-	make html -b build
-
 view_docs:
-	pip install -q -e .[doc] --no-deps
-	cd docs && sphinx-serve -b build -p 8899
+	@echo "Building sphinx docs"
+	pip install -q -e .[docs]
+	cd docs && make html && echo "Serving documentation" && sphinx-serve -b build -p 8899
 
 install:
 	@echo "Installing package dependencies..."
@@ -48,4 +44,5 @@ install:
 
 lint:
 	@echo "Running flak8..."
-	flake8 --exclude=.tox,docs --include=*.py
+	pip install -e .[lint]
+	flake8 . --exclude=docs,dist --ignore=F401
