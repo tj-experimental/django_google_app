@@ -23,29 +23,30 @@ class FusionTableMixinTestCase(TestCase):
     def addresses(self):
         return [self.address_1, self.address_2]
 
+    @property
+    def get_next_query(self):
+        for address in self.addresses:
+            yield ("INSERT INTO {table_id} "
+             "(address, latitude, longitude,"
+             " computed_address) VALUES "
+             "\"('{address}', , , '')\""
+             .format(table_id=self.table_id, address=address))
+
     def test_bulk_save(self):
-        expected_query = ("INSERT INTO {table_id} "
-                        "(address, latitude, longitude,"
-                        " computed_address) VALUES "
-                        "\"('{address_1}', , , '')\","
-                        " \"('{address_2}', , , '')\";"
-                        .format(table_id=self.table_id,
-                                address_1=self.address_1,
-                                address_2=self.address_2))
-
-
+        expected_queries = list(self.get_next_query)
         def query_side_effect(sql):
-            self.assertEqual(expected_query, sql)
-
+            self.assertIn(sql, expected_queries)
             return self.execute_mock
 
         self.service.query().sql.side_effect = query_side_effect
-        result = self.fusion_table_mixin.bulk_save(self.addresses, self.service,
+        self.fusion_table_mixin.bulk_save(self.addresses, self.service,
                                           self.table_id)
 
         self.service.query.assert_called()
-        self.service.query().sql.assert_has_calls([call(sql=expected_query)])
-        self.assertIsInstance(result, MagicMock)
+        self.service.query().sql.assert_has_calls([
+            call(sql=expected_queries[0]),
+            call(sql=expected_queries[1])
+        ])
 
 
 
