@@ -8,3 +8,7 @@ from .decorators import (
     SiteInfoDecoratorsTestCase,
     OAuth2DecoratorTestCase
 )
+
+from .lib import (
+    FusionTableMixinTestCase
+)
