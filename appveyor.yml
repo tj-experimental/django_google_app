@@ -6,15 +6,17 @@ environment:
 # Install scripts. (runs after repo cloning)
 install:
   - npm install 
-  - pip install -e . -r requirements.txt
+  - pip3 install -e . -r requirements.txt
 
 # Before running test create dummy files.
 before_test:
-  - pip install -e .[test]
+  - python3 --version
+  - pip3 install -e .[test]
 
 # Post-install test scripts.
 test_script:
   # run tests
+  - python3 manage.py test
   - make test
   - tox
 
