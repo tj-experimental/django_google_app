@@ -1,6 +1,6 @@
 
 environment:
-  python: "3.6"
+  - PYTHON: "C:\\Python36-x64"
 
 # Install scripts. (runs after repo cloning)
 install:
