@@ -178,26 +178,43 @@ class FusionTableMixin(object):
     @staticmethod
     def delete_all_addresses(service, table_id):
         return service.query().sql(
-            sql='DELETE FROM %s' % table_id).execute()
+            sql='DELETE FROM %s;' % table_id).execute()
 
     @staticmethod
     def delete_address_at_row(service, table_id, row_id):
-        return service.query().sql(
-            sql='DELETE FROM %s WHERE ROWID = %d' %
-                (table_id, row_id,))
+        return (
+            service.query()
+            .sql(sql='DELETE FROM %s WHERE ROWID = %d' % (table_id, row_id,))
+            .execute())
 
     @classmethod
     def bulk_delete(cls, results, service, table_id):
-        for row in results:
-            row_id = row.get('rowid')
-            cls.delete_address_at_row(service,
-                                      table_id,
-                                      row_id)
+        delete_query = 'DELETE FROM %s WHERE ROWID IN ({row_ids});' % table_id
+        row_ids = [row.get('rowid') for row in results]
+
+        return (service.query()
+                .sql(sql=delete_query.format(row_ids=row_ids))
+                .execute())
 
     @classmethod
-    def bulk_save(cls, results, service, table_id):
-        for row in results:
-            cls.save(row, service, table_id)
+    def bulk_save(cls, addresses, service, table_id):
+        insert_query = ("INSERT INTO {table_id} "
+                        "(address, latitude, longitude,"
+                        " computed_address) VALUES"
+                        .format(table_id=table_id))
+        values = ', '.join(cls.generate_values(addresses))
+
+        return (service.query()
+                .sql(sql='{} {};'.format(insert_query,values))
+                .execute())
+
+    @classmethod
+    def generate_values(cls, addresses):
+        for address in addresses:
+            values_dict = cls.address_model_to_dict(address)
+            values = ("\"('{address}', {latitude}, {longitude}, "
+                       "'{computed_address}')\"".format(**values_dict))
+            yield values
 
     @classmethod
     def get_style(cls, service, table_id, style_id=1):
@@ -276,5 +293,8 @@ class FusionTableMixin(object):
         keys = ['address', 'latitude', 'longitude', 'computed_address']
         values_dict = {}
         for key in keys:
-            values_dict[key] = getattr(address, key, '')
+            try:
+                values_dict[key] = getattr(address, key, '') or ''
+            except AttributeError:
+                values_dict[key] = address.get(key, '')
         return values_dict
