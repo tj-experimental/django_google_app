@@ -199,12 +199,14 @@ class FusionTableMixin(object):
     @classmethod
     def bulk_save(cls, addresses, service, table_id):
         insert_query = ("INSERT INTO {table_id} "
-                     "(address, latitude, longitude,"
-                     " computed_address) VALUES")
+                        "(address, latitude, longitude,"
+                        " computed_address) VALUES"
+                        .format(table_id=table_id))
         values = ', '.join(cls.generate_values(addresses))
 
-        return (service.query().sql(sql='{} {};'.format(insert_query,
-                                                       values)).execute())
+        return (service.query()
+                .sql(sql='{} {};'.format(insert_query,values))
+                .execute())
 
     @classmethod
     def generate_values(cls, addresses):
