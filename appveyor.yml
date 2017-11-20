@@ -1,6 +1,7 @@
 
 environment:
-  - PYTHON: "C:\\Python36-x64"
+  matrix:
+    - PYTHON: "C:\\Python36-x64"
 
 # Install scripts. (runs after repo cloning)
 install:
