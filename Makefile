@@ -23,6 +23,7 @@ help:
 
 run:
 	@echo "Starting server on ${HOST}:${PORT}"
+	${MANAGE_PY} add_site
 	${MANAGE_PY} runserver ${HOST}:${PORT}
 
 app:

@@ -5,7 +5,6 @@ from .views import (
 )
 
 from .decorators import (
-    SiteInfoDecoratorsTestCase,
     OAuth2DecoratorTestCase
 )
 

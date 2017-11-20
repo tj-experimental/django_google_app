@@ -198,23 +198,21 @@ class FusionTableMixin(object):
 
     @classmethod
     def bulk_save(cls, addresses, service, table_id):
-        insert_query = ("INSERT INTO {table_id} "
-                        "(address, latitude, longitude,"
-                        " computed_address) VALUES"
-                        .format(table_id=table_id))
-        values = ', '.join(cls.generate_values(addresses))
-
-        return (service.query()
-                .sql(sql='{} {};'.format(insert_query,values))
-                .execute())
+        # limit insert to 60 rows
+        for query in list(cls.generate_values(addresses, table_id))[:60]:
+            service.query().sql(sql=query).execute()
 
     @classmethod
-    def generate_values(cls, addresses):
+    def generate_values(cls, addresses, table_id):
+        values_dict = {'table_id': table_id}
+        insert_query = ("INSERT INTO {table_id} "
+                        "(address, latitude, longitude,"
+                        " computed_address) VALUES "
+                        "\"('{address}', {latitude},"
+                        " {longitude}, '{computed_address}')\"")
         for address in addresses:
-            values_dict = cls.address_model_to_dict(address)
-            values = ("\"('{address}', {latitude}, {longitude}, "
-                       "'{computed_address}')\"".format(**values_dict))
-            yield values
+            values_dict.update(cls.address_model_to_dict(address))
+            yield insert_query.format(**values_dict)
 
     @classmethod
     def get_style(cls, service, table_id, style_id=1):

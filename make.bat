@@ -76,6 +76,7 @@ if -%PORT%-==-- (
 )
 echo.Starting server on !HOST!^:!PORT!...
 start chrome.exe --new-tab http:\\!HOSTNAME!^:!PORT!
+call :manage add_site
 call :manage runserver !HOST!^:!PORT!
 exit /b
 
