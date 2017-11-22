@@ -56,13 +56,11 @@ class BaseViewTestCase(BaseTestCase):
 
     @staticmethod
     def create_test_superuser():
-        user = User.objects.create(
+        return User.objects.create(
             username='test_user',
             password='testuser',
             is_active=True
         )
-        user.save()
-        return user
 
     def get_user_token(self, user=None):
         user = user or self.request.user
