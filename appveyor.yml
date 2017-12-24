@@ -1,6 +1,24 @@
 
 environment:
-  python: "3.6"
+
+  matrix:
+
+    # For Python versions available on Appveyor, see
+    # http://www.appveyor.com/docs/installed-software#python
+    # The list here is complete (excluding Python 2.6, which
+    # isn't covered by this document) at the time of writing.
+
+    - PYTHON: "C:\\Python27"
+    - PYTHON: "C:\\Python33"
+    - PYTHON: "C:\\Python34"
+    - PYTHON: "C:\\Python35"
+    - PYTHON: "C:\\Python27-x64"
+    - PYTHON: "C:\\Python33-x64"
+      DISTUTILS_USE_SDK: "1"
+    - PYTHON: "C:\\Python34-x64"
+      DISTUTILS_USE_SDK: "1"
+    - PYTHON: "C:\\Python35-x64"
+    - PYTHON: "C:\\Python36-x64"
 
 # Install scripts. (runs after repo cloning)
 install:
@@ -9,11 +27,12 @@ install:
 
 # Before running test create dummy files.
 before_test:
+  - python --version
   - pip install -e .[test]
 
 # Post-install test scripts.
 test_script:
-  # run tests
+  # run tests 
   - make test
   - tox
 
