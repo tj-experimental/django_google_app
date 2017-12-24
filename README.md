@@ -2,13 +2,14 @@
 [![Build Status](https://travis-ci.org/jackton1/django_google_app.svg?branch=master)](https://travis-ci.org/jackton1/django_google_app)
 [![Build status](https://ci.appveyor.com/api/projects/status/r713eskuf4qp1uda/branch/master?svg=true)](https://ci.appveyor.com/project/jackton1/django-google-app/branch/master)
 
+.. inclusion-marker-do-not-remove
+
 - Validate access to google fusion table v2 api using OAuth2.
 - Perform updates to google fusion table with locations on the map by clicking or changing the position of the marker on the map. 
 - Delete all locations from google fusion by clicking the reset button.
 - Stores previously pinned/clicked locations in the fusion table.
 - Display Fusion tables layer with styles applied (i.e All locations saved in the fusion table have custom style and description Text Content).
 - Personalized Info window for previously searched addresses.
-
 
 ## Setup requirements
 
@@ -25,7 +26,9 @@ Using the downloaded json file.
 - rename the file to `client_id.json`.
 - replace `client_id.json` in project root.
 
-OR using the json file copy and set env variables 
+OR
+
+Using the json file copy and set env variables
 - `CLIENT_ID` , `PROJECT_ID`, `CLIENT_SECRET`.
 
 

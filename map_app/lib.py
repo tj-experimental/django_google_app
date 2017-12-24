@@ -5,7 +5,10 @@ import logging
 import os
 from abc import ABCMeta, abstractmethod
 from contextlib import contextmanager
-from functools import lru_cache
+try:
+    from functools import lru_cache
+except ImportError:
+    from repoze.lru import lru_cache
 from tempfile import NamedTemporaryFile
 
 from django.conf import settings

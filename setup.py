@@ -38,6 +38,7 @@ install_requires = [
     'psycopg2==2.7.3.2',
     'colorama==0.3.9',
     'jsonpickle==0.9.5',
+    'repoze.lru==0.7',
     'django-bootstrap-breadcrumbs==0.8.2',
 ]
 
@@ -50,6 +51,7 @@ test_requires = [
 doc_requires = [
     'sphinx==1.6.4',
     'sphinx-serve==1.0.1',
+    'recommonmark==0.4.0',
 ]
 
 lint_requires = [
