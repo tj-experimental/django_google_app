@@ -9,6 +9,7 @@
 - Display Fusion tables layer with styles applied (i.e All locations saved in the fusion table have custom style and description Text Content).
 - Personalized Info window for previously searched addresses.
 
+Read the Docs at http://django-google-app.readthedocs.io/en/latest/index.html
 
 ## Setup requirements
 
