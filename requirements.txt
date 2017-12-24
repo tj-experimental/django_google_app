@@ -21,22 +21,31 @@ django-registration-redux==1.8
 django-static-precompiler==1.6
 django-tables2==1.11.0
 django==1.9
+enum34==1.1.6             # via grpcio
 future==0.16.0
 futures==3.1.1
+gax-google-logging-v2==0.8.3  # via gcloud
+gax-google-pubsub-v1==0.8.3  # via gcloud
 gcloud==0.18.3
 geopy==1.11.0
 google-api-python-client==1.6.4
-googleapis-common-protos==1.5.3  # via gcloud
+google-gax==0.12.5        # via gax-google-logging-v2, gax-google-pubsub-v1, gcloud
+googleapis-common-protos==1.5.3  # via gax-google-logging-v2, gax-google-pubsub-v1, gcloud, grpc-google-logging-v2, grpc-google-pubsub-v1
+grpc-google-logging-v2==0.8.1  # via gax-google-logging-v2, gcloud
+grpc-google-pubsub-v1==0.8.1  # via gax-google-pubsub-v1, gcloud
+grpcio==1.8.2             # via gcloud, google-gax, grpc-google-logging-v2, grpc-google-pubsub-v1
 gunicorn==19.7.1
 httplib2==0.10.3
 jsmin==2.2.2
 jsonpickle==0.9.5
 oauth2client==3.0.0
-protobuf==3.4.0           # via gcloud, googleapis-common-protos
+ply==3.8                  # via google-gax
+protobuf==3.5.1           # via gcloud, google-gax, googleapis-common-protos, grpcio
 psycopg2==2.7.3.2
 pyasn1-modules==0.1.4
 pyasn1==0.3.7
 pytz==2017.2
+repoze.lru==0.7
 rsa==3.4.2
 six==1.11.0
 uritemplate==3.0.0
