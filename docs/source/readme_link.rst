@@ -2,5 +2,7 @@
 Readme File
 -----------
 
-.. include:: ../../README.md
+.. include::
+    ../../README.md
     :start-after: inclusion-marker-do-not-remove
+    :end-before: inclusion-marker-end

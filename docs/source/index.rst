@@ -11,6 +11,7 @@ Welcome to Django Google Map using Fusion Tables's documentation!
    :caption: Contents:
 
    modules
+   readme_link
 
 Indices and tables
 ==================
