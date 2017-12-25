@@ -6,6 +6,11 @@ DEBUG = False
 # This has to be set
 SECRET_KEY = os.environ['SECRET_KEY']
 
+ADMINS = [
+    ('Tonye Jack', 'jtonye@ymail.com'),
+    ('Tonye Jack', 'tonyejck@gmail.com'),
+]
+
 ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '').split()
 
 # Update database configuration with $DATABASE_URL.
