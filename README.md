@@ -3,6 +3,8 @@
 [![Build status](https://ci.appveyor.com/api/projects/status/r713eskuf4qp1uda/branch/master?svg=true)](https://ci.appveyor.com/project/jackton1/django-google-app/branch/master)
 
 
+[Source Address Fusion Table](https://fusiontables.google.com/DataSource?docid=1LEZrMwrTo0ASHryoo-5FtxnqfG0MIrhCt8ljSkNj&pli=1#rows:id=1)
+
 - Validate access to google fusion table v2 api using OAuth2.
 - Perform updates to google fusion table with locations on the map by clicking or changing the position of the marker on the map. 
 - Delete all locations from google fusion by clicking the reset button.
