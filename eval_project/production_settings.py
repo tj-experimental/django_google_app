@@ -30,6 +30,8 @@ SESSION_COOKIE_SECURE = True
 
 SECURE_CONTENT_TYPE_NOSNIFF = True
 
+SECURE_BROWSER_XSS_FILTER = True
+
 OAUTH2_CLIENT_REDIRECT_PATH = (
     'https://googlefusion.herokuapp.com/oauth2callback')
 
