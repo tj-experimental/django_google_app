@@ -20,6 +20,16 @@ DATABASES = {
     'default': db_from_env
 }
 
+X_FRAME_OPTIONS = 'DENY'
+
+CSRF_COOKIE_HTTPONLY = True
+
+CSRF_COOKIE_SECURE = True
+
+SESSION_COOKIE_SECURE = True
+
+SECURE_CONTENT_TYPE_NOSNIFF = True
+
 OAUTH2_CLIENT_REDIRECT_PATH = (
     'https://googlefusion.herokuapp.com/oauth2callback')
 
