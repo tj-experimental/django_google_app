@@ -1,0 +1,4 @@
+[run]
+branch = True
+source = map_app
+omit = map_app/migrations/*
