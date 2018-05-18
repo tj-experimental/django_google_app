@@ -69,7 +69,7 @@
                             $.ajax({
                                  url: document.location.href,
                                  method: 'POST',
-                                 data: {address: results[0].formatted_address}
+                                 data: {address: results[0].formatted_address, 'csrfmiddlewaretoken': '{{ csrf_token }}'}
                             }).done(function(data, textStatus, jqXHR){
                                 $('#addresses_table').empty().append(data)
                                 var message = "Successfully added address: " +results[0].formatted_address
