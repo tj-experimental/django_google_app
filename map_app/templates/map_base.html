@@ -11,6 +11,7 @@
     {% block noscript %}{{ block.super }}{% endblock %}
     {% if not map.computed_address %}<!-- geocoding error -->{% endif %}
     </div>
+    {% csrf_token %}
 {% endblock %}
 
 {% block api_js %}
@@ -26,6 +27,7 @@
 {% block extra_js %}
     $("#map-canvas-{{ map.pk }}").data("map", map);
     var infowindow = new google.maps.InfoWindow();
+    var csrftoken = $("[name=csrfmiddlewaretoken]").val();
     var geocoder = new google.maps.Geocoder();
     var marker = new google.maps.Marker({
                 position: latlng,
@@ -69,7 +71,7 @@
                             $.ajax({
                                  url: document.location.href,
                                  method: 'POST',
-                                 data: {address: results[0].formatted_address, 'csrfmiddlewaretoken': '{{ csrf_token }}'}
+                                 data: {address: results[0].formatted_address, 'csrfmiddlewaretoken': csrftoken}
                             }).done(function(data, textStatus, jqXHR){
                                 $('#addresses_table').empty().append(data)
                                 var message = "Successfully added address: " +results[0].formatted_address
