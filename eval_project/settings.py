@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/1.9/ref/settings/
 import json
 import os
 from django.contrib.messages import constants as messages
+from eval_project.utils import get_file_contents, get_json_from_file
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -175,11 +176,9 @@ STATIC_PRECOMPILER_OUTPUT_DIR = 'compiled'
 
 GOOGLE_API_KEYS_FILE_PATH = os.path.join(BASE_DIR, 'google_api_keys.json')
 
-GOOGLE_API_KEYS_JSON_FILE = (None if not
-                             os.path.exists(GOOGLE_API_KEYS_FILE_PATH)
-                             else json.load(open(GOOGLE_API_KEYS_FILE_PATH)))
+GOOGLE_API_KEYS_JSON_FILE = get_json_from_file(GOOGLE_API_KEYS_FILE_PATH)
 
-if GOOGLE_API_KEYS_JSON_FILE is not None:
+if GOOGLE_API_KEYS_JSON_FILE:
     EASY_MAPS_GOOGLE_MAPS_API_KEY = GOOGLE_API_KEYS_JSON_FILE['maps-api-key']
 
     GOOGLE_FUSION_TABLE_API_KEY = (
@@ -197,10 +196,7 @@ VIEW_GOOGLE_MAP_LINK = ('https://www.google.com/maps/search/'
 
 GOOGLE_OAUTH2_CLIENT_SECRETS_JSON = os.path.join(BASE_DIR, 'client_id.json')
 
-GOOGLE_OAUTH2_CLIENT_SECRET_JSON_FILE = (
-    None if not os.path.exists(GOOGLE_OAUTH2_CLIENT_SECRETS_JSON)
-    else json.load(open(GOOGLE_OAUTH2_CLIENT_SECRETS_JSON))
-)
+GOOGLE_OAUTH2_CLIENT_SECRET_JSON_FILE = get_json_from_file(GOOGLE_OAUTH2_CLIENT_SECRETS_JSON)
 
 if not 'CLIENT_ID' in os.environ:
     CLIENT_ID = GOOGLE_OAUTH2_CLIENT_SECRET_JSON_FILE['web']['client_id']

@@ -42,7 +42,7 @@ urlpatterns = [
         name='password_reset_confirm'),
     url(r'^reset/done/$', password_reset_complete, name='password_reset_complete'),
     url(r'^admin/', admin.site.urls),
-] 
+]
 
-if not os.environ.get('STAGING') or not os.environ.get('PRODUCTION'):
+if settings.DEBUG:
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
