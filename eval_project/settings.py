@@ -35,7 +35,7 @@ DEBUG = True
 
 HOSTNAME = 'localhost'
 
-ALLOWED_HOSTS = [HOSTNAME, '127.0.0.1']
+ALLOWED_HOSTS = [HOSTNAME, '127.0.0.1', '.herokuapp.com']
 
 # Application definition
 PROJECT_APPS = ['easy_maps',
