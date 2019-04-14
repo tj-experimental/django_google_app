@@ -15,3 +15,4 @@ env.cmd
 addresses.csv
 .DS_Store
 .envrc
+staticfiles
