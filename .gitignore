@@ -14,3 +14,5 @@ google_api_keys.json
 env.cmd
 addresses.csv
 .DS_Store
+.envrc
+staticfiles

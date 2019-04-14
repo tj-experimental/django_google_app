@@ -9,7 +9,7 @@ from django.contrib.auth import decorators
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseBadRequest
 from django.shortcuts import render, redirect
-from django.views.decorators.csrf import ensure_csrf_cookie
+from django.views.decorators.csrf import ensure_csrf_cookie, requires_csrf_token
 from django.views.decorators.http import require_GET, require_http_methods
 from django.views.generic import TemplateView
 from oauth2client.contrib import xsrfutil
@@ -25,6 +25,7 @@ log = logging.getLogger(__name__)
 
 
 @decorators.login_required
+@requires_csrf_token
 @ensure_csrf_cookie
 @oauth_decorator.oauth_required
 def home(request):

@@ -43,6 +43,10 @@ install:
 	@echo "Installing package dependencies..."
 	pip install -e . -r requirements.txt
 
+install-test:
+	@echo "Installing test dependencies..."
+	pip install -e .[test]
+
 lint:
 	@echo "Running flak8..."
 	pip install -e .[lint]
