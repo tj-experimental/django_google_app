@@ -12,7 +12,7 @@ https://docs.djangoproject.com/en/1.9/ref/settings/
 import json
 import os
 from django.contrib.messages import constants as messages
-from eval_project.utils import get_file_contents, get_json_from_file
+from eval_project.utils import get_json_from_file
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
