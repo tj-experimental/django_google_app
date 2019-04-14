@@ -16,3 +16,4 @@ addresses.csv
 .DS_Store
 .envrc
 staticfiles
+!staticfiles/compiled/map_app/*
