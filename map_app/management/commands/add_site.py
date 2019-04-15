@@ -12,7 +12,6 @@ class Command(BaseCommand):
             domain=settings.SITE_DOMAIN)
         site, exists = current_site
         if not exists or settings.SITE_ID != site.id:
-            settings.SITE_ID = site.id
             self.stdout.write(
                 self.style.SUCCESS('Successfully updated the settings.SITE_ID'
                                    ' to {}: {}, {}'.format(site.id, site.name,

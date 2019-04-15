@@ -42,6 +42,7 @@ STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
 
 SITE_NAME = 'googlefusion.herokuapp.com'
 SITE_DOMAIN = 'googlefusion.herokuapp.com'
+SITE_ID = 2
 
 # From registration email
 REGISTRATION_DEFAULT_FROM_EMAIL = 'django_google@yahoo.com'
