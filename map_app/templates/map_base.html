@@ -1,6 +1,5 @@
 {% extends "easy_maps/map.html" %}
-{% load compile_static %}
-{% load staticfiles %}
+{% load compile_static static %}
 
 {% block html %}
     <div id="map-canvas-{{ map.pk }}"
@@ -41,7 +40,7 @@
             nameStr = "<strong>" + name + "</strong><br>"
         }
         if (typeof formatted_address !== 'undefined'){
-            addressStr = "Address:" + formatted_address 
+            addressStr = "Address:" + formatted_address
         }
         return "<div>" + nameStr + addressStr + "</div>"
     };
@@ -60,7 +59,7 @@
         var on_land = true;
         window.startProgress();
         window.successProgress();
-        geocoder.geocode({location: latLng}, 
+        geocoder.geocode({location: latLng},
             function(results, status){
                 if(status === 'OK'){
                     $.getJSON('https://api.onwater.io/api/v1/results/' + latLngStr)

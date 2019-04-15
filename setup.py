@@ -10,7 +10,7 @@ install_requires = [
     'django-appconf==1.0.2',
     'django-classy-tags==0.8.0',
     'django-pipeline==1.6.9',
-    'django-static-precompiler==1.6',
+    'django-static-precompiler==1.8.2',
     'django-tables2==1.11.0',
     'future==0.16.0',
     'futures==3.1.1',
