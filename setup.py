@@ -49,9 +49,9 @@ test_requires = [
 ]
 
 doc_requires = [
-    'sphinx==1.6.4',
+    'sphinx==2.1.2',
     'sphinx-serve==1.0.1',
-    'recommonmark==0.4.0',
+    'recommonmark==0.5.0',
 ]
 
 lint_requires = [
