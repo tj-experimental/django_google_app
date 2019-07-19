@@ -4,6 +4,7 @@ node_js:
   - '6.0'
 python:
   - "2.7"
+  - "3.5"
   - "3.6"
 
 notifications:
@@ -12,19 +13,27 @@ notifications:
       - tonyejck@gmail.com
 
 install:
-  - wget https://www.python.org/ftp/python/3.6.3/Python-3.6.3.tar.xz
-  - tar xJf Python-3.6.3.tar.xz
-  - rm Python-3.6.3.tar.xz
-  - cd Python-3.6.3
+  # TODO: Remove ME (Isolate each environment)
+  - wget https://www.python.org/ftp/python/3.6.8/Python-3.6.8.tar.xz
+  - tar xJf Python-3.6.8.tar.xz
+  - rm Python-3.6.8.tar.xz
+  - cd Python-3.6.8
   - ./configure
   - sudo make
   - sudo make install
   - cd ..
+  - wget https://www.python.org/ftp/python/3.5.7/Python-3.5.7.tar.xz
+  - tar xJf Python-3.5.7.tar.xz
+  - rm Python-3.5.7.tar.xz
+  - cd Python-3.5.7
+  - ./configure
+  - sudo make
+  - sudo make install
   - pip install -e . -r requirements.txt
   - sudo apt-get install python-tox
 
 before_script:
-  - npm install 
+  - npm install
   - pip install -e .[test]
 
 script:
