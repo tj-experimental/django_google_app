@@ -4,7 +4,7 @@ Django application using google fusion table REST API
 """
 
 install_requires = [
-    'Django==1.11.20',
+    'Django==1.11.22',
     'google-api-python-client==1.6.4',
     'django-easy-maps==0.9.3',
     'django-appconf==1.0.2',
@@ -49,9 +49,9 @@ test_requires = [
 ]
 
 doc_requires = [
-    'sphinx==1.6.4',
+    'sphinx==2.1.2',
     'sphinx-serve==1.0.1',
-    'recommonmark==0.4.0',
+    'recommonmark==0.5.0',
 ]
 
 lint_requires = [
