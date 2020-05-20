@@ -15,7 +15,7 @@ install_requires = [
     'future==0.16.0',
     'futures==3.1.1',
     'geopy==1.11.0',
-    'httplib2==0.10.3',
+    'httplib2==0.18.0',
     'jsmin==2.2.2',
     'oauth2client==3.0.0',
     'pyasn1==0.3.7',
