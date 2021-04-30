@@ -46,7 +46,7 @@ pyasn1-modules==0.1.4
 pyasn1==0.3.7
 pytz==2017.2
 repoze.lru==0.7
-rsa==3.4.2
+rsa==4.7
 six==1.11.0
 typing==3.6.6             # via django-static-precompiler
 uritemplate==3.0.0
