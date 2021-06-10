@@ -4,7 +4,7 @@ Django application using google fusion table REST API
 """
 
 install_requires = [
-    'Django==1.11.29',
+    'Django==2.2.24',
     'google-api-python-client==1.6.4',
     'django-easy-maps==0.9.3',
     'django-appconf==1.0.2',
