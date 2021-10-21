@@ -30,7 +30,7 @@ install_requires = [
     'whitenoise==3.3.1',
     'django-registration-redux==1.8',
     'alabaster==0.7.10',
-    'Babel==2.5.1',
+    'Babel==2.9.1',
     'beautifulsoup4==4.6.0',
     'certifi==2017.7.27.1',
     'chardet==3.0.4',
